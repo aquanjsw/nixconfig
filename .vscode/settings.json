@@ -1,0 +1,11 @@
+{
+  "cSpell.words": [
+    "nixos",
+    "nixpkgs",
+    "Pkgs"
+  ],
+  "files.exclude": {
+    "**/*.lock": true,
+    "**/*.age": true
+  }
+}
