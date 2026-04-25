@@ -35,7 +35,7 @@
         hash = "sha256-Olz4W84Kiyldy+JtbIicVCL7dAYl4zq+2rxEOUTObxA=";
       };
       extraConfig = ''
-        ${config.caddy.baseDomain} {
+        {$DOMAIN} {
           root * ${config.services.caddy.dataDir}
           file_server
         }

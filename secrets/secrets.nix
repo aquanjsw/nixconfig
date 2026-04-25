@@ -14,6 +14,7 @@ in {
   "bwh-domain.age".publicKeys = [ minimal-user minimal-host vultr-host bwh-host bwh-user ];
   "vultr-domain.age".publicKeys = [ minimal-user minimal-host vultr-host bwh-host bwh-user ];
   "clash-api-secret.age".publicKeys = [ minimal-user minimal-host vultr-host bwh-host bwh-user ];
+  "domain.age".publicKeys = [ bwh-user bwh-host ];
 }
 
 # vim: sts=2 sw=2 et ai

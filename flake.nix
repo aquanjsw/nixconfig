@@ -60,6 +60,7 @@
           clash-api-secret = { file = secrets + "/clash-api-secret.age"; };
           rootDomain = { file = secrets + "/rootDomain.age"; };
           bwh-domain = { file = secrets + "/bwh-domain.age"; };
+          domain = { file = secrets + "/domain.age"; };
         };
       };
     };

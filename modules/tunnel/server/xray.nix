@@ -27,7 +27,9 @@ lib.mkIf config.tunnel.server.enable {
           realitySettings = {
             show = false;
             dest = config.caddy.httpsPort;
-            serverNames = [ config.caddy.baseDomain ];
+            serverNames = [
+              { _secret = secrets.domain.path; }
+            ];
             privateKey = { _secret = secrets.reality-private-key.path; };
             shortIds = [ "" ];
           };
