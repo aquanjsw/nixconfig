@@ -1,12 +1,20 @@
-{ lib, config, inputs, pkgs, ... }:
+{
+  lib,
+  config,
+  inputs,
+  pkgs,
+  ...
+}: lib.mkIf config.tunnel.server.enable {
 
-lib.mkIf config.tunnel.server.enable {
   services.xray.enable = true;
   services.xray.settings = let 
+
     secrets = config.age.secrets;
-  in {
+  in
+  
+  {
     log = {
-      loglevel = "warning";
+      loglevel = "error";
     };
     inbounds = [
       {
@@ -26,7 +34,7 @@ lib.mkIf config.tunnel.server.enable {
           security = "reality";
           realitySettings = {
             show = false;
-            dest = config.caddy.httpsPort;
+            dest = 1443;
             serverNames = [
               { _secret = secrets.domain.path; }
             ];
@@ -42,4 +50,5 @@ lib.mkIf config.tunnel.server.enable {
       }
     ];
   };
+
 }

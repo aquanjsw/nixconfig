@@ -7,15 +7,13 @@
 
   config = {
 
-    zramSwap.memoryPercent = 100;
-    
+    limited.enable = true;
+    oversea.enable = true;
     tunnel.server.enable = true;
 
-    caddy.baseDomain = config.age.secrets.bwh-domain.path;
-
+    zramSwap.memoryPercent = 100;
+    
     networking.hostName = "bwh";
-
-    nix.settings.substituters = [ "https://cache.nixos.org" ];
 
     boot.loader.grub.device = "/dev/sda";
     boot.loader.grub.enable = true;

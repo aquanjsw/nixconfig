@@ -24,56 +24,13 @@
     agenix,
     disko,
     ...
-  }:
-  let
-    globalModule = {
-      config,
-      inputs,
-      lib,
-      ...
-    }:
-    {
-      disabledModules = [
-        "services/networking/xray.nix"
-      ];
-      imports = [
-        inputs.agenix.nixosModules.default
-        ./services/networking/xray.nix
-      ];
-      options = {
-        paths = lib.mkOption {
-          type = lib.types.attrsOf lib.types.path;
-          default = {
-            modules = ./modules;
-            secrets = ./secrets;
-          };
-        };
-      };
-      config = let 
-        secrets = config.paths.secrets;
-      in {
-        age.secrets = {
-          vless-uuid = { file = secrets + "/vless-uuid.age"; };
-          reality-private-key = { file = secrets + "/reality-private-key.age"; };
-          vultr-domain = { file = secrets + "/vultr-domain.age"; };
-          reality-public-key = { file = secrets + "/reality-public-key.age"; };
-          clash-api-secret = { file = secrets + "/clash-api-secret.age"; };
-          rootDomain = { file = secrets + "/rootDomain.age"; };
-          bwh-domain = { file = secrets + "/bwh-domain.age"; };
-          domain = { file = secrets + "/domain.age"; };
-        };
-      };
-    };
-  in
-  {
+  }: {
     nixosConfigurations = {
 
       minimal = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
         modules = [
-          globalModule
-          ./modules/common
-          ./modules/tunnel
+          ./common
           ./hosts/minimal/configuration.nix
         ];
       };
@@ -81,20 +38,8 @@
       bwh = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
         modules = [
-          globalModule
-          ./modules/common
-          ./modules/tunnel
+          ./common
           ./hosts/bwh/configuration.nix
-        ];
-      };
-
-      vultr = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
-        modules = [
-          globalModule
-          ./modules/common
-          ./modules/tunnel
-          ./hosts/vultr/configuration.nix
         ];
       };
     };

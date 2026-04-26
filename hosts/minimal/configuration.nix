@@ -1,10 +1,13 @@
 { config, pkgs, lib, ... }: {
+
   imports = [ ./hardware-configuration.nix ];
+
+  tunnel.client.enable = true;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  tunnel.client.enable = true;
+  networking.hostName = "minimal";
 
   system.stateVersion = "25.11";
 }

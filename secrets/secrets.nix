@@ -10,11 +10,9 @@ in {
   "vless-uuid.age".publicKeys = [ minimal-user minimal-host vultr-host bwh-host bwh-user ];
   "reality-public-key.age".publicKeys = [ minimal-user minimal-host vultr-host bwh-host bwh-user ];
   "reality-private-key.age".publicKeys = [ minimal-user minimal-host vultr-host bwh-host bwh-user ];
-  "rootDomain.age".publicKeys = [ minimal-user minimal-host vultr-host bwh-host bwh-user ];
-  "bwh-domain.age".publicKeys = [ minimal-user minimal-host vultr-host bwh-host bwh-user ];
-  "vultr-domain.age".publicKeys = [ minimal-user minimal-host vultr-host bwh-host bwh-user ];
   "clash-api-secret.age".publicKeys = [ minimal-user minimal-host vultr-host bwh-host bwh-user ];
-  "domain.age".publicKeys = [ bwh-user bwh-host ];
+  "domain.age".publicKeys = [ minimal-user minimal-host bwh-user bwh-host ];
+  "inbound-password.age".publicKeys = [ minimal-user minimal-host vultr-host ];
 }
 
 # vim: sts=2 sw=2 et ai

@@ -1,0 +1,143 @@
+{
+  inputs, 
+  config, 
+  pkgs, 
+  lib, 
+  ...  
+}: let 
+
+  ssh-keys = lib.strings.splitString "\n"
+    (lib.strings.trim (builtins.readFile inputs.ssh-keys));
+in {
+  
+  imports = [
+    inputs.home-manager.nixosModules.home-manager 
+    inputs.agenix.nixosModules.default
+    ./tunnel
+  ];
+
+  options = {
+
+    paths = lib.mkOption {
+      type = lib.types.attrsOf lib.types.path;
+      default = {
+        module = ./.;
+        secrets = ./../secrets;
+      };
+    };
+
+    limited.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Whether the system is limited in resources.";
+    };
+
+    oversea.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Whether the system is oversea.";
+    };
+  };
+
+  config = let 
+
+    secrets = config.paths.secrets;
+  in {
+
+    age.secrets = {
+      caddy-env = { file = secrets + "/caddy-env.age"; };
+      vless-uuid = { file = secrets + "/vless-uuid.age"; };
+      reality-private-key = { file = secrets + "/reality-private-key.age"; };
+      reality-public-key = { file = secrets + "/reality-public-key.age"; };
+      clash-api-secret = { file = secrets + "/clash-api-secret.age"; };
+      domain = { file = secrets + "/domain.age"; };
+      inbound-password = { file = secrets + "/inbound-password.age"; };
+    };
+
+    users.users.rag = {
+      isNormalUser = true;
+      extraGroups = [
+        "wheel"
+      ];
+      shell = pkgs.fish;
+      openssh.authorizedKeys.keys = ssh-keys;
+      packages = with pkgs; ([
+        gh
+        zellij
+      ] ++ lib.optional config.limited.enable [
+        xdg-utils 
+        nodejs 
+      ]);
+    };
+
+    home-manager.useGlobalPkgs = true;
+    home-manager.useUserPackages = true;
+    home-manager.users.rag = {
+      pkgs,
+      lib, 
+      ... 
+    }: {
+
+      programs.git.settings.user = {
+        email = "zhdlcc@gmail.com";
+        name = "aquanjsw";
+      };
+
+      home.activation = {
+
+        initDotfiles = lib.hm.dag.entryAfter ["writeBoundary"] ''
+          DIR="$HOME/.dotfiles"
+          if [ ! -d "$DIR" ]; then
+            ${lib.getExe pkgs.git} clone --bare https://github.com/aquanjsw/dotfiles "$DIR"
+            ${lib.getExe pkgs.git} --git-dir="$DIR" --work-tree="$HOME" checkout
+          fi
+        '';
+      };
+
+      home.stateVersion = "25.11";
+    };
+
+    users.users.root.openssh.authorizedKeys.keys = ssh-keys;
+
+    environment.variables.EDITOR = "vim";
+
+    environment.systemPackages = with pkgs; ([
+      tree
+      dig
+      netcat
+      curl
+      ranger
+      inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
+    ]);
+
+    programs.fish.enable = true;
+    programs.git.enable = true;
+    programs.vim.enable = true;
+    programs.vim.defaultEditor = true;
+    programs.nix-ld.enable = !config.limited.enable;
+
+    services.openssh.enable = true;
+    services.openssh.settings.PasswordAuthentication = false;
+
+    networking.networkmanager.enable = true;
+    networking.iproute2.enable = true;
+    networking.firewall.enable = false;
+    networking.nftables.enable = true;
+
+    zramSwap.enable = true;
+
+    nixpkgs.config.allowUnfree = true;
+
+    time.timeZone = "Asia/Shanghai";
+
+    i18n.defaultLocale = "en_US.UTF-8";
+
+    nix.settings.experimental-features = [ "nix-command" "flakes" ];
+    nix.settings.auto-optimise-store = true;
+    nix.settings.substituters = lib.optional (!config.oversea.enable)
+      "https://mirrors.cernet.edu.cn/nix-channels/store";
+    nix.gc.automatic = true;
+  };
+}
+
+# vim: sts=2 sw=2 et ai

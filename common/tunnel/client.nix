@@ -3,8 +3,8 @@
   config, 
   inputs, 
   ... 
-}:
-{
+}: {
+
   imports = [ 
     inputs.agenix.nixosModules.default
   ];
@@ -12,8 +12,11 @@
   options.tunnel.client.config = lib.mkOption {
     type = lib.types.attrsOf lib.types.anything;
     default = let 
+
       secrets = config.age.secrets;
-    in {
+    in
+    
+    {
       log = {
         disabled = false;
         level = "info";
@@ -145,7 +148,7 @@
             rules = [
               {
                 domain_suffix = [
-                  { _secret = secrets.rootDomain.path; }
+                  { _secret = secrets.domain.path; }
                 ];
               }
             ];
@@ -168,7 +171,13 @@
         {
           type = "mixed";
           listen = "::";
-          listen_port = 8960;
+          listen_port = 7890;
+          users = [
+            {
+              username = "rag";
+              password = { _secret = secrets.inbound-password.path; };
+            }
+          ];
         }
         {
           type = "tun";
@@ -179,47 +188,23 @@
           auto_route = true;
           auto_redirect = true;
           strict_route = true;
-          stack = "mixed";
         }
       ];
       outbounds = [
-        {
-          type = "block";
-          tag = "block";
-        }
         {
           type = "direct";
           tag = "direct";
         }
         {
           type = "vless";
-          tag = "bwh";
-          server = { _secret = secrets.bwh-domain.path; };
+          tag = "main";
+          server = { _secret = secrets.domain.path; };
           server_port = 443;
           uuid = { _secret = secrets.vless-uuid.path; };
           flow = "xtls-rprx-vision";
           tls = {
             enabled = true;
-            server_name = { _secret = secrets.bwh-domain.path; };
-            reality = {
-              enabled = true;
-              public_key = { _secret = secrets.reality-public-key.path; };
-              short_id = "";
-            };
-            utls = {
-              enabled = true;
-            };
-          };
-        } {
-          type = "vless";
-          tag = "vultr";
-          server = { _secret = secrets.vultr-domain.path; };
-          server_port = 443;
-          uuid = { _secret = secrets.vless-uuid.path; };
-          flow = "xtls-rprx-vision";
-          tls = {
-            enabled = true;
-            server_name = { _secret = secrets.vultr-domain.path; };
+            server_name = { _secret = secrets.domain.path; };
             reality = {
               enabled = true;
               public_key = { _secret = secrets.reality-public-key.path; };
@@ -234,13 +219,14 @@
           type = "urltest";
           tag = "proxy";
           outbounds = [
-            "bwh"
-            "vultr"
+            "main"
           ];
         }
       ];
     };
+
   };
+
   options.tunnel.client.enable = lib.mkEnableOption "tunnel client";
   
   config = lib.mkIf config.tunnel.client.enable {
