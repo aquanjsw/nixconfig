@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   utils,
   config,
@@ -10,7 +11,7 @@
     ./client.nix
   ];
 
-  systemd.services.generateSubscription = {
+  systemd.services.generateSubscription = lib.mkIf config.tunnel.server.enable {
     description = "Generate Tunnel Client Subscription";
     after = [ "caddy.service" ];
     wantedBy = [ "multi-user.target" ];
