@@ -64,7 +64,7 @@ in {
       packages = with pkgs; ([
         gh
         zellij
-      ] ++ lib.optional config.limited.enable [
+      ] ++ lib.optionals config.limited.enable [
         xdg-utils 
         nodejs 
       ]);
@@ -89,7 +89,11 @@ in {
           DIR="$HOME/.dotfiles"
           if [ ! -d "$DIR" ]; then
             ${lib.getExe pkgs.git} clone --bare https://github.com/aquanjsw/dotfiles "$DIR"
-            ${lib.getExe pkgs.git} --git-dir="$DIR" --work-tree="$HOME" checkout
+            dotfiles() {
+              ${lib.getExe pkgs.git} --git-dir="$DIR" --work-tree="$HOME" "$@"
+            }
+            dotfiles config --local status.showUntrackedFiles no
+            dotfiles checkout
           fi
         '';
       };
@@ -134,8 +138,8 @@ in {
 
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
     nix.settings.auto-optimise-store = true;
-    nix.settings.substituters = lib.optional (!config.oversea.enable)
-      "https://mirrors.cernet.edu.cn/nix-channels/store";
+    nix.settings.substituters = lib.optionals (!config.oversea.enable)
+      [ "https://mirrors.cernet.edu.cn/nix-channels/store" ];
     nix.gc.automatic = true;
   };
 }

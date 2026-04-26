@@ -14,7 +14,7 @@
   
   {
     log = {
-      loglevel = "error";
+      loglevel = "none";
     };
     inbounds = [
       {
