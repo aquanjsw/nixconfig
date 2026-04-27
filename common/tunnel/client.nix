@@ -98,10 +98,6 @@
               "geosite-ieee"
               "geosite-lan"
             ];
-            domain_suffix = [
-              "msftconnecttest.com"
-              "msftncsi.com"
-            ];
             outbound = "direct";
           }
           {
