@@ -2,6 +2,7 @@
 
   imports = [
     inputs.agenix.nixosModules.default 
+    inputs.web-server.nixosModules.default
     ./hardware-configuration.nix
   ];
 
@@ -10,6 +11,10 @@
     limited.enable = true;
     oversea.enable = true;
     tunnel.server.enable = true;
+
+    services.web-server.enable = true;
+    services.web-server.subscriptionPath = config.tunnel.subscriptionPath;
+    services.web-server.envFile = config.age.secrets.django-env.path;
 
     zramSwap.memoryPercent = 100;
     

@@ -1,0 +1,8 @@
+[project]
+name = "web-server"
+version = "0.1.0"
+description = "My web server"
+dependencies = [
+    "django",
+    "gunicorn",
+]

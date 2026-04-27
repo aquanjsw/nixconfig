@@ -122,13 +122,35 @@
         "type": "github"
       }
     },
+    "pyproject-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "web-server",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1776715674,
+        "narHash": "sha256-Gs1VnEkCkkRZxJQAC/Dhz0Jbfi22mFXChbtNg9w/Ybg=",
+        "owner": "pyproject-nix",
+        "repo": "pyproject.nix",
+        "rev": "69f57f27e52a87c54e28138a75ec741cd46663c9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pyproject-nix",
+        "repo": "pyproject.nix",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "agenix": "agenix",
         "disko": "disko",
         "home-manager": "home-manager_2",
         "nixpkgs": "nixpkgs",
-        "ssh-keys": "ssh-keys"
+        "ssh-keys": "ssh-keys",
+        "web-server": "web-server"
       }
     },
     "ssh-keys": {
@@ -157,6 +179,23 @@
         "repo": "default",
         "type": "github"
       }
+    },
+    "web-server": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "pyproject-nix": "pyproject-nix"
+      },
+      "locked": {
+        "path": "web-server",
+        "type": "path"
+      },
+      "original": {
+        "path": "web-server",
+        "type": "path"
+      },
+      "parent": []
     }
   },
   "root": "root",

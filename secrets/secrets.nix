@@ -14,6 +14,7 @@ in {
   "clash-api-secret.age".publicKeys = users ++ [ minimal-host bwh-host ];
   "domain.age".publicKeys = users ++ [ minimal-host bwh-host ];
   "inbound-password.age".publicKeys = users ++ [ minimal-host bwh-host ];
+  "django-env.age".publicKeys = users ++ [ bwh-host ];
 }
 
 # vim: sts=2 sw=2 et ai

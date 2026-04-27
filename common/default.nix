@@ -52,6 +52,7 @@ in {
       clash-api-secret = { file = secrets + "/clash-api-secret.age"; };
       domain = { file = secrets + "/domain.age"; };
       inbound-password = { file = secrets + "/inbound-password.age"; };
+      django-env = { file = secrets + "/django-env.age"; };
     };
 
     users.users.rag = {

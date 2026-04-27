@@ -16,6 +16,12 @@
     extraConfig = ''
       {$DOMAIN} {
         root * ${config.services.caddy.dataDir}
+        route /config.json {
+          basic_auth {
+            rag {$HASHED_PASSWORD}
+          }
+          reverse_proxy 127.0.0.1:${builtins.toString config.services.web-server.port}
+        }
         file_server
       }
     '';

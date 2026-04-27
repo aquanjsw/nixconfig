@@ -13,6 +13,9 @@
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
+    web-server.url = ./web-server;
+    web-server.inputs.nixpkgs.follows = "nixpkgs";
+
     ssh-keys.url = "https://github.com/aquanjsw.keys";
     ssh-keys.flake = false;
   };
@@ -20,9 +23,6 @@
   outputs = inputs@{
     self,
     nixpkgs,
-    home-manager,
-    agenix,
-    disko,
     ...
   }: {
     nixosConfigurations = {
