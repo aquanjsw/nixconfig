@@ -187,7 +187,7 @@
           ];
           auto_route = true;
           auto_redirect = true;
-          strict_route = false;
+          strict_route = true;
         }
       ];
       outbounds = [

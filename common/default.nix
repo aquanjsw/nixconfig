@@ -1,11 +1,10 @@
 {
   inputs, 
   config, 
-  pkgs, 
+  pkgs,
   lib, 
   ...  
 }: let 
-
   ssh-keys = lib.strings.splitString "\n"
     (lib.strings.trim (builtins.readFile inputs.ssh-keys));
 in {
@@ -40,7 +39,6 @@ in {
   };
 
   config = let 
-
     secrets = config.paths.secrets;
   in {
 
@@ -64,7 +62,7 @@ in {
       openssh.authorizedKeys.keys = ssh-keys;
       packages = with pkgs; ([
         gh
-      ] ++ lib.optionals config.limited.enable [
+      ] ++ lib.optionals (!config.limited.enable) [
         xdg-utils 
         nodejs 
       ]);
@@ -79,6 +77,7 @@ in {
     }: {
 
       programs.git.settings.user = {
+        enable = true;
         email = "zhdlcc@gmail.com";
         name = "aquanjsw";
       };

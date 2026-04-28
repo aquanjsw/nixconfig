@@ -31,6 +31,7 @@
       minimal = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
         modules = [
+          { nixpkgs.overlays = import ./overlays.nix; }
           ./common
           ./hosts/minimal/configuration.nix
         ];
@@ -39,6 +40,7 @@
       bwh = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
         modules = [
+          { nixpkgs.overlays = import ./overlays.nix; }
           ./common
           ./hosts/bwh/configuration.nix
         ];
@@ -48,6 +50,7 @@
         specialArgs = { inherit inputs; };
         modules = [
           disko.nixosModules.disko
+          { nixpkgs.overlays = import ./overlays.nix; }
           ./common
           ./hosts/lib5/configuration.nix
         ];
