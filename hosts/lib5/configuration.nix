@@ -5,6 +5,11 @@
     ./hardware-configuration.nix
   ];
 
+  home-manager.users.rag = {
+    programs.java.enable = true;
+    programs.java.package = pkgs.openjdk25_headless;
+  };
+
   tunnel.client.enable = true;
 
   boot.loader.systemd-boot.enable = true;

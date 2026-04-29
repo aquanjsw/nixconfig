@@ -87,6 +87,11 @@
             action = "route";
             domain_suffix = [
               "zi0.cc"
+              "googleapis.com"
+              "googleapis.cn"
+              "google.cn"
+              "gvt2.com"
+              "gstatic.com"
             ];
             outbound = "proxy";
           }

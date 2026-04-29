@@ -62,6 +62,7 @@ in {
       openssh.authorizedKeys.keys = ssh-keys;
       packages = with pkgs; ([
         gh
+        zellij
       ] ++ lib.optionals (!config.limited.enable) [
         xdg-utils 
         nodejs 
