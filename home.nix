@@ -21,15 +21,15 @@ in {
     tree
     netcat
     curl
-    ranger
+    yazi
     screen
     inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
   ]
-  ++ lib.optionals (!finalArgs.limited.enable) [
+  ++ lib.optionals (!finalArgs.isLimited) [
     xdg-utils
     nodejs
   ]
-  ++ lib.optional (config ? home) home-manager
+  ++ lib.optionals (!finalArgs.isNixOS) [ home-manager ]
   );
 
   home.activation.initDotfiles = lib.hm.dag.entryAfter ["writeBoundary"] ''

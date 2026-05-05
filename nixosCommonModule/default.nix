@@ -12,9 +12,14 @@
 
   options = {
 
-    oversea.enable = lib.mkOption {
+    isOversea = lib.mkOption {
       default = false;
       description = "Whether the system is oversea.";
+    };
+
+    domain = lib.mkOption {
+      default = "zaelggk.com";
+      readOnly = true;
     };
 
   };
@@ -54,7 +59,7 @@
     ]);
 
     programs.fish.enable = true;
-    programs.nix-ld.enable = !config.limited.enable;
+    programs.nix-ld.enable = !config.isLimited;
 
     services.openssh.enable = true;
     services.openssh.settings.PasswordAuthentication = false;
@@ -70,7 +75,7 @@
     networking.nftables.enable = true;
 
     zramSwap.enable = true;
-    zramSwap.memoryPercent = lib.mkIf config.limited.enable 100;
+    zramSwap.memoryPercent = lib.mkIf config.isLimited 100;
 
     environment.variables.NIXPKGS_ALLOW_UNFREE = "1";
 
@@ -80,7 +85,7 @@
 
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
     nix.settings.auto-optimise-store = true;
-    nix.settings.substituters = lib.optionals (!config.oversea.enable)
+    nix.settings.substituters = lib.optionals (!config.isOversea)
       [ "https://mirrors.cernet.edu.cn/nix-channels/store" ];
   };
 }

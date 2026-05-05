@@ -17,8 +17,8 @@
       django-env.file = path + "/django-env.age";
     };
 
-    limited.enable = true;
-    oversea.enable = true;
+    isLimited = true;
+    isOversea = true;
     tunnel.server.enable = true;
 
     services.caddy.enable = true;

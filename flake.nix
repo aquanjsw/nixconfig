@@ -47,14 +47,9 @@
           readOnly = true;
         };
 
-        limited.enable = lib.mkOption {
+        isLimited = lib.mkOption {
           default = false;
           description = "Whether the system is limited in resources.";
-        };
-
-        domain = lib.mkOption {
-          default = "zaelggk.com";
-          readOnly = true;
         };
 
       };
@@ -87,7 +82,12 @@
 
     mkHome = system: inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = nixpkgs.legacyPackages.${system};
-      extraSpecialArgs = { inherit inputs; args = {}; };
+      extraSpecialArgs = {
+        inherit inputs;
+        args = {
+          isNixOS = false;
+        };
+      };
       modules = [
         commonModule
         ./home.nix
