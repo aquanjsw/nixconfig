@@ -9,30 +9,29 @@
   finalArgs = config // args;
 in {
   programs.git.enable = true;
-  programs.git.settings.user.email = "zhdlcc@gmail.com";
-  programs.git.settings.user.name = "aquanjsw";
   programs.vim.enable = true;
   programs.vim.defaultEditor = true;
+  programs.fzf.enable = true;
+  programs.fzf.enableFishIntegration = true;
 
   home.username = finalArgs.user;
   home.homeDirectory = "/home/${finalArgs.user}";
   home.packages = with pkgs; ([
     gh
     tree
-    netcat
-    curl
     yazi
     tmux
     inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
+    python3
   ]
-  ++ lib.optionals (!finalArgs.isLimited) [
-    xdg-utils
-    nodejs
-  ]
+  ++ lib.optionals (!finalArgs.isLimited) [ xdg-utils nodejs ]
   ++ lib.optionals (!finalArgs.isNixOS) [ home-manager ]
   );
 
-  home.activation.initDotfiles = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  home.activation.init = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    ${lib.getExe pkgs.git} config --global user.name "aquanjsw"
+    ${lib.getExe pkgs.git} config --global user.email "zhdlcc@gmail.com"
+
     DIR="$HOME/.dotfiles"
     if [ ! -d "$DIR" ]; then
       ${lib.getExe pkgs.git} clone --bare https://github.com/aquanjsw/dotfiles "$DIR"
@@ -48,7 +47,6 @@ in {
   home.sessionVariables = {
     NIXPKGS_ALLOW_UNFREE = "1";
     EDITOR = "vim";
-    GIT_CONFIG_GLOBAL = "${config.home.homeDirectory}/.gitconfig";
   };
 
   home.stateVersion = "25.11";

@@ -7,8 +7,7 @@
 
   tunnel.client.enable = true;
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  services.jellyfin.enable = true;
 
   hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
@@ -18,7 +17,6 @@
 
   users.users.rag = {
     packages = with pkgs; [
-      screen
     ];
   };
 
@@ -26,13 +24,16 @@
     usbutils
   ];
 
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  boot.initrd.services.lvm.enable = true;
+  boot.initrd.availableKernelModules = [ "bcache" ];
   fileSystems."/data" = {
     device = lib.mkForce "/dev/bcache0";
     fsType = "xfs";
     options = [ "nofail" ];
   };
-  boot.initrd.services.lvm.enable = true;
-  boot.initrd.availableKernelModules = [ "bcache" ];
 
   networking.hostName = "lib5";
 
