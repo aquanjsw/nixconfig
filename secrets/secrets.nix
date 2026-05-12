@@ -19,6 +19,8 @@ in {
   "reality-private-key.age".publicKeys = users ++ systems;
   "clash-api-secret.age".publicKeys = users ++ systems;
   "beszel-agent-env.age".publicKeys = users ++ systems;
+  "controller-secret.age".publicKeys = users ++ systems;
+  "lan-auth.age".publicKeys = users ++ systems;
 }
 
 # vim: sts=2 sw=2 et ai

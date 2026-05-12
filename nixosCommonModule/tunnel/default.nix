@@ -38,7 +38,7 @@ in {
       ExecStart = let
         script = pkgs.writeShellScript "gen-tunnel-client-config" ''
           ${utils.genJqSecretsReplacementSnippet
-            config.tunnel.client.config
+            config.tunnel.client.settings
             config.tunnel.subscription.path}
         '';
       in "+${script}";

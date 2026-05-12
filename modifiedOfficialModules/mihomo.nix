@@ -6,6 +6,7 @@
   lib,
   config,
   pkgs,
+  utils,
   ...
 }:
 let
@@ -25,9 +26,8 @@ in
 
     package = lib.mkPackageOption pkgs "mihomo" { };
 
-    configFile = lib.mkOption {
-      type = lib.types.path;
-      description = "Configuration file to use.";
+    settings = lib.mkOption {
+      type = lib.types.attrsOf lib.types.anything;
     };
 
     webui = lib.mkOption {
@@ -75,17 +75,27 @@ in
       after = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
+        ExecStartPre =
+          let
+            script = pkgs.writeShellScript "mihomo-pre-start" ''
+              ${utils.genJqSecretsReplacementSnippet
+                config.services.mihomo.settings
+                "/run/mihomo/config.json"}
+                chown --reference=/run/mihomo /run/mihomo/config.json
+            '';
+          in
+            "+${script}";
         ExecStart = lib.concatStringsSep " " [
           (lib.getExe cfg.package)
           "-d /var/lib/private/mihomo"
-          "-f \${CREDENTIALS_DIRECTORY}/config.yaml"
+          "-f \${RUNTIME_DIRECTORY}/config.json"
           (lib.optionalString (cfg.webui != null) "-ext-ui ${cfg.webui}")
           (lib.optionalString (cfg.extraOpts != null) cfg.extraOpts)
         ];
 
         DynamicUser = true;
         StateDirectory = "mihomo";
-        LoadCredential = "config.yaml:${cfg.configFile}";
+        RuntimeDirectory = "mihomo";
 
         ### Hardening
         inherit AmbientCapabilities CapabilityBoundingSet;

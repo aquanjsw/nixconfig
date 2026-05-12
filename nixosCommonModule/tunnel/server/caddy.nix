@@ -14,12 +14,23 @@
     };
     virtualHosts.${config.domain}.extraConfig = ''
       root * ${config.services.caddy.dataDir}
+
       route /${config.tunnel.subscription.name} {
         basic_auth {
           rag {$HASHED_PASSWORD}
         }
         reverse_proxy 127.0.0.1:${builtins.toString config.services.web-server.port}
       }
+
+      handle /geo* {
+        header Cache-Control "public, max-age=86400"
+        encode zstd gzip
+        rewrite * /MetaCubeX/meta-rules-dat/release{uri}
+        reverse_proxy https://raw.githubusercontent.com {
+          header_up Host raw.githubusercontent.com
+        }
+      }
+
       file_server
     '';
     httpsPort = 1443;

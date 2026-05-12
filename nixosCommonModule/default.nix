@@ -39,6 +39,8 @@
       reality-public-key.file = path + "/reality-public-key.age";
       clash-api-secret.file = path + "/clash-api-secret.age";
       beszel-agent-env.file = path + "/beszel-agent-env.age";
+      controller-secret.file = path + "/controller-secret.age";
+      lan-auth.file = path + "/lan-auth.age";
     };
 
     users.users.${config.user} = {

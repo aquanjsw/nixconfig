@@ -5,272 +5,147 @@
   ...
 }: {
 
-  options.tunnel.client.config = lib.mkOption {
-    type = lib.types.attrsOf lib.types.anything;
-    default = let
-      secrets = config.age.secrets;
-    in
-
-    {
-
-      log = {
-        disabled = false;
-        level = "info";
-        timestamp = true;
-      };
-
-      dns = {
-        strategy = "ipv4_only";
-
-        servers = [
-          {
-            type = "udp";
-            tag = "remote";
-            server = "1.1.1.1";
-            detour = "proxy";
-          }
-          {
-            type = "udp";
-            tag = "local";
-            server = "223.5.5.5";
-          }
-          {
-            type = "local";
-            tag = "lan";
-          }
+  options.tunnel.client.settings = lib.mkOption {
+    readOnly = true;
+    default =
+      let
+        secrets = config.age.secrets;
+      in
+      {
+        mixed-port = 7890;
+        allow-lan = true;
+        bind-address = "*";
+        authentication = [
+          { _secret = secrets.lan-auth.path; }
         ];
-
-        rules = [
-          {
-            action = "route";
-            rule_set = [
-              "tailscale"
-            ];
-            server = "lan";
-          }
-          {
-            action = "route";
-            server = "lan";
-            rule_set = [
-              "geosite-lan"
-            ];
-          }
-          {
-            action = "route";
-            server = "local";
-            rule_set = [
-              "geosite-cn"
-              "mydomain"
-              "geosite-ieee"
-            ];
-          }
+        skip-auth-prefixes = [
+          "127.0.0.1/8"
+          "::1/128"
+          "192.168.0.0/16"
+          "100.64.0.0/10"
         ];
-      };
-
-      route = {
-        auto_detect_interface = true;
-        rules = [
-          {
-            action = "sniff";
-          }
-          {
-            protocol = "dns";
-            action = "hijack-dns";
-          }
-          {
-            action = "route";
-            rule_set = [
-              "tailscale"
-            ];
-            outbound = "direct";
-          }
-          {
-            action = "route";
-            process_name = [
-              "leigod.exe"
-              "leishenSdk.exe"
-            ];
-            outbound = "direct";
-          }
-          {
-            action = "route";
-            domain_suffix = [
-              "zi0.cc"
-              "googleapis.com"
-              "googleapis.cn"
-              "google.cn"
-              "gvt2.com"
-              "gstatic.com"
-            ];
-            outbound = "proxy";
-          }
-          {
-            action = "route";
-            rule_set = [
-              "mydomain"
-              "geosite-cn"
-              "geosite-ieee"
-              "geosite-lan"
-            ];
-            domain_suffix = [
-              ".cn"
-            ];
-            outbound = "direct";
-          }
-          {
-            action = "route";
-            ip_is_private = true;
-            rule_set = [
-              "geoip-cn"
-            ];
-            outbound = "direct";
-          }
-        ];
-        rule_set = [
-          {
-            tag = "tailscale";
-            type = "inline";
-            rules = [
-              {
-                type = "logical";
-                mode = "or";
-                rules = [
-                  {
-                    process_name = [
-                      "tailscale.exe"
-                      "tailscaled.exe"
-                      "tailscale-ipn.exe"
-                    ];
-                  }
-                  {
-                    domain_suffix = [
-                      ".tail2fa86.ts.net"
-                    ];
-                  }
-                ];
-              }
-            ];
-          }
-          {
-            tag = "geosite-lan";
-            type = "inline";
-            rules = [
-              {
-                domain_suffix = [
-                  ".lan"
-                ];
-              }
-            ];
-          }
-          {
-            tag = "geosite-cn";
-            type = "remote";
-            format = "binary";
-            url = "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs";
-            download_detour = "proxy";
-          }
-          {
-            tag = "geosite-ieee";
-            type = "remote";
-            format = "binary";
-            url = "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-ieee.srs";
-            download_detour = "proxy";
-          }
-          {
-            tag = "geoip-cn";
-            type = "remote";
-            format = "binary";
-            url = "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs";
-            download_detour = "proxy";
-          }
-          {
-            tag = "mydomain";
-            type = "inline";
-            rules = [
-              {
-                domain_suffix = [
-                  config.domain
-                ];
-              }
-            ];
-          }
-        ];
-        final = "proxy";
-        default_domain_resolver = "local";
-      };
-      experimental = {
-        cache_file = {
-          enabled = true;
-          store_fakeip = true;
+        mode = "rule";
+        geox-url = {
+          geoip = "https://${config.domain}/geoip.dat";
+          geosite = "https://${config.domain}/geosite.dat";
+          mmdb = "https://${config.domain}/geoip.metadb";
         };
-        clash_api = {
-          external_controller = ":9090";
-          secret = { _secret = secrets.clash-api-secret.path; };
+        geo-auto-update = true;
+        log-level = "debug";
+        ipv6 = false;
+        external-controller = ":9090";
+        secret = { _secret = secrets.controller-secret.path; };
+        external-controller-cors = {
+          allow-origin = [ "*" ];
+          allow-private-network = true;
         };
-      };
-      inbounds = [
-        {
-          type = "mixed";
-          listen = "::";
-          listen_port = 7890;
-        }
-        {
-          type = "tun";
-          address = [
-            "172.19.0.1/30"
-            "fdfe:dcba:9876::1/126"
+        external-ui = "ui";
+        external-ui-url = "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip";
+        tcp-concurrent = true;
+        profile = {
+          store-selected = true;
+        };
+        tun = {
+          enable = true;
+          dns-hijack = [ "0.0.0.0:53" ];
+          auto-detect-interface = true;
+          auto-route = true;
+          auto-redirect = true;
+          strict-route = true;
+          exclude-interface = [
+            "tailscale0"
           ];
-          auto_route = true;
-          auto_redirect = true;
-          strict_route = true;
-          route_exclude_address = [
-            "100.64.0.0/10"
-            "fd7a:115c:a1e0::/48"
-          ];
-        }
-      ];
-      outbounds = [
-        {
-          type = "direct";
-          tag = "direct";
-        }
-        {
-          type = "vless";
-          tag = "main";
-          server = config.domain;
-          server_port = 443;
-          uuid = { _secret = secrets.vless-uuid.path; };
-          flow = "xtls-rprx-vision";
-          tls = {
-            enabled = true;
-            server_name = config.domain;
-            reality = {
-              enabled = true;
-              public_key = { _secret = secrets.reality-public-key.path; };
-              short_id = "";
-            };
-            utls = {
-              enabled = true;
-            };
+        };
+        sniffer = {
+          enable = true;
+          force-dns-mapping = true;
+        };
+        dns = {
+          enable = true;
+          listen = ":53";
+          default-nameserver = [ "114.114.114.114" ];
+          enhanced-mode = "redir-host";
+          respect-rules = true;
+          nameserver = [ "1.1.1.1" ];
+          proxy-server-nameserver = [ "system" ];
+          nameserver-policy = {
+            "+.ts.net,+.lan,geosite:cn" = "system";
           };
-        }
-        {
-          type = "selector";
-          tag = "proxy";
-          outbounds = [
-            "main"
-          ];
-        }
-      ];
-    };
-
+        };
+        proxies = [
+          {
+            name = "proxy";
+            type = "vless";
+            server = config.domain;
+            port = 443;
+            uuid = { _secret = secrets.vless-uuid.path; };
+            flow = "xtls-rprx-vision";
+            tls = true;
+            udp = true;
+            client-fingerprint = "chrome";
+            servername = config.domain;
+            reality-opts = {
+              public-key = { _secret = secrets.reality-public-key.path; };
+            };
+          }
+        ];
+        rule-providers = {
+          tailscale = {
+            type = "inline";
+            behavior = "classical";
+            payload = [
+              "PROCESS-NAME,tailscale.exe"
+              "PROCESS-NAME,tailscaled.exe"
+              "PROCESS-NAME,tailscale-ipn.exe"
+              "DOMAIN-SUFFIX,ts.net"
+            ];
+          };
+          google = {
+            type = "inline";
+            behavior = "classical";
+            payload = [
+              "DOMAIN-SUFFIX,googleapis.com"
+              "DOMAIN-SUFFIX,googleapis.cn"
+              "DOMAIN-SUFFIX,google.cn"
+              "DOMAIN-SUFFIX,gvt2.com"
+              "DOMAIN-SUFFIX,gstatic.com"
+            ];
+          };
+          leigod = {
+            type = "http";
+            behavior = "classical";
+            payload = [
+              "PROCESS-NAME,leigod.exe"
+              "PROCESS-NAME,leishenSdk.exe"
+            ];
+          };
+        };
+        rules = [
+          "IP-CIDR,1.1.1.1/32,proxy,no-resolve"
+          "DOMAIN-SUFFIX,lan,DIRECT"
+          "RULE-SET,leigod,DIRECT"
+          "RULE-SET,tailscale,DIRECT"
+          "RULE-SET,google,proxy"
+          "DOMAIN-SUFFIX,cn,DIRECT"
+          "DOMAIN-SUFFIX,zi0.cc,proxy"
+          "GEOSITE,cn,DIRECT"
+          "GEOSITE,ieee,DIRECT"
+          "GEOIP,LAN,DIRECT"
+          "GEOIP,CN,DIRECT"
+          "MATCH,proxy"
+        ];
+      };
   };
 
   options.tunnel.client.enable = lib.mkEnableOption "tunnel client";
 
   config = lib.mkIf config.tunnel.client.enable {
-    services.sing-box.enable = true;
-    services.sing-box.settings = config.tunnel.client.config;
+    services.mihomo = {
+      enable = true;
+      settings = config.tunnel.client.settings;
+      tunMode = true;
+      processesInfo = true;
+    };
   };
 
 }
