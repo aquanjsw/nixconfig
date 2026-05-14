@@ -69,6 +69,7 @@
           nameserver = [ "1.1.1.1" ];
           proxy-server-nameserver = [ "system" ];
           nameserver-policy = {
+            "geosite:category-ads-all" = "rcode://success";
             "+.ts.net,+.lan,geosite:cn" = "system";
           };
         };
@@ -119,10 +120,20 @@
               "PROCESS-NAME,leishenSdk.exe"
             ];
           };
+          frpc = {
+            type = "http";
+            behavior = "classical";
+            payload = [
+              "PROCESS-NAME,frpc"
+              "PROCESS-NAME,frpc.exe"
+            ];
+          };
         };
         rules = [
           "IP-CIDR,1.1.1.1/32,proxy,no-resolve"
           "DOMAIN-SUFFIX,lan,DIRECT"
+          "RULE-SET,frpc,proxy"
+          "GEOSITE,category-ads-all,REJECT"
           "RULE-SET,leigod,DIRECT"
           "RULE-SET,tailscale,DIRECT"
           "RULE-SET,google,proxy"
@@ -130,6 +141,7 @@
           "DOMAIN-SUFFIX,zi0.cc,proxy"
           "GEOSITE,cn,DIRECT"
           "GEOSITE,ieee,DIRECT"
+          "DOMAIN-SUFFIX,hf-mirror.com,DIRECT"
           "GEOIP,LAN,DIRECT"
           "GEOIP,CN,DIRECT"
           "MATCH,proxy"

@@ -65,7 +65,7 @@
       "minimal"
     ];
 
-    mkNixos = host: nixpkgs.lib.nixosSystem {
+    mkNixOS = host: nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
       modules = [
         inputs.disko.nixosModules.disko
@@ -96,7 +96,7 @@
 
   in {
 
-    nixosConfigurations = nixpkgs.lib.genAttrs hosts (host: mkNixos host);
+    nixosConfigurations = nixpkgs.lib.genAttrs hosts (host: mkNixOS host);
 
     homeConfigurations = {
       agx = mkHome "aarch64-linux";

@@ -7,10 +7,10 @@ SUBSCRIPTION_PATH = settings.SUBSCRIPTION_PATH
 
 def config(request: HttpRequest):
 
-    strict_route = request.GET.get('strict_route', '1') == '1'
+    strict_route = request.GET.get('strict-route', '1') == '1'
 
     data = json.load(open(SUBSCRIPTION_PATH))
 
-    data['tun']['strict_route'] = strict_route
+    data['tun']['strict-route'] = strict_route
 
     return JsonResponse(data)

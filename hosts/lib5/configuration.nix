@@ -5,9 +5,46 @@
     ./hardware-configuration.nix
   ];
 
+  age.secrets = let
+    path = config.paths.secrets;
+  in {
+    rpc-secret.file = path + "/rpc-secret.age";
+  };
+
   tunnel.client.enable = true;
 
   services.jellyfin.enable = true;
+  services.aria2 = {
+    enable = true;
+    serviceUMask = "0002";
+    rpcSecretFile = config.age.secrets.rpc-secret.path;
+    settings = {
+      continue = true;
+      max-connection-per-server = 8;
+      split = 8;
+      rpc-allow-origin-all = true;
+      optimize-concurrent-downloads = true;
+      input-file = "/var/lib/aria2/aria2.session";
+      save-session = "/var/lib/aria2/aria2.session";
+    };
+  };
+  services.frp.instances.default = {
+    enable = true;
+    role = "client";
+    settings = {
+      serverAddr = config.domain;
+      serverPort = 7000;
+      user = config.networking.hostName;
+      proxies = [
+        {
+          name = "aria2-rpc";
+          type = "tcp";
+          localPort = config.services.aria2.settings.rpc-listen-port;
+          remotePort = config.frpProxies.lib5.aria2-rpc.port;
+        }
+      ];
+    };
+  };
 
   hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
@@ -17,6 +54,7 @@
 
   users.users.rag = {
     packages = with pkgs; [
+      nix-index
     ];
   };
 

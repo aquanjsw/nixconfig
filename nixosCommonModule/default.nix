@@ -22,6 +22,20 @@
       readOnly = true;
     };
 
+    frpProxies = with lib.types; lib.mkOption {
+      type = attrsOf (attrsOf (submodule {
+        options = {
+          port = lib.mkOption {
+            type = int;
+          };
+        };
+      }));
+      default = {
+        lib5.aria2-rpc.port = 6800;
+      };
+      readOnly = true;
+    };
+
   };
 
   config = let
@@ -47,7 +61,7 @@
       isNormalUser = true;
       extraGroups = [
         "wheel"
-      ];
+      ] ++ lib.optional (config.services.aria2.enable) "aria2";
       shell = pkgs.fish;
       openssh.authorizedKeys.keys = ssh-keys;
     };

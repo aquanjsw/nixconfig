@@ -21,6 +21,8 @@ in {
   "beszel-agent-env.age".publicKeys = users ++ systems;
   "controller-secret.age".publicKeys = users ++ systems;
   "lan-auth.age".publicKeys = users ++ systems;
+
+  "rpc-secret.age".publicKeys = [ lib5-user lib5-system ];
 }
 
 # vim: sts=2 sw=2 et ai
