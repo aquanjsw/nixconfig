@@ -6,11 +6,18 @@ print(f"DEBUG={DEBUG}")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SUBSCRIPTION_PATH = BASE_DIR / 'test/config.json' if DEBUG else os.environ['SUBSCRIPTION_PATH']
+# SUBSCRIPTION_PATH = BASE_DIR / 'test/config.json' if DEBUG else os.environ['SUBSCRIPTION_PATH']
+MIHOMO_CONFIG_PATH = os.environ['MIHOMO_CONFIG_PATH']
+SINGBOX_CONFIG_PATH = os.environ['SINGBOX_CONFIG_PATH']
+MIHOMO_URL_PATH = os.environ['MIHOMO_URL_PATH']
+SINGBOX_URL_PATH = os.environ['SINGBOX_URL_PATH']
 
 SECRET_KEY = 'x' * 50 if DEBUG else os.environ['SECRET_KEY']
 
-ALLOWED_HOSTS = [ os.environ['DOMAIN'] ]
+ALLOWED_HOSTS = [
+    "localhost",
+    os.environ['DOMAIN']
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',

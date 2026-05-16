@@ -4,56 +4,16 @@
     ./hardware-configuration.nix
   ];
 
-  options.domain = lib.mkOption {
-    type = lib.types.str;
-  };
-
   config = {
-
-    age.secrets = let
-      path = config.paths.secrets;
-    in {
-      caddy-env.file = path + "/caddy-env.age";
-      django-env.file = path + "/django-env.age";
-    };
 
     isLimited = true;
     isOversea = true;
     tunnel.server.enable = true;
+    frps.enable = true;
+    flakes.web-app.enable = true;
 
     services.beszel.hub.enable = true;
     services.caddy.enable = true;
-    services.caddy.virtualHosts = lib.mkMerge [
-      (builtins.listToAttrs (
-        lib.flatten (
-          lib.mapAttrsToList (host: services:
-            lib.mapAttrsToList (service: settings: {
-              name = "${service}-${host}.${config.domain}";
-              value.extraConfig = ''
-                reverse_proxy 127.0.0.1:${builtins.toString settings.port}
-              '';
-            }) services
-          ) config.frpProxies
-        )
-      ))
-      {
-        "beszel.${config.domain}".extraConfig = ''
-          reverse_proxy 127.0.0.1:${builtins.toString config.services.beszel.hub.port}
-        '';
-      }
-    ];
-    services.web-server.enable = true;
-    services.web-server.subscription.path = config.tunnel.subscription.path;
-    services.web-server.subscription.name = config.tunnel.subscription.name;
-    services.web-server.envFile = config.age.secrets.django-env.path;
-
-    services.frp.instances.default = {
-      enable = true;
-      role = "server";
-      settings = {
-        bindPort = 7000;
-      };
-    };
 
     networking.hostName = "bwh";
     networking.sits.ip6net = {

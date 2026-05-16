@@ -1,5 +1,5 @@
 {
-  description = "Django web server";
+  description = "Django web app";
 
   inputs = {
     pyproject-nix.url = "github:pyproject-nix/pyproject.nix";
@@ -31,20 +31,19 @@
       };
 
     packages.x86_64-linux.default = with lib; stdenv.mkDerivation {
-      name = "django-web-server";
+      name = "web-app";
       src = fileset.toSource {
         root = ./.;
         fileset = fileset.unions [
           ./bwhsite
           ./subalter
-          ./test
         ];
       };
       installPhase = ''
         mkdir -p $out/bin $out/lib
-        cp -r bwhsite subalter test $out/lib
+        cp -r bwhsite subalter $out/lib
 
-        makeWrapper ${getBin pythonEnv}/bin/gunicorn $out/bin/web-server \
+        makeWrapper ${getBin pythonEnv}/bin/gunicorn $out/bin/web-app \
           --add-flags "--chdir $out/lib -b 127.0.0.1:\''${PORT:-8000} bwhsite.wsgi"
       '';
       nativeBuildInputs = [ makeWrapper ];
@@ -57,31 +56,45 @@
       pkgs,
       ...
     }: with lib; let
-      cfg = config.services.web-server;
+      cfg = config.flakes.web-app;
     in {
-      options.services.web-server = {
-        enable = mkEnableOption "web server";
+      options.flakes.web-app = {
+        enable = mkEnableOption "web app";
         package = mkOption {
           type = types.package;
           default = self.packages.${stdenv.hostPlatform.system}.default;
-          description = '' The package to use for the web server.
+          description = '' The package to use for the web app.
             Only x86_64-linux is tested at the moment.
           '';
         };
         port = mkOption {
-          type = types.ints.between 1 65535;
+          type = types.port;
           default = 8000;
-          description = "The port to run the web server on.";
+          description = "The port to run the web app on.";
         };
-        subscription.path = mkOption {
-          type = types.str;
-          example = "/run/secrets/config.json";
-          description = "The path to the subscription config file.";
+        subscription.mihomo = {
+          configPath = mkOption {
+            type = types.str;
+            example = "/run/secrets/mihomo.json";
+            description = "The path to the mihomo subscription config file.";
+          };
+          urlPath = mkOption {
+            type = types.str;
+            example = "mihomo.json";
+            description = "The URL path for the mihomo subscription.";
+          };
         };
-        subscription.name = mkOption {
-          type = types.str;
-          example = "config.json";
-          description = "The name of the subscription config file.";
+        subscription.sing-box = {
+          configPath = mkOption {
+            type = types.str;
+            example = "/run/secrets/sing-box.json";
+            description = "The path to the sing-box subscription config file.";
+          };
+          urlPath = mkOption {
+            type = types.str;
+            example = "sing-box.json";
+            description = "The URL path for the sing-box subscription.";
+          };
         };
         envFile = mkOption {
           type = types.str;
@@ -95,21 +108,24 @@
         };
       };
 
-      config = mkIf config.services.web-server.enable {
-        systemd.services.web-server = {
-          description = " Web Server";
+      config = mkIf config.flakes.web-app.enable {
+        systemd.services.web-app = {
+          description = " web app";
           wantedBy = [ "multi-user.target" ];
           after = [ "network.target" ];
           environment = {
             PORT = builtins.toString cfg.port;
-            SUBSCRIPTION_PATH = cfg.subscription.path;
-            SUBSCRIPTION_NAME = cfg.subscription.name;
-            DOMAIN = config.domain;
+            MIHOMO_CONFIG_PATH = cfg.subscription.mihomo.configPath;
+            SINGBOX_CONFIG_PATH = cfg.subscription.sing-box.configPath;
+            MIHOMO_URL_PATH = cfg.subscription.mihomo.urlPath;
+            SINGBOX_URL_PATH = cfg.subscription.sing-box.urlPath;
+            # TODO: use django-hosts to support multiple domains
+            DOMAIN = "subscription.${config.domain}";
           };
           serviceConfig = {
             EnvironmentFile = [ cfg.envFile ];
             Restart = "always";
-            ExecStart = "${cfg.package}/bin/web-server";
+            ExecStart = "${cfg.package}/bin/web-app";
           };
         };
       };

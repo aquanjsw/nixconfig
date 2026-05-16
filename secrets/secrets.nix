@@ -12,7 +12,7 @@ let
   systems = [ minimal-system bwh-system lib5-system ];
 in {
   "caddy-env.age".publicKeys = users ++ [ bwh-system ];
-  "django-env.age".publicKeys = users ++ [ bwh-system ];
+  "web-app-env.age".publicKeys = users ++ [ bwh-system ];
 
   "vless-uuid.age".publicKeys = users ++ systems;
   "reality-public-key.age".publicKeys = users ++ systems;
@@ -21,6 +21,7 @@ in {
   "beszel-agent-env.age".publicKeys = users ++ systems;
   "controller-secret.age".publicKeys = users ++ systems;
   "lan-auth.age".publicKeys = users ++ systems;
+  "tailscale-auth-key.age".publicKeys = users ++ systems;
 
   "rpc-secret.age".publicKeys = [ lib5-user lib5-system ];
 }

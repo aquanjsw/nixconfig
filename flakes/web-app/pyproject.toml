@@ -1,7 +1,7 @@
 [project]
-name = "web-server"
+name = "web-app"
 version = "0.1.0"
-description = "My web server"
+description = "My web app"
 dependencies = [
     "django",
     "gunicorn",

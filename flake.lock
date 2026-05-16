@@ -125,7 +125,7 @@
     "pyproject-nix": {
       "inputs": {
         "nixpkgs": [
-          "web-server",
+          "web-app",
           "nixpkgs"
         ]
       },
@@ -150,7 +150,7 @@
         "home-manager": "home-manager_2",
         "nixpkgs": "nixpkgs",
         "ssh-keys": "ssh-keys",
-        "web-server": "web-server"
+        "web-app": "web-app"
       }
     },
     "ssh-keys": {
@@ -180,7 +180,7 @@
         "type": "github"
       }
     },
-    "web-server": {
+    "web-app": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
@@ -188,11 +188,11 @@
         "pyproject-nix": "pyproject-nix"
       },
       "locked": {
-        "path": "web-server",
+        "path": "flakes/web-app",
         "type": "path"
       },
       "original": {
-        "path": "web-server",
+        "path": "flakes/web-app",
         "type": "path"
       },
       "parent": []

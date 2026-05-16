@@ -9,9 +9,7 @@
   services.xray.enable = true;
   services.xray.settings = let
     secrets = config.age.secrets;
-  in
-
-  {
+  in {
     log = {
       loglevel = "warning";
     };
@@ -46,6 +44,12 @@
         protocol = "freedom";
       }
     ];
+  };
+
+  age.secrets = let
+    path = config.paths.secrets;
+  in {
+    reality-private-key.file = path + "/reality-private-key.age";
   };
 
 }

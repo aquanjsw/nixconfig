@@ -17,8 +17,8 @@
     ssh-keys.url = "https://github.com/aquanjsw.keys";
     ssh-keys.flake = false;
 
-    web-server.url = ./web-server;
-    web-server.inputs.nixpkgs.follows = "nixpkgs";
+    web-app.url = ./flakes/web-app;
+    web-app.inputs.nixpkgs.follows = "nixpkgs";
 
   };
 
@@ -28,7 +28,7 @@
     ...
   }: let
 
-    commonModule = {
+    common = {
       lib,
       ...
     }: {
@@ -56,7 +56,6 @@
 
       config.nixpkgs.overlays = import ./overlays.nix;
       config.nixpkgs.config.allowUnfree = true;
-
     };
 
     hosts = [
@@ -70,12 +69,23 @@
       modules = [
         inputs.disko.nixosModules.disko
         inputs.agenix.nixosModules.default
-        inputs.web-server.nixosModules.default
+        inputs.web-app.nixosModules.default
         inputs.home-manager.nixosModules.home-manager
-        commonModule
-        ./home-nixos.nix
-        ./modifiedOfficialModules
-        ./nixosCommonModule
+        common
+        ({ config, ... }: {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = {
+            inherit inputs;
+            args = {
+              inherit (config) user isLimited;
+              isNixOS = true;
+            };
+          };
+          home-manager.users.${config.user} = ./home.nix;
+        })
+        ./mods
+        ./feats
         ./hosts/${host}/configuration.nix
       ];
     };
@@ -89,7 +99,7 @@
         };
       };
       modules = [
-        commonModule
+        common
         ./home.nix
       ];
     };

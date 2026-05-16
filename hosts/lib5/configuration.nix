@@ -11,7 +11,7 @@
     rpc-secret.file = path + "/rpc-secret.age";
   };
 
-  tunnel.client.enable = true;
+  tunnel.client.sing-box.enable = true;
 
   services.jellyfin.enable = true;
   services.aria2 = {
