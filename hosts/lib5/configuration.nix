@@ -56,6 +56,7 @@
     packages = with pkgs; [
       nix-index
       python313Packages.django
+      nil
     ];
   };
 
