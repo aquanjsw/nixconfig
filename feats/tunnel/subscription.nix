@@ -4,26 +4,31 @@
   config,
   lib,
   ...
-}: let
+}:
+let
 
   runtimeDirectory = "tunnel-subscriptions";
 
-  subscriptionType = lib.types.submodule ({ name, ... }: {
-    options = {
-      settings = lib.mkOption {
-        type = lib.types.attrsOf lib.types.anything;
+  subscriptionType = lib.types.submodule (
+    { name, ... }:
+    {
+      options = {
+        settings = lib.mkOption {
+          type = lib.types.attrsOf lib.types.anything;
+        };
+        path = lib.mkOption {
+          default = "/run/${runtimeDirectory}/${name}.json";
+          readOnly = true;
+        };
       };
-      path = lib.mkOption {
-        default = "/run/${runtimeDirectory}/${name}.json";
-        readOnly = true;
-      };
-    };
-  });
-in {
+    }
+  );
+in
+{
 
   options.tunnel.subscription = lib.mkOption {
     type = lib.types.attrsOf subscriptionType;
-    default = {};
+    default = { };
   };
 
   config = lib.mkIf config.tunnel.server.enable {
@@ -35,15 +40,17 @@ in {
         Type = "oneshot";
         RuntimeDirectory = runtimeDirectory;
         RuntimeDirectoryPreserve = "yes";
-        ExecStart = let
-          script = pkgs.writeShellScript "tunnelSubscriptionsGenerator" ''
-            ${lib.concatStringsSep "\n" (map (subscription:
-              utils.genJqSecretsReplacementSnippet
-              subscription.settings
-              subscription.path
-            ) (lib.attrValues config.tunnel.subscription))}
-          '';
-        in "+${script}";
+        ExecStart =
+          let
+            script = pkgs.writeShellScript "tunnelSubscriptionsGenerator" ''
+              ${lib.concatStringsSep "\n" (
+                map (subscription: utils.genJqSecretsReplacementSnippet subscription.settings subscription.path) (
+                  lib.attrValues config.tunnel.subscription
+                )
+              )}
+            '';
+          in
+          "+${script}";
       };
     };
 
@@ -53,6 +60,8 @@ in {
       }
       reverse_proxy 127.0.0.1:${builtins.toString config.web-app.port}
     '';
+
+    web-app.subscription.domain = "subscription";
 
     assertions = [
       {

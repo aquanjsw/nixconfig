@@ -2,55 +2,64 @@
   description = "Django web app";
 
   inputs = {
-    pyproject-nix.url = "github:pyproject-nix/pyproject.nix";
-    pyproject-nix.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      pyproject-nix,
-      ...
-    }:
+    { self, nixpkgs, ... }:
     let
-
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
-      project = pyproject-nix.lib.project.loadPyproject {
-        projectRoot = ./.;
+      packageOverrides = self: super: {
+        django-hosts = super.buildPythonPackage rec {
+          pname = "django-hosts";
+          version = "7.0.0";
+          src = super.fetchPypi {
+            pname = "django_hosts";
+            inherit version;
+            sha256 = "sha256-CABrwJ9a9pY4chztBlfyQESDWiKmCHMu4QBK3JyV+3w=";
+          };
+          pyproject = true;
+          build-system = [
+            pkgs.python3Packages.setuptools
+            pkgs.python3Packages.setuptools-scm
+          ];
+        };
       };
-      python = pkgs.python3;
-      pythonEnv = python.withPackages (project.renderers.withPackages { inherit python; });
-
+      python = pkgs.python3.override {
+        inherit packageOverrides;
+        self = python;
+      };
+      pythonEnv = python.withPackages (ps: [
+        ps.django-hosts
+        ps.django
+        ps.gunicorn
+      ]);
     in
-    with pkgs;
     {
-
-      devShells.${system}.default = mkShellNoCC {
+      devShells.${system}.default = pkgs.mkShellNoCC {
         packages = [ pythonEnv ];
         DEBUG = "1";
       };
 
-      packages.x86_64-linux.default =
-        with lib;
-        stdenv.mkDerivation {
+      packages.${system}.default =
+        with pkgs.lib;
+        pkgs.stdenv.mkDerivation {
           name = "web-app";
           src = fileset.toSource {
             root = ./.;
             fileset = fileset.unions [
-              ./bwhsite
+              ./web_app
               ./subalter
             ];
           };
           installPhase = ''
             mkdir -p $out/bin $out/lib
-            cp -r bwhsite subalter $out/lib
-
+            cp -r web_app subalter $out/lib/
             makeWrapper ${getBin pythonEnv}/bin/gunicorn $out/bin/web-app \
-              --add-flags "--chdir $out/lib -b 127.0.0.1:\''${PORT:-8000} bwhsite.wsgi"
+              --add-flags "--chdir $out/lib -b 127.0.0.1:\''${PORT} web_app.wsgi"
           '';
-          nativeBuildInputs = [ makeWrapper ];
+          nativeBuildInputs = [ pkgs.makeWrapper ];
           buildInputs = [ pythonEnv ];
         };
 
@@ -70,10 +79,10 @@
             enable = mkEnableOption "web app";
             package = mkOption {
               type = types.package;
-              default = self.packages.${stdenv.hostPlatform.system}.default;
+              default = self.packages.${pkgs.stdenv.hostPlatform.system}.default;
               description = ''
                 The package to use for the web app.
-                           Only x86_64-linux is tested at the moment.
+                Only x86_64-linux is tested at the moment.
               '';
             };
             port = mkOption {
@@ -105,6 +114,10 @@
                 description = "The URL path for the sing-box subscription.";
               };
             };
+            subscription.domain = mkOption {
+              type = types.str;
+              description = "Full domain will be <subdomain>.<config.domain>";
+            };
             envFile = mkOption {
               type = types.str;
               example = "/run/secrets/env";
@@ -119,7 +132,7 @@
 
           config = mkIf config.web-app.enable {
             systemd.services.web-app = {
-              description = " web app";
+              description = "web app";
               wantedBy = [ "multi-user.target" ];
               after = [ "network.target" ];
               environment = {
@@ -128,8 +141,8 @@
                 SINGBOX_CONFIG_PATH = cfg.subscription.sing-box.configPath;
                 MIHOMO_URL_PATH = cfg.subscription.mihomo.urlPath;
                 SINGBOX_URL_PATH = cfg.subscription.sing-box.urlPath;
-                # TODO: use django-hosts to support multiple domains
-                DOMAIN = "subscription.${config.domain}";
+                SUBSCRIPTION_DOMAIN = cfg.subscription.domain;
+                DOMAIN = config.domain;
               };
               serviceConfig = {
                 EnvironmentFile = [ cfg.envFile ];

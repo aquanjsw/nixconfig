@@ -1,25 +1,27 @@
 import os
 from pathlib import Path
 
-DEBUG = os.getenv('DEBUG', '0') == '1'
-print(f"DEBUG={DEBUG}")
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SUBSCRIPTION_PATH = BASE_DIR / 'test/config.json' if DEBUG else os.environ['SUBSCRIPTION_PATH']
 MIHOMO_CONFIG_PATH = os.environ['MIHOMO_CONFIG_PATH']
 SINGBOX_CONFIG_PATH = os.environ['SINGBOX_CONFIG_PATH']
 MIHOMO_URL_PATH = os.environ['MIHOMO_URL_PATH']
 SINGBOX_URL_PATH = os.environ['SINGBOX_URL_PATH']
 
-SECRET_KEY = 'x' * 50 if DEBUG else os.environ['SECRET_KEY']
+SUBSCRIPTION_DOMAIN = os.environ['SUBSCRIPTION_DOMAIN']
+DOMAIN = os.environ['DOMAIN']
+
+SECRET_KEY = os.environ['SECRET_KEY']
+
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    "localhost",
-    os.environ['DOMAIN']
+    'localhost',
+    SUBSCRIPTION_DOMAIN + '.' + DOMAIN,
 ]
 
 INSTALLED_APPS = [
+    'django_hosts',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -29,6 +31,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django_hosts.middleware.HostsRequestMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -36,9 +39,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_hosts.middleware.HostsResponseMiddleware',
 ]
 
-ROOT_URLCONF = 'bwhsite.urls'
+ROOT_HOSTCONF = 'web_app.hosts'
+ROOT_URLCONF = 'subalter.urls'
+DEFAULT_HOST = 'subscription'
 
 TEMPLATES = [
     {
@@ -55,7 +61,11 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'bwhsite.wsgi.application'
+WSGI_APPLICATION = 'web_app.wsgi.application'
+
+
+# Database
+# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -63,6 +73,10 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+
+# Password validation
+# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -79,6 +93,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+# Internationalization
+# https://docs.djangoproject.com/en/5.2/topics/i18n/
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -87,6 +105,13 @@ USE_I18N = True
 
 USE_TZ = True
 
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.2/howto/static-files/
+
 STATIC_URL = 'static/'
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

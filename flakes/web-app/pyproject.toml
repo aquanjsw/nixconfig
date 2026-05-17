@@ -1,8 +1,0 @@
-[project]
-name = "web-app"
-version = "0.1.0"
-description = "My web app"
-dependencies = [
-    "django",
-    "gunicorn",
-]

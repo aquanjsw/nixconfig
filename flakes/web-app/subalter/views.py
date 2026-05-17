@@ -3,9 +3,7 @@ import json
 from django.http import HttpRequest, HttpResponse
 from django.conf import settings
 
-MIHOMO_CONFIG_PATH = settings.MIHOMO_CONFIG_PATH
-SINGBOX_CONFIG_PATH = settings.SINGBOX_CONFIG_PATH
-DEFAULT_MTU = 1400
+DEFAULT_MTU = 1380
 
 def sing_box(request: HttpRequest):
     mtu_str = request.GET.get('mtu', str(DEFAULT_MTU))
@@ -19,7 +17,7 @@ def sing_box(request: HttpRequest):
     stack = request.GET.get('stack', 'mixed')
     log_level = request.GET.get('log-level', 'info')
 
-    config = json.load(open(SINGBOX_CONFIG_PATH))
+    config = json.load(open(settings.SINGBOX_CONFIG_PATH))
 
     for inbound in config['inbounds']:
         if inbound['type'] == 'tun':
@@ -37,7 +35,7 @@ def mihomo(request: HttpRequest):
 
     strict_route = request.GET.get('strict-route', '1') == '1'
 
-    config = json.load(open(MIHOMO_CONFIG_PATH))
+    config = json.load(open(settings.MIHOMO_CONFIG_PATH))
 
     config['tun']['strict-route'] = strict_route
 
