@@ -67,13 +67,11 @@ with lib;
           ExecStartPre =
             let
               script = pkgs.writeShellScript "xray-pre-start" ''
-                ${utils.genJqSecretsReplacementSnippet
-                  config.services.xray.settings
-                  "/run/xray/config.json"}
+                ${utils.genJqSecretsReplacementSnippet config.services.xray.settings "/run/xray/config.json"}
                   chown --reference=/run/xray /run/xray/config.json
               '';
             in
-              "+${script}";
+            "+${script}";
           ExecStart = [
             ""
             "${cfg.package}/bin/xray -config \${RUNTIME_DIRECTORY}/config.json"

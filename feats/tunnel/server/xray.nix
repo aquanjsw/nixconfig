@@ -1,55 +1,57 @@
 {
   lib,
   config,
-  inputs,
-  pkgs,
   ...
-}: lib.mkIf config.tunnel.server.enable {
-
+}:
+lib.mkIf config.tunnel.server.enable {
   services.xray.enable = true;
-  services.xray.settings = let
-    secrets = config.age.secrets;
-  in {
-    log = {
-      loglevel = "warning";
-    };
-    inbounds = [
-      {
-        port = 443;
-        protocol = "vless";
-        settings = {
-          clients = [
-            {
-              id = { _secret = secrets.vless-uuid.path; };
-              flow = "xtls-rprx-vision";
-            }
-          ];
-          decryption = "none";
-        };
-        streamSettings = {
-          network = "raw";
-          security = "reality";
-          realitySettings = {
-            show = false;
-            dest = config.services.caddy.httpsPort;
-            serverNames = builtins.attrNames config.services.caddy.virtualHosts;
-            privateKey = { _secret = secrets.reality-private-key.path; };
-            shortIds = [ "" ];
+  services.xray.settings =
+    let
+      secrets = config.age.secrets;
+    in
+    {
+      log = {
+        loglevel = "warning";
+      };
+      inbounds = [
+        {
+          port = 443;
+          protocol = "vless";
+          settings = {
+            clients = [
+              {
+                id = {
+                  _secret = secrets.vless-uuid.path;
+                };
+                flow = "xtls-rprx-vision";
+              }
+            ];
+            decryption = "none";
           };
-        };
-      }
-    ];
-    outbounds = [
-      {
-        protocol = "freedom";
-      }
-    ];
-  };
+          streamSettings = {
+            network = "raw";
+            security = "reality";
+            realitySettings = {
+              show = false;
+              dest = config.services.caddy.httpsPort;
+              serverNames = lib.attrNames config.services.caddy.virtualHosts;
+              privateKey = {
+                _secret = secrets.reality-private-key.path;
+              };
+              shortIds = [ "" ];
+            };
+          };
+        }
+      ];
+      outbounds = [
+        {
+          protocol = "freedom";
+        }
+      ];
+    };
 
-  age.secrets = let
-    path = config.paths.secrets;
-  in {
-    reality-private-key.file = path + "/reality-private-key.age";
-  };
+  systemd.services.xray.after = [ "caddy.service" ];
+
+  age.secrets.reality-private-key.file = config.paths.secrets + "/reality-private-key.age";
 
 }
