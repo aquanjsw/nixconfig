@@ -47,6 +47,7 @@
       ];
     };
   };
+  services.qbittorrent.enable = true;
 
   hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
