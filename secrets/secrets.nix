@@ -8,9 +8,17 @@ let
   lib5-system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC08h/FP6qqvdfr9tdue9SRjB/auHP0c/15+3cp4xmiZ";
   lib5-user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF/Nwn3AJ+MltE7EbwkqqhaQRqrhFB7nnwvsPP/TaF+U";
 
-  users = [ minimal-user bwh-user lib5-user ];
-  systems = [ minimal-system bwh-system lib5-system ];
-in {
+  users = [
+    minimal-user
+    lib5-user
+  ];
+  systems = [
+    minimal-system
+    bwh-system
+    lib5-system
+  ];
+in
+{
   "caddy-env.age".publicKeys = users ++ [ bwh-system ];
   "web-app-env.age".publicKeys = users ++ [ bwh-system ];
 

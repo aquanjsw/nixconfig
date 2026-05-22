@@ -261,14 +261,10 @@
 
   config = {
 
-    age.secrets =
-      let
-        path = config.paths.secrets;
-      in
-      {
-        clash-api-secret.file = path + "/clash-api-secret.age";
-        tailscale-auth-key.file = path + "/tailscale-auth-key.age";
-      };
+    age.secrets = {
+      clash-api-secret.file = config.paths.secrets + "/clash-api-secret.age";
+      tailscale-auth-key.file = config.paths.secrets + "/tailscale-auth-key.age";
+    };
 
     services.sing-box = lib.mkIf config.tunnel.client.sing-box.enable {
       enable = true;

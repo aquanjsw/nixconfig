@@ -1,7 +1,8 @@
 {
   lib,
   ...
-}: {
+}:
+{
 
   imports = [
     ./caddy.nix

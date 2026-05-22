@@ -98,13 +98,7 @@
           "https://mirrors.cernet.edu.cn/nix-channels/store"
         ];
 
-        age.secrets =
-          let
-            path = config.paths.secrets;
-          in
-          {
-            beszel-agent-env.file = path + "/beszel-agent-env.age";
-          };
+        age.secrets.beszel-agent-env.file = config.paths.secrets + "/beszel-agent-env.age";
       }
       (lib.mkIf config.web-app.enable {
         age.secrets.web-app-env.file = config.paths.secrets + "/web-app-env.age";

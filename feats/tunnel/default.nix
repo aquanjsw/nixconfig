@@ -9,9 +9,5 @@
     ./subscription.nix
   ];
 
-  config.age.secrets = let
-    path = config.paths.secrets;
-  in {
-    vless-uuid.file = path + "/vless-uuid.age";
-  };
+  config.age.secrets.vless-uuid.file = config.paths.secrets + "/vless-uuid.age";
 }
