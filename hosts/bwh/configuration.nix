@@ -3,6 +3,7 @@
 
   imports = [
     ./hardware-configuration.nix
+    ./syncthing.nix
   ];
 
   config = {
@@ -16,6 +17,7 @@
     services.tailscale.derper.enable = true;
     services.beszel.hub.enable = true;
     services.caddy.enable = true;
+    services.syncthing.enable = true;
 
     networking.hostName = "bwh";
     networking.sits.ip6net = {

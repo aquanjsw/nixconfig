@@ -21,6 +21,9 @@ in
 {
   "caddy-env.age".publicKeys = users ++ [ bwh-system ];
   "web-app-env.age".publicKeys = users ++ [ bwh-system ];
+  "syncthingGuiPassword.age".publicKeys = users ++ [ bwh-system ];
+
+  "rpc-secret.age".publicKeys = users ++ [ lib5-system ];
 
   "vless-uuid.age".publicKeys = users ++ systems;
   "reality-public-key.age".publicKeys = users ++ systems;
@@ -30,8 +33,6 @@ in
   "controller-secret.age".publicKeys = users ++ systems;
   "lan-auth.age".publicKeys = users ++ systems;
   "tailscale-auth-key.age".publicKeys = users ++ systems;
-
-  "rpc-secret.age".publicKeys = [ lib5-user lib5-system ];
 }
 
 # vim: sts=2 sw=2 et ai
