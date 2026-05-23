@@ -8,8 +8,8 @@
   outputs =
     { self, nixpkgs, ... }:
     let
-      system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
+      inherit (nixpkgs) lib;
+      forAllSystems = lib.genAttrs lib.systems.flakeExposed;
       packageOverrides = self: super: {
         django-hosts = super.buildPythonPackage rec {
           pname = "django-hosts";
@@ -21,47 +21,64 @@
           };
           pyproject = true;
           build-system = [
-            pkgs.python3Packages.setuptools
-            pkgs.python3Packages.setuptools-scm
+            self.setuptools
+            self.setuptools-scm
           ];
         };
       };
-      python = pkgs.python3.override {
-        inherit packageOverrides;
-        self = python;
-      };
-      pythonEnv = python.withPackages (ps: [
-        ps.django-hosts
-        ps.django
-        ps.gunicorn
-      ]);
+      genPythonEnv =
+        pkgs:
+        let
+          python = pkgs.python3.override {
+            inherit packageOverrides;
+            self = python;
+          };
+        in
+        python.withPackages (ps: [
+          ps.django-hosts
+          ps.django
+          ps.gunicorn
+        ]);
     in
     {
-      devShells.${system}.default = pkgs.mkShellNoCC {
-        packages = [ pythonEnv ];
-        DEBUG = "1";
-      };
-
-      packages.${system}.default =
-        with pkgs.lib;
-        pkgs.stdenv.mkDerivation {
-          name = "web-app";
-          src = fileset.toSource {
-            root = ./.;
-            fileset = fileset.unions [
-              ./web_app
-              ./subalter
-            ];
+      devShells = forAllSystems (system: {
+        default =
+          let
+            pkgs = import nixpkgs { inherit system; };
+            pythonEnv = genPythonEnv pkgs;
+          in
+          pkgs.mkShell {
+            packages = [ pythonEnv ];
+            DEBUG = "1";
           };
-          installPhase = ''
-            mkdir -p $out/bin $out/lib
-            cp -r web_app subalter $out/lib/
-            makeWrapper ${getBin pythonEnv}/bin/gunicorn $out/bin/web-app \
-              --add-flags "--chdir $out/lib -b 127.0.0.1:\''${PORT} web_app.wsgi"
-          '';
-          nativeBuildInputs = [ pkgs.makeWrapper ];
-          buildInputs = [ pythonEnv ];
-        };
+      });
+
+      packages = forAllSystems (system: {
+        default =
+          let
+            pkgs = import nixpkgs { inherit system; };
+            inherit (pkgs) lib;
+            pythonEnv = genPythonEnv pkgs;
+          in
+          pkgs.stdenv.mkDerivation {
+            name = "web-app";
+            src = lib.fileset.toSource {
+              root = ./.;
+              fileset = lib.fileset.unions [
+                ./web_app
+                ./subalter
+              ];
+            };
+            installPhase = ''
+              mkdir -p $out/bin $out/lib
+              cp -r web_app subalter $out/lib/
+              makeWrapper ${lib.getBin pythonEnv}/bin/gunicorn $out/bin/web-app \
+                --add-flags "--chdir $out/lib -b 127.0.0.1:\''${PORT} web_app.wsgi"
+            '';
+            nativeBuildInputs = [ pkgs.makeWrapper ];
+            buildInputs = [ pythonEnv ];
+          };
+      });
 
       nixosModules.default =
         {
@@ -78,12 +95,7 @@
           options.web-app = {
             enable = mkEnableOption "web app";
             package = mkOption {
-              type = types.package;
               default = self.packages.${pkgs.stdenv.hostPlatform.system}.default;
-              description = ''
-                The package to use for the web app.
-                Only x86_64-linux is tested at the moment.
-              '';
             };
             port = mkOption {
               type = types.port;
