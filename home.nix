@@ -40,6 +40,7 @@ in
   home.activation.init = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     ${lib.getExe pkgs.git} config --global user.name "aquanjsw"
     ${lib.getExe pkgs.git} config --global user.email "zhdlcc@gmail.com"
+    ${lib.getExe pkgs.git} config --global init.defaultBranch main
 
     DIR="$HOME/.dotfiles"
     if [ ! -d "$DIR" ]; then
