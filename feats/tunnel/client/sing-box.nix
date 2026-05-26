@@ -236,6 +236,7 @@
           exclude_package = [
             "com.jingdong.app.mall"
             "com.coolapk.market"
+            "com.autonavi.minimap"
           ];
         }
       ];
