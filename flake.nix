@@ -64,7 +64,7 @@
         "bwh"
         "lib5"
         "minimal"
-        "wsl"
+        "wsl2"
       ];
 
       mkNixOS =
