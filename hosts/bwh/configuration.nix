@@ -18,6 +18,9 @@
     services.caddy.enable = true;
 
     services.syncthing.enable = true;
+    services.caddy.virtualHosts."syncthing.${config.domain}".extraConfig = ''
+      reverse_proxy 127.0.0.1:${toString config.syncthing.guiPort}
+    '';
 
     networking.hostName = "bwh";
     networking.sits.ip6net = {
