@@ -12,7 +12,7 @@
 
   isBareMetal = true;
 
-  tunnel.client.sing-box.enable = true;
+  tunnel.client.enable = true;
 
   services.beszel.agent.enable = true;
   services.jellyfin.enable = true;
