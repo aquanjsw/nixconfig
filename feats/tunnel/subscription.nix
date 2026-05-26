@@ -6,7 +6,6 @@
   ...
 }:
 let
-
   runtimeDirectory = "tunnel-subscriptions";
 
   subscriptionType = lib.types.submodule (
@@ -25,7 +24,6 @@ let
   );
 in
 {
-
   options.tunnel.subscription = lib.mkOption {
     type = lib.types.attrsOf subscriptionType;
     default = { };
@@ -58,7 +56,7 @@ in
       basic_auth {
         rag {$HASHED_PASSWORD}
       }
-      reverse_proxy 127.0.0.1:${builtins.toString config.web-app.port}
+      reverse_proxy 127.0.0.1:${toString config.web-app.port}
     '';
 
     web-app.subscription.domain = "subscription";
