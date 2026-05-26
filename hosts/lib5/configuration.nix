@@ -39,6 +39,7 @@
 
   environment.systemPackages = with pkgs; [
     usbutils
+    nvtopPackages.nvidia
   ];
 
   boot.loader.systemd-boot.enable = true;
