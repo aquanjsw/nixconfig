@@ -7,6 +7,9 @@
 {
   isBareMetal = true;
 
+  environment.systemPackages = with pkgs; [
+  ];
+
   wsl.enable = true;
   wsl.defaultUser = config.user;
 
