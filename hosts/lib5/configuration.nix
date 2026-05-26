@@ -33,7 +33,6 @@
       gopls
       delve
       gcc
-      feh
     ];
   };
 
