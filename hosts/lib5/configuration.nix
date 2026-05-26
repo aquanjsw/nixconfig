@@ -29,7 +29,11 @@
   users.users.${config.user} = {
     packages = with pkgs; [
       nix-index
-      nil
+      go
+      gopls
+      delve
+      gcc
+      feh
     ];
   };
 

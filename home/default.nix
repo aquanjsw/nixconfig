@@ -10,6 +10,11 @@ let
   finalArgs = config // args;
 in
 {
+  imports = [
+    ./aria2.nix
+  ];
+
+  programs.aria2.enable = true;
   programs.git.enable = true;
   programs.vim.enable = true;
   programs.vim.defaultEditor = true;
@@ -26,13 +31,15 @@ in
         tree
         yazi
         tmux
-        btop
+        htop
         inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
         python3
       ]
       ++ lib.optionals (!finalArgs.isLimited) [
         xdg-utils
         nodejs
+        nil
+        nixd
       ]
       ++ lib.optionals (!finalArgs.isNixOS) [ home-manager ]
     );
