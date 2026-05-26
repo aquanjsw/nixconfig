@@ -2,7 +2,6 @@
   description = "Rag's Nix Config";
 
   inputs = {
-
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
 
     home-manager.url = "github:nix-community/home-manager";
@@ -10,6 +9,9 @@
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
+
+    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+    nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
 
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
@@ -19,100 +21,107 @@
 
     web-app.url = ./flakes/web-app;
     web-app.inputs.nixpkgs.follows = "nixpkgs";
-
   };
 
-  outputs = inputs@{
-    self,
-    nixpkgs,
-    ...
-  }: let
-
-    common = {
-      lib,
+  outputs =
+    inputs@{
+      nixpkgs,
       ...
-    }: {
+    }:
+    let
+      common =
+        {
+          lib,
+          ...
+        }:
+        {
+          options = {
 
-      options = {
+            user = lib.mkOption {
+              default = "rag";
+              readOnly = true;
+            };
 
-        user = lib.mkOption {
-          default = "rag";
-          readOnly = true;
-        };
+            paths = lib.mkOption {
+              default = {
+                secrets = ./secrets;
+              };
+              readOnly = true;
+            };
 
-        paths = lib.mkOption {
-          default = {
-            secrets = ./secrets;
+            isLimited = lib.mkOption {
+              default = false;
+              description = "Whether the system is limited in resources.";
+            };
+
           };
-          readOnly = true;
+
+          config.nixpkgs.overlays = import ./overlays.nix;
+          config.nixpkgs.config.allowUnfree = true;
         };
 
-        isLimited = lib.mkOption {
-          default = false;
-          description = "Whether the system is limited in resources.";
+      hosts = [
+        "bwh"
+        "lib5"
+        "minimal"
+        "wsl"
+      ];
+
+      mkNixOS =
+        host:
+        nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs; };
+          modules = [
+            inputs.disko.nixosModules.disko
+            inputs.agenix.nixosModules.default
+            inputs.web-app.nixosModules.default
+            inputs.nixos-wsl.nixosModules.default
+            inputs.home-manager.nixosModules.home-manager
+            common
+            (
+              { config, ... }:
+              {
+                home-manager.useGlobalPkgs = true;
+                home-manager.useUserPackages = true;
+                home-manager.extraSpecialArgs = {
+                  inherit inputs;
+                  args = {
+                    inherit (config) user isLimited;
+                    isNixOS = true;
+                  };
+                };
+                home-manager.users.${config.user} = ./home;
+              }
+            )
+            ./mods
+            ./feats
+            ./hosts/${host}/configuration.nix
+          ];
         };
 
-      };
-
-      config.nixpkgs.overlays = import ./overlays.nix;
-      config.nixpkgs.config.allowUnfree = true;
-    };
-
-    hosts = [
-      "bwh"
-      "lib5"
-      "minimal"
-    ];
-
-    mkNixOS = host: nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs; };
-      modules = [
-        inputs.disko.nixosModules.disko
-        inputs.agenix.nixosModules.default
-        inputs.web-app.nixosModules.default
-        inputs.home-manager.nixosModules.home-manager
-        common
-        ({ config, ... }: {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = {
+      mkHome =
+        system:
+        inputs.home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.${system};
+          extraSpecialArgs = {
             inherit inputs;
             args = {
-              inherit (config) user isLimited;
-              isNixOS = true;
+              isNixOS = false;
             };
           };
-          home-manager.users.${config.user} = ./home.nix;
-        })
-        ./mods
-        ./feats
-        ./hosts/${host}/configuration.nix
-      ];
-    };
-
-    mkHome = system: inputs.home-manager.lib.homeManagerConfiguration {
-      pkgs = nixpkgs.legacyPackages.${system};
-      extraSpecialArgs = {
-        inherit inputs;
-        args = {
-          isNixOS = false;
+          modules = [
+            common
+            ./home
+          ];
         };
+    in
+    {
+      nixosConfigurations = nixpkgs.lib.genAttrs hosts (host: mkNixOS host);
+
+      homeConfigurations = {
+        agx = mkHome "aarch64-linux";
       };
-      modules = [
-        common
-        ./home.nix
-      ];
     };
-
-  in {
-
-    nixosConfigurations = nixpkgs.lib.genAttrs hosts (host: mkNixOS host);
-
-    homeConfigurations = {
-      agx = mkHome "aarch64-linux";
-    };
-
-  };
 }
 
 # vim: sts=2 sw=2 et ai
