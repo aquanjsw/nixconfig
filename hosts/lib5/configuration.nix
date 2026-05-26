@@ -5,48 +5,17 @@
   ...
 }:
 {
-
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
   ];
 
-  age.secrets.rpc-secret.file = config.paths.secrets + "/rpc-secret.age";
+  isBareMetal = true;
 
   tunnel.client.sing-box.enable = true;
 
+  services.beszel.agent.enable = true;
   services.jellyfin.enable = true;
-  services.aria2 = {
-    enable = true;
-    serviceUMask = "0002";
-    rpcSecretFile = config.age.secrets.rpc-secret.path;
-    settings = {
-      continue = true;
-      max-connection-per-server = 8;
-      split = 8;
-      rpc-allow-origin-all = true;
-      optimize-concurrent-downloads = true;
-      input-file = "/var/lib/aria2/aria2.session";
-      save-session = "/var/lib/aria2/aria2.session";
-    };
-  };
-  services.frp.instances.default = {
-    enable = true;
-    role = "client";
-    settings = {
-      serverAddr = config.domain;
-      serverPort = 7000;
-      user = config.networking.hostName;
-      proxies = [
-        {
-          name = "aria2-rpc";
-          type = "tcp";
-          localPort = config.services.aria2.settings.rpc-listen-port;
-          remotePort = config.frpProxies.lib5.aria2-rpc.port;
-        }
-      ];
-    };
-  };
   services.qbittorrent.enable = true;
 
   hardware.graphics.enable = true;

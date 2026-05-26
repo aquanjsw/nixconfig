@@ -1,6 +1,5 @@
-{ ... }:
+{ config, ... }:
 {
-
   imports = [
     ./hardware-configuration.nix
     ./syncthing.nix
@@ -9,14 +8,15 @@
   config = {
 
     isLimited = true;
-    isOversea = true;
+    isOutside = true;
     tunnel.server.enable = true;
-    frps.enable = true;
     web-app.enable = true;
 
     services.tailscale.derper.enable = true;
     services.beszel.hub.enable = true;
+    services.beszel.agent.enable = true;
     services.caddy.enable = true;
+
     services.syncthing.enable = true;
 
     networking.hostName = "bwh";

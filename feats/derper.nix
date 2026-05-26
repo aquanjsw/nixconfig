@@ -15,7 +15,7 @@ lib.mkIf config.services.tailscale.derper.enable (
 
     services.caddy.virtualHosts.${domain} = {
       extraConfig = ''
-        reverse_proxy 127.0.0.1:${builtins.toString config.services.tailscale.derper.port} {
+        reverse_proxy 127.0.0.1:${toString config.services.tailscale.derper.port} {
           transport http {
             read_timeout 3600s
           }
