@@ -8,6 +8,7 @@
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
+    ./samba.nix
   ];
 
   isBareMetal = true;
@@ -17,6 +18,7 @@
   services.beszel.agent.enable = true;
   services.jellyfin.enable = true;
   services.qbittorrent.enable = true;
+  services.samba.enable = true;
 
   hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
