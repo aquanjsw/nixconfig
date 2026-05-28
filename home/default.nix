@@ -31,7 +31,7 @@ in
         tree
         yazi
         tmux
-        htop
+        btop
         inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
         python3
       ]
