@@ -181,6 +181,27 @@
         "type": "github"
       }
     },
+    "realcugan": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "weights": "weights"
+      },
+      "locked": {
+        "lastModified": 1779970924,
+        "narHash": "sha256-z/ejmN9xLYuWDBLYjVj4O8dEdFxSGLjQlFnI8dO8498=",
+        "owner": "aquanjsw",
+        "repo": "realcugan",
+        "rev": "829984a9ec6e39a0bb9f997f5113047adcc59236",
+        "type": "github"
+      },
+      "original": {
+        "owner": "aquanjsw",
+        "repo": "realcugan",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "agenix": "agenix",
@@ -188,6 +209,7 @@
         "home-manager": "home-manager_2",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
+        "realcugan": "realcugan",
         "ssh-keys": "ssh-keys",
         "web-app": "web-app"
       }
@@ -235,6 +257,19 @@
         "type": "path"
       },
       "parent": []
+    },
+    "weights": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1779954741,
+        "narHash": "sha256-sDohJgVm2b1nCH4vd9piNHlTQGjeCZgD5yxar5dUDJM=",
+        "type": "tarball",
+        "url": "https://github.com/aquanjsw/realcugan/releases/download/weights/weights.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://github.com/aquanjsw/realcugan/releases/download/weights/weights.tar.gz"
+      }
     }
   },
   "root": "root",

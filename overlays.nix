@@ -1,4 +1,5 @@
-[
+inputs: [
+  inputs.realcugan.overlays.default
   # (final: prev: {
   #   sing-box = prev.sing-box.overrideAttrs (old: {
   #     version = "1.14.0";

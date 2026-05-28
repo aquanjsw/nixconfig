@@ -16,6 +16,9 @@
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
 
+    realcugan.url = "github:aquanjsw/realcugan";
+    realcugan.inputs.nixpkgs.follows = "nixpkgs";
+
     ssh-keys.url = "https://github.com/aquanjsw.keys";
     ssh-keys.flake = false;
 
@@ -56,7 +59,7 @@
 
           };
 
-          config.nixpkgs.overlays = import ./overlays.nix;
+          config.nixpkgs.overlays = import ./overlays.nix inputs;
           config.nixpkgs.config.allowUnfree = true;
         };
 

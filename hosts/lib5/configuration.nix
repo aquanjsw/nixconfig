@@ -35,6 +35,7 @@
       gopls
       delve
       gcc
+      realcugan
     ];
   };
 
