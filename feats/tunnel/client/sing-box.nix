@@ -35,11 +35,6 @@
             tag = "local";
           }
           {
-            type = "tailscale";
-            tag = "ts-dns";
-            endpoint = "ts-ep";
-          }
-          {
             type = "fakeip";
             tag = "fakeip";
             inet4_range = "198.18.0.0/15";
@@ -53,10 +48,6 @@
             rule_set = [
               "geosite-category-ads-all"
             ];
-          }
-          {
-            domain_suffix = [ ".ts.net" ];
-            server = "ts-dns";
           }
           {
             query_type = [ "A" ];
@@ -190,11 +181,6 @@
           }
           {
             action = "route";
-            preferred_by = [ "ts-ep" ];
-            outbound = "ts-ep";
-          }
-          {
-            action = "route";
             outbound = "proxy";
             network = [
               "tcp"
@@ -208,10 +194,6 @@
         cache_file = {
           enabled = true;
           store_fakeip = true;
-        };
-        clash_api = {
-          external_controller = ":9090";
-          secret._secret = config.age.secrets.clash-api-secret.path;
         };
       };
 
@@ -267,25 +249,12 @@
           };
         }
       ];
-
-      endpoints = [
-        {
-          type = "tailscale";
-          tag = "ts-ep";
-          auth_key._secret = config.age.secrets.tailscale-auth-key.path;
-        }
-      ];
     };
   };
 
   options.tunnel.client.sing-box.enable = lib.mkEnableOption "sing-box client";
 
   config = {
-
-    age.secrets = {
-      clash-api-secret.file = config.paths.secrets + "/clash-api-secret.age";
-      tailscale-auth-key.file = config.paths.secrets + "/tailscale-auth-key.age";
-    };
 
     services.sing-box = lib.mkIf config.tunnel.client.sing-box.enable {
       enable = true;
