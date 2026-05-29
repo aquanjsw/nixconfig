@@ -2,7 +2,6 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ./syncthing.nix
   ];
 
   config = {
@@ -12,15 +11,17 @@
     tunnel.server.enable = true;
     web-app.enable = true;
 
-    services.tailscale.derper.enable = true;
     services.beszel.hub.enable = true;
     services.beszel.agent.enable = true;
-    services.caddy.enable = true;
-
+    services.rustdesk-server.enable = true;
+    services.rustdesk-server.signal.relayHosts = [ config.domain ];
     services.syncthing.enable = true;
-    services.caddy.virtualHosts."syncthing.${config.domain}".extraConfig = ''
-      reverse_proxy 127.0.0.1:${toString config.syncthing.guiPort}
-    '';
+    services.caddy.enable = true;
+    services.caddy.virtualHosts = {
+      "syncthing.${config.domain}".extraConfig = ''
+        reverse_proxy 127.0.0.1:${toString config.syncthing.guiPort}
+      '';
+    };
 
     networking.hostName = "bwh";
     networking.sits.ip6net = {

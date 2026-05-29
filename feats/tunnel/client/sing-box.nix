@@ -146,14 +146,6 @@
           }
           {
             action = "route";
-            outbound = "proxy";
-            domain = [ config.domain ];
-            port = [
-              22000
-            ];
-          }
-          {
-            action = "route";
             domain_suffix = [
               "zi0.cc"
               "googleapis.com"
