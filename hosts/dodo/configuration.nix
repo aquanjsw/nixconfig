@@ -1,4 +1,10 @@
-{ config, pkgs, lib, ... }: {
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+{
 
   imports = [ ./hardware-configuration.nix ];
 
@@ -7,7 +13,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "minimal";
+  networking.hostName = "dodo";
 
   system.stateVersion = "25.11";
 }

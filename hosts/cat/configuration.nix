@@ -27,7 +27,7 @@
       '';
     };
 
-    networking.hostName = "bwh";
+    networking.hostName = "cat";
     networking.sits.ip6net = {
       local = "138.128.193.71";
       remote = "45.32.66.87";

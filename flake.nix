@@ -64,10 +64,10 @@
         };
 
       hosts = [
-        "bwh"
-        "lib5"
-        "minimal"
-        "wsl2"
+        "cat"
+        "dog"
+        "dodo"
+        "panda"
       ];
 
       mkNixOS =

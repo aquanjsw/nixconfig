@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   pkgs,
   ...
 }:
@@ -13,7 +12,7 @@
   wsl.enable = true;
   wsl.defaultUser = config.user;
 
-  networking.hostName = "wsl2";
+  networking.hostName = "panda";
   systemd.services.wpa_supplicant.enable = false;
 
   nixpkgs.hostPlatform = "x86_64-linux";

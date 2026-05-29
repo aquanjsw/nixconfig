@@ -56,7 +56,7 @@
     options = [ "nofail" ];
   };
 
-  networking.hostName = "lib5";
+  networking.hostName = "dog";
 
   system.stateVersion = "25.11";
 }
