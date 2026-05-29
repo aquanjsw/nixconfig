@@ -12,6 +12,7 @@ lib.mkIf config.services.samba.enable {
     public = {
       path = "/samba";
       browseable = "yes";
+      "read only" = "no";
     };
   };
 }
