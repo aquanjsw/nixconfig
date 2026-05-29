@@ -13,8 +13,6 @@
 
     services.beszel.hub.enable = true;
     services.beszel.agent.enable = true;
-    services.rustdesk-server.enable = true;
-    services.rustdesk-server.signal.relayHosts = [ config.domain ];
     services.syncthing.enable = true;
     services.caddy.enable = true;
     services.caddy.virtualHosts = {
