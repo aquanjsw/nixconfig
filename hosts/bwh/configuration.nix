@@ -2,6 +2,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./syncthing-discovery.nix
   ];
 
   config = {
@@ -13,7 +14,12 @@
 
     services.beszel.hub.enable = true;
     services.beszel.agent.enable = true;
+
     services.syncthing.enable = true;
+    services.syncthing.relay.enable = true;
+    services.syncthing.discovery.enable = true;
+    services.syncthing.discovery.listenAddress = "127.0.0.1";
+
     services.caddy.enable = true;
     services.caddy.virtualHosts = {
       "syncthing.${config.domain}".extraConfig = ''

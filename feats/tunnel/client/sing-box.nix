@@ -50,6 +50,13 @@
             ];
           }
           {
+            action = "route";
+            server = "remote";
+            domain_suffix = [
+              config.domain
+            ];
+          }
+          {
             query_type = [ "A" ];
             server = "fakeip";
           }
@@ -62,9 +69,6 @@
             ];
             domain_suffix = [
               ".lan"
-            ];
-            domain = [
-              config.domain
             ];
           }
         ];
