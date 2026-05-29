@@ -19,6 +19,7 @@
   services.jellyfin.enable = true;
   services.qbittorrent.enable = true;
   services.samba.enable = true;
+  services.syncthing.enable = true;
 
   hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];

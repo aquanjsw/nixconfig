@@ -26,8 +26,8 @@ in
 {
   "caddy-env.age".publicKeys = users ++ [ bwh-system ];
   "web-app-env.age".publicKeys = users ++ [ bwh-system ];
-  "syncthingGuiPassword.age".publicKeys = users ++ [ bwh-system ];
 
+  "syncthingGuiPassword.age".publicKeys = users ++ systems;
   "vless-uuid.age".publicKeys = users ++ systems;
   "reality-public-key.age".publicKeys = users ++ systems;
   "reality-private-key.age".publicKeys = users ++ systems;
