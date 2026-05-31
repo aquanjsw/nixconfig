@@ -44,6 +44,9 @@
         nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
           modules = [
+            {
+              isNixOS = true;
+            }
             inputs.disko.nixosModules.disko
             inputs.agenix.nixosModules.default
             inputs.web-app.nixosModules.default
@@ -51,21 +54,6 @@
             inputs.home-manager.nixosModules.home-manager
             ./nixCommon.nix
             ./nixosCommon
-            (
-              { config, ... }:
-              {
-                home-manager.useGlobalPkgs = true;
-                home-manager.useUserPackages = true;
-                home-manager.extraSpecialArgs = {
-                  inherit inputs;
-                  args = {
-                    inherit (config) user isLimited;
-                    isNixOS = true;
-                  };
-                };
-                home-manager.users.${config.user} = ./home;
-              }
-            )
             ./mods
             ./hosts/${host}/configuration.nix
           ];
@@ -75,13 +63,11 @@
         system:
         inputs.home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.${system};
-          extraSpecialArgs = {
-            inherit inputs;
-            args = {
-              isNixOS = false;
-            };
-          };
+          extraSpecialArgs = { inherit inputs; };
           modules = [
+            {
+              isNixOS = false;
+            }
             ./nixCommon.nix
             ./home
           ];
