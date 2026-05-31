@@ -12,6 +12,7 @@
     ./derper.nix
     ./beszel
     ./syncthing.nix
+    ./dnf.nix
   ];
 
   options = {

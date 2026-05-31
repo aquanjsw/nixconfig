@@ -12,8 +12,17 @@
   ];
 
   isBareMetal = true;
+  feats.dnf.enable = true;
 
   tunnel.client.enable = true;
+
+  virtualisation.podman = {
+    enable = true;
+    dockerCompat = true;
+    defaultNetwork.settings = {
+      dns_enabled = true;
+    };
+  };
 
   services.beszel.agent.enable = true;
   services.jellyfin.enable = true;
