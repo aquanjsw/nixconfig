@@ -1,31 +1,32 @@
 let
-  minimal-system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIW9TVyWzguSLNoL/PRKtYlCY0Weh1s5NZLPmSLikVHb";
-  minimal-user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEJcbO0qdMXLqVo1um8dsJ5AsNop6f82DuHVgHfhmpV1";
+  dodo-system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIW9TVyWzguSLNoL/PRKtYlCY0Weh1s5NZLPmSLikVHb";
+  dodo-user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEJcbO0qdMXLqVo1um8dsJ5AsNop6f82DuHVgHfhmpV1";
 
-  bwh-system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEpzIcG2uFa8DIdHFgp9bHp9msFExzUYsilAmUnBTQuO";
-  bwh-user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIENvcZL6L6QpDotsU6xgClQ4f16NhUOoCIFr7lOXOLVk";
+  cat-system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEpzIcG2uFa8DIdHFgp9bHp9msFExzUYsilAmUnBTQuO";
+  cat-user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIENvcZL6L6QpDotsU6xgClQ4f16NhUOoCIFr7lOXOLVk";
 
-  lib5-system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC08h/FP6qqvdfr9tdue9SRjB/auHP0c/15+3cp4xmiZ";
-  lib5-user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF/Nwn3AJ+MltE7EbwkqqhaQRqrhFB7nnwvsPP/TaF+U";
+  dog-system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC08h/FP6qqvdfr9tdue9SRjB/auHP0c/15+3cp4xmiZ";
+  dog-user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF/Nwn3AJ+MltE7EbwkqqhaQRqrhFB7nnwvsPP/TaF+U";
 
-  wsl2-system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAUOIOgWzKfzoL0HXGJ9et5zKPgr7hYvzIsTpfmQyM6R";
-  wsl2-user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIByOu/Ck/Uyh7xl4B9xxkBtFUDL7Z6LAqVAHXCmGfNyp";
+  panda-system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAUOIOgWzKfzoL0HXGJ9et5zKPgr7hYvzIsTpfmQyM6R";
+  panda-user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIByOu/Ck/Uyh7xl4B9xxkBtFUDL7Z6LAqVAHXCmGfNyp";
 
   users = [
-    minimal-user
-    lib5-user
-    wsl2-user
+    dodo-user
+    dog-user
+    panda-user
   ];
   systems = [
-    minimal-system
-    bwh-system
-    lib5-system
-    wsl2-system
+    dodo-system
+    cat-system
+    dog-system
+    panda-system
   ];
 in
 {
-  "caddy-env.age".publicKeys = users ++ [ bwh-system ];
-  "web-app-env.age".publicKeys = users ++ [ bwh-system ];
+  "caddy-env.age".publicKeys = users ++ [ cat-system ];
+  "web-app-env.age".publicKeys = users ++ [ cat-system ];
+  "vless-encryption.age".publicKeys = users ++ [ cat-system ];
 
   "syncthingGuiPassword.age".publicKeys = users ++ systems;
   "vless-uuid.age".publicKeys = users ++ systems;

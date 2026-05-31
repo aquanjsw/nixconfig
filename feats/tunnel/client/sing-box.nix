@@ -11,17 +11,12 @@
 
       log = {
         disabled = false;
-        level = "error";
+        level = "debug";
         timestamp = true;
       };
 
       dns = {
-        strategy = "prefer_ipv4"; # CERNET's IPv6 connectivity is terrible
-
         independent_cache = true; # remove in 1.14.0+
-
-        disable_expire = true;
-        # optimistic.enabled = true; # replace above in 1.14.0+
 
         servers = [
           {
@@ -34,31 +29,15 @@
             type = "local";
             tag = "local";
           }
-          {
-            type = "fakeip";
-            tag = "fakeip";
-            inet4_range = "198.18.0.0/15";
-          }
         ];
 
         rules = [
           {
             action = "predefined";
-            rcode = "NOERROR"; # SUCCESS
+            rcode = "NOERROR";
             rule_set = [
               "geosite-category-ads-all"
             ];
-          }
-          {
-            action = "route";
-            server = "remote";
-            domain_suffix = [
-              config.domain
-            ];
-          }
-          {
-            query_type = [ "A" ];
-            server = "fakeip";
           }
           {
             action = "route";
@@ -142,14 +121,6 @@
           }
           {
             action = "route";
-            process_name = [
-              "frpc"
-              "frpc.exe"
-            ];
-            outbound = "proxy";
-          }
-          {
-            action = "route";
             domain_suffix = [
               "zi0.cc"
               "googleapis.com"
@@ -189,7 +160,6 @@
       experimental = {
         cache_file = {
           enabled = true;
-          store_fakeip = true;
         };
       };
 
@@ -207,10 +177,6 @@
           auto_route = true;
           auto_redirect = true;
           strict_route = true;
-          route_exclude_address = [
-            "10.0.0.0/8"
-            "192.168.0.0/16"
-          ];
           exclude_package = [
             "com.jingdong.app.mall"
             "com.coolapk.market"

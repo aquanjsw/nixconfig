@@ -33,17 +33,39 @@ lib.mkIf config.tunnel.server.enable {
             shortIds = [ "" ];
           };
         };
+        tag = "cn-in";
       }
     ];
     outbounds = [
       {
         protocol = "freedom";
+        tag = "freedom";
+      }
+      {
+        tag = "jp-out";
+        protocol = "vless";
+        settings = {
+          address = "jp.zaelggk.com";
+          port = 443;
+          id._secret = config.age.secrets.vless-uuid.path;
+          encryption._secret = config.age.secrets.vless-encryption.path;
+          flow = "xtls-rprx-vision";
+        };
       }
     ];
+    routing = {
+      rules = [
+        {
+          domain = [ "geosite:niconico" ];
+          inboundTag = [ "cn-in" ];
+          outboundTag = "jp-out";
+        }
+      ];
+    };
   };
 
-  systemd.services.xray.after = [ "caddy.service" ];
-
-  age.secrets.reality-private-key.file = config.paths.secrets + "/reality-private-key.age";
-
+  age.secrets = {
+    reality-private-key.file = config.paths.secrets + "/reality-private-key.age";
+    vless-encryption.file = config.paths.secrets + "/vless-encryption.age";
+  };
 }
