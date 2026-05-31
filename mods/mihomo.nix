@@ -78,13 +78,11 @@ in
         ExecStartPre =
           let
             script = pkgs.writeShellScript "mihomo-pre-start" ''
-              ${utils.genJqSecretsReplacementSnippet
-                config.services.mihomo.settings
-                "/run/mihomo/config.json"}
+              ${utils.genJqSecretsReplacementSnippet config.services.mihomo.settings "/run/mihomo/config.json"}
                 chown --reference=/run/mihomo /run/mihomo/config.json
             '';
           in
-            "+${script}";
+          "+${script}";
         ExecStart = lib.concatStringsSep " " [
           (lib.getExe cfg.package)
           "-d /var/lib/private/mihomo"

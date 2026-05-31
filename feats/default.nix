@@ -25,13 +25,6 @@
       default = "zaelggk.com";
       readOnly = true;
     };
-
-    frpProxies = lib.mkOption {
-      default = {
-        lib5.aria2-rpc.port = 6800;
-      };
-      readOnly = true;
-    };
   };
 
   config =
@@ -52,7 +45,6 @@
         };
         users.users.root.openssh.authorizedKeys.keys = ssh-keys;
 
-                environment.variables.NIXPKGS_ALLOW_UNFREE = "1";
         environment.systemPackages = with pkgs; [
         ];
 

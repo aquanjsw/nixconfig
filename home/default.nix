@@ -63,15 +63,15 @@ in
         btop
         inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
         python3
+        dig
       ]
       ++ lib.optionals (!finalArgs.isLimited) [
-        xdg-utils
-        nodejs
         nil
         nixd
+        nixfmt
       ]
       ++ lib.optionals (!finalArgs.isNixOS) [ home-manager ]
     );
 
-    home.stateVersion = "25.11";
+  home.stateVersion = "25.11";
 }
