@@ -2,6 +2,7 @@
   description = "Rag's Nix Config";
 
   inputs = {
+
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
 
     home-manager.url = "github:nix-community/home-manager";
@@ -24,44 +25,12 @@
 
     web-app.url = ./flakes/web-app;
     web-app.inputs.nixpkgs.follows = "nixpkgs";
+
   };
 
   outputs =
-    inputs@{
-      nixpkgs,
-      ...
-    }:
+    inputs@{ nixpkgs, ... }:
     let
-      common =
-        {
-          lib,
-          ...
-        }:
-        {
-          options = {
-
-            user = lib.mkOption {
-              default = "rag";
-              readOnly = true;
-            };
-
-            paths = lib.mkOption {
-              default = {
-                secrets = ./secrets;
-              };
-              readOnly = true;
-            };
-
-            isLimited = lib.mkOption {
-              default = false;
-              description = "Whether the system is limited in resources.";
-            };
-
-          };
-
-          config.nixpkgs.overlays = import ./overlays.nix inputs;
-          config.nixpkgs.config.allowUnfree = true;
-        };
 
       hosts = [
         "cat"
@@ -80,7 +49,8 @@
             inputs.web-app.nixosModules.default
             inputs.nixos-wsl.nixosModules.default
             inputs.home-manager.nixosModules.home-manager
-            common
+            ./nixCommon.nix
+            ./nixosCommon
             (
               { config, ... }:
               {
@@ -97,7 +67,6 @@
               }
             )
             ./mods
-            ./feats
             ./hosts/${host}/configuration.nix
           ];
         };
@@ -113,7 +82,7 @@
             };
           };
           modules = [
-            common
+            ./nixCommon.nix
             ./home
           ];
         };
