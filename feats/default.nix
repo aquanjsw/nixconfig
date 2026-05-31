@@ -51,8 +51,7 @@
         };
         users.users.root.openssh.authorizedKeys.keys = ssh-keys;
 
-        environment.variables.EDITOR = "vim";
-        environment.variables.NIXPKGS_ALLOW_UNFREE = "1";
+                environment.variables.NIXPKGS_ALLOW_UNFREE = "1";
         environment.systemPackages = with pkgs; [
         ];
 

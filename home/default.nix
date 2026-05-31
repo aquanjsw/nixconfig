@@ -10,16 +10,45 @@ let
   finalArgs = config // args;
 in
 {
-  imports = [
-    ./aria2.nix
-  ];
 
-  programs.aria2.enable = true;
-  programs.git.enable = true;
-  programs.vim.enable = true;
-  programs.vim.defaultEditor = true;
-  programs.fzf.enable = true;
-  programs.fzf.enableFishIntegration = true;
+  programs.aria2 = {
+    enable = true;
+    settings = {
+      continue = true;
+      max-connection-per-server = 8;
+      split = 8;
+      optimize-concurrent-downloads = true;
+    };
+  };
+
+  programs.git = {
+    enable = true;
+    settings = {
+      user.name = "aquanjsw";
+      user.email = "zhdlcc@gmail.com";
+      init.defaultBranch = "main";
+    };
+  };
+
+  programs.neovim = {
+    enable = true;
+    withRuby = false;
+    withPython3 = false;
+    defaultEditor = true;
+    vimAlias = true;
+    extraConfig = ''
+      syntax on
+      set number
+      set relativenumber
+      set hlsearch
+      set softtabstop=2
+      set shiftwidth=2
+      set autoindent
+      set expandtab
+    '';
+    plugins = with pkgs.vimPlugins; [
+    ];
+  };
 
   home.username = finalArgs.user;
   home.homeDirectory = "/home/${finalArgs.user}";
@@ -44,27 +73,5 @@ in
       ++ lib.optionals (!finalArgs.isNixOS) [ home-manager ]
     );
 
-  home.activation.init = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    ${lib.getExe pkgs.git} config --global user.name "aquanjsw"
-    ${lib.getExe pkgs.git} config --global user.email "zhdlcc@gmail.com"
-    ${lib.getExe pkgs.git} config --global init.defaultBranch main
-
-    DIR="$HOME/.dotfiles"
-    if [ ! -d "$DIR" ]; then
-      ${lib.getExe pkgs.git} clone --bare https://github.com/aquanjsw/dotfiles "$DIR"
-      dotfiles() {
-        ${lib.getExe pkgs.git} --git-dir="$DIR" --work-tree="$HOME" "$@"
-      }
-      export -f dotfiles
-      dotfiles config status.showUntrackedFiles no
-      dotfiles ls-files --deleted | xargs dotfiles checkout --
-    fi
-  '';
-
-  home.sessionVariables = {
-    NIXPKGS_ALLOW_UNFREE = "1";
-    EDITOR = "vim";
-  };
-
-  home.stateVersion = "25.11";
+    home.stateVersion = "25.11";
 }
