@@ -61,11 +61,10 @@ in
         yazi
         tmux
         btop
-        inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
-        python3
         dig
       ]
       ++ lib.optionals (!finalArgs.isLimited) [
+        inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
         nil
         nixd
         nixfmt

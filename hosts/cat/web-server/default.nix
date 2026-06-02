@@ -21,8 +21,8 @@ lib.mkIf config.services.caddy.enable (
     };
   in
   {
-
     services.caddy = {
+      httpsPort = 1443;
       environmentFile = config.age.secrets.caddy-env.path;
       package = pkgs.caddy.withPlugins {
         plugins = [ "github.com/caddy-dns/cloudflare@v0.2.4" ];
@@ -31,22 +31,18 @@ lib.mkIf config.services.caddy.enable (
       globalConfig = ''
         acme_dns cloudflare {$CF_API_TOKEN}
       '';
-      virtualHosts = lib.mkMerge [
-        {
-          "${config.domain}".extraConfig = ''
-            root * ${site}
-            file_server
-          '';
-        }
-      ];
+      virtualHosts = {
+        "${config.domain}".extraConfig = ''
+          root * ${site}
+          file_server
+        '';
+      };
     };
-
-    age.secrets.caddy-env.file = config.paths.secrets + "/caddy-env.age";
-
     systemd.services.caddy.serviceConfig = {
       ReadOnlyPaths = [
         site
       ];
     };
+    age.secrets.caddy-env.file = config.paths.secrets + "/caddy-env.age";
   }
 )

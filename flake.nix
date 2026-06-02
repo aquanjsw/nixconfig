@@ -35,7 +35,6 @@
       hosts = [
         "cat"
         "dog"
-        "dodo"
         "panda"
       ];
 
@@ -44,17 +43,27 @@
         nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
           modules = [
-            {
-              isNixOS = true;
-            }
+            (
+              { config, ... }:
+              {
+                isNixOS = true;
+                home-manager.useGlobalPkgs = true;
+                home-manager.useUserPackages = true;
+                home-manager.extraSpecialArgs = {
+                  inherit inputs;
+                  args = { inherit (config) user isLimited isNixOS; };
+                };
+                home-manager.users.${config.user} = ./home.nix;
+              }
+            )
             inputs.disko.nixosModules.disko
             inputs.agenix.nixosModules.default
             inputs.web-app.nixosModules.default
             inputs.nixos-wsl.nixosModules.default
             inputs.home-manager.nixosModules.home-manager
-            ./nixCommon.nix
-            ./nixosCommon
-            ./mods
+            ./common.nix
+            ./features
+            ./substitutes
             ./hosts/${host}/configuration.nix
           ];
         };
@@ -68,8 +77,8 @@
             {
               isNixOS = false;
             }
-            ./nixCommon.nix
-            ./home
+            ./common.nix
+            ./home.nix
           ];
         };
     in

@@ -11,7 +11,7 @@
       type = lib.types.port;
       default = 8443;
     };
-    listenAddress = lib.mkOption {
+    listenIP = lib.mkOption {
       type = lib.types.str;
       default = "";
     };
@@ -20,19 +20,19 @@
   config =
     let
       cfg = config.services.syncthing.discovery;
-      stateDir = "/var/lib/stdiscosrv";
+      stateDir = "/var/lib/syncthing-discovery";
       srvOptions = [
         "--http"
-        "--listen=${cfg.listenAddress}:${toString cfg.listenPort}"
+        "--listen=${cfg.listenIP}:${toString cfg.listenPort}"
         "--db-dir=${stateDir}"
       ];
     in
     lib.mkIf cfg.enable {
       environment.systemPackages = [ pkgs.syncthing-discovery ];
 
-      services.syncthing.discovery.listenAddress = "127.0.0.1";
+      services.syncthing.discovery.listenIP = "127.0.0.1";
 
-      systemd.services.stdiscosrv = {
+      systemd.services.syncthing-discovery = {
         description = "Syncthing Discovery Server";
         after = [ "network.target" ];
         wantedBy = [ "multi-user.target" ];

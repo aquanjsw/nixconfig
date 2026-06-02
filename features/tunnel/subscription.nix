@@ -28,11 +28,15 @@ in
     type = lib.types.attrsOf subscriptionType;
     default = { };
   };
+  options.tunnel.subscriptionDomain = lib.mkOption {
+    default = "subscription";
+    readOnly = true;
+  };
 
-  config = lib.mkIf config.tunnel.server.enable {
+  config = lib.mkIf config.services.xray.enable {
 
-    systemd.services.tunnelSubscriptionDeployer = {
-      description = "Generate Tunnel Subscriptions";
+    systemd.services.tunnel-subscriptions-deployer = {
+      description = "Deploy tunnel subscriptions";
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
         Type = "oneshot";
@@ -40,7 +44,7 @@ in
         RuntimeDirectoryPreserve = "yes";
         ExecStart =
           let
-            script = pkgs.writeShellScript "tunnelSubscriptionsGenerator" ''
+            script = pkgs.writeShellScript "tunnel-subscriptions-deployer" ''
               ${lib.concatStringsSep "\n" (
                 map (subscription: utils.genJqSecretsReplacementSnippet subscription.settings subscription.path) (
                   lib.attrValues config.tunnel.subscription
@@ -52,20 +56,6 @@ in
       };
     };
 
-    services.caddy.virtualHosts."subscription.${config.domain}".extraConfig = ''
-      basic_auth {
-        rag {$HASHED_PASSWORD}
-      }
-      reverse_proxy 127.0.0.1:${toString config.web-app.port}
-    '';
-
-    web-app.subscription.domain = "subscription";
-
-    assertions = [
-      {
-        assertion = config.web-app.enable;
-        message = "Tunnel subscription requires web app to be enabled.";
-      }
-    ];
+    tunnel.subscription.sing-box.settings = config.services.sing-box.settings;
   };
 }

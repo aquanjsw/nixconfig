@@ -8,18 +8,32 @@
 {
   imports = [
     ./tunnel
-    ./caddy
     ./derper.nix
     ./beszel
     ./syncthing.nix
+    ./syncthing-discovery.nix
     ./dnf.nix
+    ./web-app.nix
   ];
 
   options = {
 
-    isOutside = lib.mkEnableOption "Whether the system is outside.";
+    isOutside = lib.mkOption {
+      default = false;
+      description = "Whether the system is outside.";
+    };
 
-    isBareMetal = lib.mkEnableOption "Whether the system is running on bare metal.";
+    isBareMetal = lib.mkOption {
+      default = false;
+      description = "Whether the system is running on bare metal.";
+    };
+
+    paths = lib.mkOption {
+      default = {
+        secrets = ../secrets;
+      };
+      readOnly = true;
+    };
 
     domain = lib.mkOption {
       default = "zaelggk.com";
@@ -32,6 +46,7 @@
       ssh-keys = lib.strings.splitString "\n" (lib.strings.trim (builtins.readFile inputs.ssh-keys));
     in
     lib.mkMerge [
+
       {
         users.users.${config.user} = {
           isNormalUser = true;
@@ -75,10 +90,12 @@
         ];
 
       }
+
       (lib.mkIf config.web-app.enable {
         age.secrets.web-app-env.file = config.paths.secrets + "/web-app-env.age";
         web-app.envFile = config.age.secrets.web-app-env.path;
       })
+
     ];
 }
 

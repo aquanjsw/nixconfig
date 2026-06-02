@@ -3,9 +3,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-MIHOMO_CONFIG_PATH = os.environ['MIHOMO_CONFIG_PATH']
 SINGBOX_CONFIG_PATH = os.environ['SINGBOX_CONFIG_PATH']
-MIHOMO_URL_PATH = os.environ['MIHOMO_URL_PATH']
 SINGBOX_URL_PATH = os.environ['SINGBOX_URL_PATH']
 
 SUBSCRIPTION_DOMAIN = os.environ['SUBSCRIPTION_DOMAIN']

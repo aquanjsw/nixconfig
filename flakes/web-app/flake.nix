@@ -102,18 +102,6 @@
               default = 8000;
               description = "The port to run the web app on.";
             };
-            subscription.mihomo = {
-              configPath = mkOption {
-                type = types.str;
-                example = "/run/secrets/mihomo.json";
-                description = "The path to the mihomo subscription config file.";
-              };
-              urlPath = mkOption {
-                type = types.str;
-                example = "mihomo.json";
-                description = "The URL path for the mihomo subscription.";
-              };
-            };
             subscription.sing-box = {
               configPath = mkOption {
                 type = types.str;
@@ -148,10 +136,8 @@
               wantedBy = [ "multi-user.target" ];
               after = [ "network.target" ];
               environment = {
-                PORT = builtins.toString cfg.port;
-                MIHOMO_CONFIG_PATH = cfg.subscription.mihomo.configPath;
+                PORT = toString cfg.port;
                 SINGBOX_CONFIG_PATH = cfg.subscription.sing-box.configPath;
-                MIHOMO_URL_PATH = cfg.subscription.mihomo.urlPath;
                 SINGBOX_URL_PATH = cfg.subscription.sing-box.urlPath;
                 SUBSCRIPTION_DOMAIN = cfg.subscription.domain;
                 DOMAIN = config.domain;

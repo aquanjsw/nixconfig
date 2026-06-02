@@ -3,11 +3,10 @@
   config,
   ...
 }:
-lib.mkIf config.tunnel.server.enable {
-  services.xray.enable = true;
+lib.mkIf config.services.xray.enable {
   services.xray.settings = {
     log = {
-      loglevel = "error";
+      loglevel = "info";
     };
     inbounds = [
       {
@@ -68,4 +67,11 @@ lib.mkIf config.tunnel.server.enable {
     reality-private-key.file = config.paths.secrets + "/reality-private-key.age";
     vless-encryption.file = config.paths.secrets + "/vless-encryption.age";
   };
+
+  assertions = [
+    {
+      assertion = config.services.caddy.enable;
+      message = "xray requires caddy to be enabled";
+    }
+  ];
 }

@@ -1,11 +1,8 @@
+{ config, ... }:
 {
-  config,
-  ...
-}: {
-
   imports = [
-    ./server
-    ./client
+    ./sing-box.nix
+    ./xray.nix
     ./subscription.nix
   ];
 

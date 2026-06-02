@@ -9,7 +9,7 @@ lib.mkIf config.services.beszel.agent.enable {
   services.beszel.agent = {
     environmentFile = config.age.secrets.beszel-agent-env.path;
     environment = {
-      HUB_URL = "https://beszel.${config.domain}";
+      HUB_URL = "https://${config.services.beszel.hub.domain}";
     };
   };
 

@@ -37,14 +37,3 @@ def sing_box(request: HttpRequest):
 
     content = json.dumps(config, indent=2)
     return HttpResponse(content, content_type='application/json')
-
-def mihomo(request: HttpRequest):
-
-    strict_route = request.GET.get('strict-route', '1') == '1'
-
-    config = json.load(open(settings.MIHOMO_CONFIG_PATH))
-
-    config['tun']['strict-route'] = strict_route
-
-    content = json.dumps(config, indent=2)
-    return HttpResponse(content, content_type='application/json')

@@ -1,31 +1,24 @@
-{ config, ... }:
+{ config, lib, ... }:
 {
   imports = [
     ./hardware-configuration.nix
-    ./syncthing-discovery.nix
+    ./syncthing.nix
+    ./web-server
   ];
 
   config = {
 
     isLimited = true;
     isOutside = true;
-    tunnel.server.enable = true;
     web-app.enable = true;
 
-    services.beszel.hub.enable = true;
+    services.xray.enable = true;
+    services.caddy.enable = true;
     services.beszel.agent.enable = true;
-
+    services.beszel.hub.enable = true;
     services.syncthing.enable = true;
     services.syncthing.relay.enable = true;
     services.syncthing.discovery.enable = true;
-    services.syncthing.discovery.listenAddress = "127.0.0.1";
-
-    services.caddy.enable = true;
-    services.caddy.virtualHosts = {
-      "syncthing.${config.domain}".extraConfig = ''
-        reverse_proxy 127.0.0.1:${toString config.syncthing.guiPort}
-      '';
-    };
 
     networking.hostName = "cat";
     networking.sits.ip6net = {
