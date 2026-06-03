@@ -66,6 +66,8 @@
 
   networking.hostName = "dog";
 
+  swapfileSize = 8 * 1024;
+
   system.stateVersion = "25.11";
 }
 

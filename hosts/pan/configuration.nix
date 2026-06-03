@@ -12,7 +12,7 @@
   wsl.enable = true;
   wsl.defaultUser = config.user;
 
-  networking.hostName = "panda";
+  networking.hostName = "pan";
   systemd.services.wpa_supplicant.enable = false;
 
   nixpkgs.hostPlatform = "x86_64-linux";

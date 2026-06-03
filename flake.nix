@@ -35,7 +35,8 @@
       hosts = [
         "cat"
         "dog"
-        "panda"
+        "pan"
+        "bun"
       ];
 
       mkNixOS =

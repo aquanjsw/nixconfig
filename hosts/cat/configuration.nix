@@ -20,6 +20,8 @@
     services.syncthing.relay.enable = true;
     services.syncthing.discovery.enable = true;
 
+    swapfileSize = 512;
+
     networking.hostName = "cat";
     networking.sits.ip6net = {
       local = "138.128.193.71";

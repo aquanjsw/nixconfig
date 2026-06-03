@@ -38,11 +38,6 @@ lib.mkIf config.services.caddy.enable (
         '';
       };
     };
-    systemd.services.caddy.serviceConfig = {
-      ReadOnlyPaths = [
-        site
-      ];
-    };
     age.secrets.caddy-env.file = config.paths.secrets + "/caddy-env.age";
   }
 )

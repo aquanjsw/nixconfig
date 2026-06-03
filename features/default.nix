@@ -39,6 +39,11 @@
       default = "zaelggk.com";
       readOnly = true;
     };
+
+    swapfileSize = lib.mkOption {
+      default = 4 * 1024;
+      description = "The size of the swapfile in MiB.";
+    };
   };
 
   config =
@@ -49,19 +54,30 @@
 
       {
         users.users.${config.user} = {
+          hashedPassword = "$y$j9T$Jj8kNaBhl9pdqRsFH.5Rw0$au/4czArJfGinqyBNueuzkt1QTO5mljFzAH9L5pVeR9";
           isNormalUser = true;
           extraGroups = [
             "wheel"
-          ];
+          ]
+          ++ lib.optional (config.virtualisation.libvirtd.enable) "libvirtd";
           shell = pkgs.fish;
           openssh.authorizedKeys.keys = ssh-keys;
           packages = with pkgs; [
           ];
         };
+        users.users.root.hashedPassword = "$y$j9T$Y5Iio4JlEd0wIKlZHt1gG0$.FpHtOJBjHdk6yPSwEs7hVDrNRyOJ9r8CnV71rbLiS5";
         users.users.root.openssh.authorizedKeys.keys = ssh-keys;
 
-        environment.systemPackages = with pkgs; [
-        ];
+        environment.systemPackages =
+          with pkgs;
+          (
+            [
+            ]
+            ++ lib.optionals (config.isBareMetal) [
+              usbutils
+              pciutils
+            ]
+          );
 
         programs.fish.enable = true;
         programs.nix-ld.enable = !config.isLimited;
@@ -75,7 +91,15 @@
         networking.nftables.enable = true;
 
         zramSwap.enable = true;
-        zramSwap.memoryPercent = lib.mkIf config.isLimited 100;
+        zramSwap.priority = 100;
+        systemd.oomd.enable = true;
+        swapDevices = [
+          {
+            device = "/var/lib/swapfile";
+            size = config.swapfileSize;
+            priority = 5;
+          }
+        ];
 
         time.timeZone = "Asia/Shanghai";
 

@@ -160,27 +160,6 @@
         "type": "github"
       }
     },
-    "pyproject-nix": {
-      "inputs": {
-        "nixpkgs": [
-          "web-app",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1776715674,
-        "narHash": "sha256-Gs1VnEkCkkRZxJQAC/Dhz0Jbfi22mFXChbtNg9w/Ybg=",
-        "owner": "pyproject-nix",
-        "repo": "pyproject.nix",
-        "rev": "69f57f27e52a87c54e28138a75ec741cd46663c9",
-        "type": "github"
-      },
-      "original": {
-        "owner": "pyproject-nix",
-        "repo": "pyproject.nix",
-        "type": "github"
-      }
-    },
     "realcugan": {
       "inputs": {
         "nixpkgs": [
@@ -217,7 +196,7 @@
     "ssh-keys": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-wQPoaR6IVXIAus7AAt71p0YTIR7TAIGHPJBFiVZEZPc=",
+        "narHash": "sha256-G5xdRcOx3noVbsQmWvHy4tABrOWVY9mgEEzJwtk3TVM=",
         "type": "file",
         "url": "https://github.com/aquanjsw.keys"
       },
@@ -245,8 +224,7 @@
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
-        ],
-        "pyproject-nix": "pyproject-nix"
+        ]
       },
       "locked": {
         "path": "flakes/web-app",
