@@ -8,6 +8,7 @@
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
+    ./sriov.nix
   ];
 
   isBareMetal = true;
@@ -23,16 +24,29 @@
   };
 
   environment.systemPackages = with pkgs; [
-    qemu
   ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # For win vm, not sure if this is needed
+  boot.kernelParams = [
+    "pcie_aspm=off"
+    "intel_pstate=active"
+    "intel_idel.max_cstate=1"
+  ];
+
   networking.hostName = "bun";
-  networking.bridges.br0.interfaces = [ "enp3s0" ];
+  networking.bridges.br0.interfaces = [
+    "enp3s0"
+    "tap0"
+  ];
   networking.interfaces.enp3s0.useDHCP = false;
   networking.interfaces.br0.useDHCP = true;
+  networking.interfaces.tap0 = {
+    useDHCP = false;
+    virtual = true;
+  };
 
   system.stateVersion = "26.05";
 }

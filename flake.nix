@@ -14,6 +14,9 @@
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
     nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
 
+    i915-sriov.url = "github:strongtz/i915-sriov-dkms";
+    i915-sriov.inputs.nixpkgs.follows = "nixpkgs";
+
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -62,6 +65,7 @@
             inputs.web-app.nixosModules.default
             inputs.nixos-wsl.nixosModules.default
             inputs.home-manager.nixosModules.home-manager
+            inputs.i915-sriov.nixosModules.default
             ./common.nix
             ./features
             ./substitutes
