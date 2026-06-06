@@ -12,15 +12,13 @@
   ];
 
   isBareMetal = true;
-  feats.dnf.enable = true;
 
-  virtualisation.podman = {
-    enable = true;
-    dockerCompat = true;
-    defaultNetwork.settings = {
-      dns_enabled = true;
-    };
-  };
+  dnf.enable = true;
+  dnf.domain = "gecko.${config.domain}";
+
+  services.open-webui.enable = true;
+  services.open-webui.port = 9080;
+  services.open-webui.host = "0.0.0.0";
 
   services.sing-box.enable = true;
   services.beszel.agent.enable = true;

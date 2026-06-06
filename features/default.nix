@@ -85,6 +85,14 @@
         services.openssh.enable = true;
         services.openssh.settings.PasswordAuthentication = false;
 
+        virtualisation.oci-containers.backend = "podman";
+        virtualisation.podman = {
+          dockerCompat = true;
+          defaultNetwork.settings = {
+            dns_enabled = true;
+          };
+        };
+
         networking.networkmanager.enable = true;
         networking.iproute2.enable = true;
         networking.firewall.enable = false;
