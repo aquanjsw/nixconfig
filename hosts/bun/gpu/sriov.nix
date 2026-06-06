@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.enableSriov = lib.mkEnableOption "SR-IOV support for Intel i915 GPU";
+  options.gpu.sriov = lib.mkEnableOption "SR-IOV support for Intel i915 GPU";
 
-  config = lib.mkIf config.enableSriov {
+  config = lib.mkIf config.gpu.sriov {
     systemd.services.create-vfs = {
       description = "Create virtual functions for Intel i915 GPU";
       after = [ "multi-user.target" ];
@@ -23,6 +23,7 @@
     boot.extraModulePackages = [ pkgs.i915-sriov ];
     boot.kernelParams = [
       "intel_iommu=on"
+      "iommu=pt"
       "i915.enable_guc=3"
       "i915.max_vfs=7"
       "module_blacklist=xe"

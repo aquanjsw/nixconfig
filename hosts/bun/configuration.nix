@@ -1,15 +1,16 @@
 {
   config,
   pkgs,
-  lib,
   ...
 }:
 {
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
-    ./sriov.nix
+    ./gpu
   ];
+
+  gpu.sriov = true;
 
   isBareMetal = true;
 
@@ -29,18 +30,12 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # For win vm, not sure if this is needed
-  boot.kernelParams = [
-    "pcie_aspm=off"
-    "intel_pstate=active"
-    "intel_idel.max_cstate=1"
-  ];
-
   networking.hostName = "bun";
   networking.bridges.br0.interfaces = [
     "enp3s0"
     "tap0"
   ];
+
   networking.interfaces.enp3s0.useDHCP = false;
   networking.interfaces.br0.useDHCP = true;
   networking.interfaces.tap0 = {
