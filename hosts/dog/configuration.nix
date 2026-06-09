@@ -13,13 +13,13 @@
 
   isBareMetal = true;
 
-  dnf.enable = true;
-  dnf.domain = "gecko.${config.domain}";
-
+  services.sing-box.settings.experimental.clash_api.access_control_allow_origin = [
+    "http://gecko.${config.domain}"
+  ];
+  services.searx.enable = true;
+  services.searx.settings.server.base_url = "http://gecko.${config.domain}";
+  services.freellmapi.enable = true;
   services.open-webui.enable = true;
-  services.open-webui.port = 9080;
-  services.open-webui.host = "0.0.0.0";
-
   services.sing-box.enable = true;
   services.beszel.agent.enable = true;
   services.jellyfin.enable = true;

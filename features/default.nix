@@ -14,6 +14,8 @@
     ./syncthing-discovery.nix
     ./dnf.nix
     ./web-app.nix
+    ./freellmapi.nix
+    ./searx.nix
   ];
 
   options = {
@@ -51,7 +53,6 @@
       ssh-keys = lib.strings.splitString "\n" (lib.strings.trim (builtins.readFile inputs.ssh-keys));
     in
     lib.mkMerge [
-
       {
         users.users.${config.user} = {
           hashedPassword = "$y$j9T$Jj8kNaBhl9pdqRsFH.5Rw0$au/4czArJfGinqyBNueuzkt1QTO5mljFzAH9L5pVeR9";
@@ -62,8 +63,11 @@
           ++ lib.optional (config.virtualisation.libvirtd.enable) "libvirtd";
           shell = pkgs.fish;
           openssh.authorizedKeys.keys = ssh-keys;
-          packages = with pkgs; [
-          ];
+          packages =
+            with pkgs;
+            [
+            ]
+            ++ lib.optionals (config.virtualisation.oci-containers.containers != { }) [ podman-compose ];
         };
         users.users.root.hashedPassword = "$y$j9T$Y5Iio4JlEd0wIKlZHt1gG0$.FpHtOJBjHdk6yPSwEs7hVDrNRyOJ9r8CnV71rbLiS5";
         users.users.root.openssh.authorizedKeys.keys = ssh-keys;
@@ -79,8 +83,12 @@
             ]
           );
 
+        services.open-webui.port = 9080;
+        services.open-webui.host = "0.0.0.0";
+
         programs.fish.enable = true;
         programs.nix-ld.enable = !config.isLimited;
+        programs.mosh.enable = true;
 
         services.openssh.enable = true;
         services.openssh.settings.PasswordAuthentication = false;
@@ -91,7 +99,9 @@
           defaultNetwork.settings = {
             dns_enabled = true;
           };
+          autoPrune.enable = true;
         };
+        hardware.nvidia-container-toolkit.enable = builtins.elem "nvidia" config.services.xserver.videoDrivers;
 
         networking.networkmanager.enable = true;
         networking.iproute2.enable = true;
