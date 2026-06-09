@@ -1,9 +1,10 @@
-{ config, lib, ... }:
+{ ... }:
 {
   imports = [
     ./hardware-configuration.nix
     ./syncthing.nix
     ./web-server
+    ./3x-ui.nix
   ];
 
   config = {
