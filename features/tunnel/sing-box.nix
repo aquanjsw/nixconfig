@@ -136,7 +136,6 @@
             "geoip-cn"
           ];
           domain_suffix = [
-            "hf-mirror.com"
             config.domain
           ];
           ip_is_private = true;
@@ -156,6 +155,17 @@
     experimental = {
       cache_file = {
         enabled = true;
+      };
+      clash_api = {
+        external_controller = "0.0.0.0:9090";
+        external_ui = "dashboard";
+        external_ui_download_detour = "proxy";
+        secret._secret = config.age.secrets.clash-api-secret.path;
+        access_control_allow_private_network = true;
+        access_control_allow_origin = [
+          "http://yacd.haishan.me"
+          "http://127.0.0.1"
+        ];
       };
     };
 
@@ -210,5 +220,6 @@
   };
   age.secrets = {
     reality-public-key.file = config.paths.secrets + "/reality-public-key.age";
+    clash-api-secret.file = config.paths.secrets + "/clash-api-secret.age";
   };
 }

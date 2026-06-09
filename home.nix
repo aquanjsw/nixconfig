@@ -10,6 +10,7 @@ let
   finalArgs = config // args;
 in
 {
+  programs.fish.enable = true;
 
   programs.aria2 = {
     enable = true;
@@ -76,6 +77,8 @@ in
       ]
       ++ lib.optionals (!finalArgs.isNixOS) [ home-manager ]
     );
+  home.sessionVariables = {
+  };
 
   home.stateVersion = "25.11";
 }

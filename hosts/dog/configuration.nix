@@ -36,14 +36,19 @@
   ];
 
   users.users.${config.user} = {
-    packages = with pkgs; [
-      nix-index
-      go
-      gopls
-      delve
-      gcc
-      realcugan
-    ];
+    packages =
+      with pkgs;
+      [
+        nix-index
+        go
+        gopls
+        delve
+        gcc
+        realcugan
+      ]
+      ++ (with pkgs.python3Packages; [
+        huggingface-hub
+      ]);
   };
 
   environment.systemPackages = with pkgs; [

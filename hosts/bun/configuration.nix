@@ -12,6 +12,9 @@
 
   gpu.sriov = true;
 
+  dnf.enable = true;
+  dnf.domain = "${config.networking.hostName}.lan";
+
   isBareMetal = true;
 
   services.sing-box.enable = true;
