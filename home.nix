@@ -56,6 +56,11 @@ in
     ];
   };
 
+  services.podman.enable = true;
+  services.podman.settings.containers = {
+    engine.compose_warning_logs = false;
+  };
+
   home.username = finalArgs.user;
   home.homeDirectory = "/home/${finalArgs.user}";
   home.packages =
@@ -68,6 +73,7 @@ in
         tmux
         btop
         dig
+        podman-compose
       ]
       ++ lib.optionals (!finalArgs.isLimited) [
         inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default

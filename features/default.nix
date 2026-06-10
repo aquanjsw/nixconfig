@@ -60,14 +60,12 @@
           extraGroups = [
             "wheel"
           ]
-          ++ lib.optional (config.virtualisation.libvirtd.enable) "libvirtd";
+          ++ lib.optional (config.virtualisation.libvirtd.enable) "libvirtd"
+          ++ lib.optional (config.virtualisation.docker.enable) "docker";
           shell = pkgs.fish;
           openssh.authorizedKeys.keys = ssh-keys;
-          packages =
-            with pkgs;
-            [
-            ]
-            ++ lib.optionals (config.virtualisation.oci-containers.containers != { }) [ podman-compose ];
+          packages = with pkgs; [
+          ];
         };
         users.users.root.hashedPassword = "$y$j9T$Y5Iio4JlEd0wIKlZHt1gG0$.FpHtOJBjHdk6yPSwEs7hVDrNRyOJ9r8CnV71rbLiS5";
         users.users.root.openssh.authorizedKeys.keys = ssh-keys;
@@ -95,7 +93,6 @@
 
         virtualisation.oci-containers.backend = "podman";
         virtualisation.podman = {
-          dockerCompat = true;
           defaultNetwork.settings = {
             dns_enabled = true;
           };
