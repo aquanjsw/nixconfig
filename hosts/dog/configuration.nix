@@ -11,6 +11,9 @@
     ./samba.nix
   ];
 
+  dnf.enable = true;
+  dnf.domain = "gecko.${config.domain}";
+
   isBareMetal = true;
 
   services.sing-box.settings.experimental.clash_api.access_control_allow_origin = [
