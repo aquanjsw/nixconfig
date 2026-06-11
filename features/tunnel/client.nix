@@ -13,6 +13,7 @@
       };
       dns = {
         independent_cache = true;
+        strategy = "prefer_ipv4";
         servers = [
           {
             type = "udp";

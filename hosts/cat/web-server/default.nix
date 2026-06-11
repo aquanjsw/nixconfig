@@ -12,11 +12,12 @@ lib.mkIf config.services.caddy.enable (
         root = ./.;
         fileset = lib.fileset.unions [
           ./index.html
+          ./files
         ];
       };
       installPhase = ''
         mkdir -p $out
-        cp -r index.html $out
+        cp -r index.html files $out
       '';
     };
   in
