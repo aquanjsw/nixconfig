@@ -16,6 +16,7 @@
     ./web-app.nix
     ./freellmapi.nix
     ./searx.nix
+    ./utils.nix
   ];
 
   options = {

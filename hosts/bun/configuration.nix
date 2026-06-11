@@ -17,7 +17,8 @@
 
   isBareMetal = true;
 
-  services.sing-box.enable = true;
+  tunnel.client.enable = true;
+
   services.beszel.agent.enable = true;
 
   hardware.graphics.enable = false;

@@ -16,14 +16,15 @@
 
   isBareMetal = true;
 
+  tunnel.client.enable = true;
   services.sing-box.settings.experimental.clash_api.access_control_allow_origin = [
     "http://gecko.${config.domain}"
   ];
+
   services.searx.enable = true;
   services.searx.settings.server.base_url = "http://gecko.${config.domain}";
   services.freellmapi.enable = true;
   services.open-webui.enable = true;
-  services.sing-box.enable = true;
   services.beszel.agent.enable = true;
   services.jellyfin.enable = true;
   services.qbittorrent.enable = true;

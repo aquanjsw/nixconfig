@@ -12,8 +12,8 @@
     isLimited = true;
     isOutside = true;
     web-app.enable = true;
+    tunnel.server.enable = true;
 
-    services.xray.enable = true;
     services.caddy.enable = true;
     services.beszel.agent.enable = true;
     services.beszel.hub.enable = true;
