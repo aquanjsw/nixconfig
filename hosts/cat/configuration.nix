@@ -17,9 +17,6 @@
     services.caddy.enable = true;
     services.beszel.agent.enable = true;
     services.beszel.hub.enable = true;
-    services.syncthing.enable = true;
-    services.syncthing.relay.enable = true;
-    services.syncthing.discovery.enable = true;
 
     swapfileSize = 512;
 
