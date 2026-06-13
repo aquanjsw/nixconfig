@@ -25,6 +25,12 @@
             type = "local";
             tag = "local";
           }
+          {
+            type = "udp";
+            tag = "tailscale-dns";
+            server = "100.100.100.100";
+            detour = "proxy";
+          }
         ];
         rules = [
           {
@@ -43,6 +49,13 @@
             ];
             domain_suffix = [
               ".lan"
+            ];
+          }
+          {
+            action = "route";
+            server = "tailscale-dns";
+            domain_suffix = [
+              ".ts.net"
             ];
           }
         ];
@@ -125,6 +138,17 @@
           }
           {
             action = "route";
+            domain_suffix = [
+              ".ts.net"
+            ];
+            ip_cidr = [
+              "100.64.0.0/10"
+              "fd7a:115c:a1e0::/48"
+            ];
+            outbound = "tailscale-out";
+          }
+          {
+            action = "route";
             rule_set = [
               "geosite-private"
               "geosite-cn"
@@ -183,9 +207,20 @@
             "com.coolapk.market"
             "com.autonavi.minimap"
           ];
+          route_exclude_address = [
+            "192.168.0.0/16"
+            "10.0.0.0/8"
+            "224.0.0.0/4"
+          ];
         }
       ];
       outbounds = [
+        {
+          type = "socks";
+          tag = "tailscale-out";
+          server = "127.0.0.1";
+          server_port = config.services.tailscale.socksPort;
+        }
         {
           type = "direct";
           tag = "direct";

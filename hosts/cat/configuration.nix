@@ -1,4 +1,4 @@
-{ ... }:
+{ config, lib, ... }:
 {
   imports = [
     ./hardware-configuration.nix
@@ -14,9 +14,21 @@
     web-app.enable = true;
     tunnel.server.enable = true;
 
+    services.searx.enable = true;
+    services.freellmapi.enable = true;
+    services.caddy.virtualHosts."freellmapi.${config.domain}".extraConfig = ''
+      reverse_proxy 127.0.0.1:${toString config.services.freellmapi.bindPort}
+    '';
+    services.open-webui.enable = true;
+    services.caddy.virtualHosts."chat.${config.domain}".extraConfig = ''
+      reverse_proxy 127.0.0.1:${toString config.services.open-webui.port}
+    '';
+
     services.caddy.enable = true;
     services.beszel.agent.enable = true;
     services.beszel.hub.enable = true;
+    services.tailscale.enable = true;
+    services.tailscale.derper.enable = true;
 
     swapfileSize = 512;
 

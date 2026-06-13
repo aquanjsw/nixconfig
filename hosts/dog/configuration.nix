@@ -21,14 +21,12 @@
     "http://gecko.${config.domain}"
   ];
 
-  services.searx.enable = true;
-  services.searx.settings.server.base_url = "http://gecko.${config.domain}";
-  services.freellmapi.enable = true;
-  services.open-webui.enable = true;
   services.beszel.agent.enable = true;
   services.jellyfin.enable = true;
   services.qbittorrent.enable = true;
   services.samba.enable = true;
+  services.tailscale.enable = true;
+  services.tailscale.interfaceName = "userspace-networking";
 
   hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];

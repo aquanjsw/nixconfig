@@ -1,4 +1,5 @@
 {
+  pkgs-latest,
   inputs,
   config,
   pkgs,
@@ -17,6 +18,7 @@
     ./freellmapi.nix
     ./searx.nix
     ./utils.nix
+    ./tailscale.nix
   ];
 
   options = {
@@ -47,6 +49,7 @@
       default = 4 * 1024;
       description = "The size of the swapfile in MiB.";
     };
+
   };
 
   config =
@@ -82,8 +85,7 @@
             ]
           );
 
-        services.open-webui.port = 9080;
-        services.open-webui.host = "0.0.0.0";
+        services.open-webui.package = pkgs-latest.open-webui;
 
         programs.fish.enable = true;
         programs.nix-ld.enable = !config.isLimited;

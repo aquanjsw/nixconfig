@@ -8,7 +8,7 @@ lib.mkIf config.services.searx.enable {
   services.searx.settings = {
     server = {
       port = 10080;
-      bind_address = "0.0.0.0";
+      bind_address = "127.0.0.1";
       secret_key = "$SECRET_KEY";
       safe_search = 0;
       image_proxy = true;

@@ -11,6 +11,7 @@ lib.mkIf config.services.tailscale.derper.enable (
     services.tailscale.derper = {
       inherit domain;
       configureNginx = false;
+      verifyClients = true;
     };
 
     services.caddy.virtualHosts.${domain} = {

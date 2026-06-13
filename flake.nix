@@ -4,6 +4,7 @@
   inputs = {
 
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    nixpkgs-latest.url = "github:nixos/nixpkgs?ref=nixos-unstable";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -35,43 +36,48 @@
     inputs@{ nixpkgs, ... }:
     let
 
-      hosts = [
-        "cat"
-        "dog"
-        "pan"
-        "bun"
-      ];
+      hosts.cat.system = "x86_64-linux";
+      hosts.dog.system = "x86_64-linux";
 
       mkNixOS =
-        host:
-        nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs; };
-          modules = [
-            (
-              { config, ... }:
-              {
-                isNixOS = true;
-                home-manager.useGlobalPkgs = true;
-                home-manager.useUserPackages = true;
-                home-manager.extraSpecialArgs = {
-                  inherit inputs;
-                  args = { inherit (config) user isLimited isNixOS; };
-                };
-                home-manager.users.${config.user} = ./home.nix;
-              }
-            )
-            inputs.disko.nixosModules.disko
-            inputs.agenix.nixosModules.default
-            inputs.web-app.nixosModules.default
-            inputs.nixos-wsl.nixosModules.default
-            inputs.home-manager.nixosModules.home-manager
-            inputs.i915-sriov.nixosModules.default
-            ./common.nix
-            ./features
-            ./substitutes
-            ./hosts/${host}/configuration.nix
-          ];
-        };
+        hostName:
+        (
+          let
+            system = hosts.${hostName}.system;
+            pkgs-latest = import inputs.nixpkgs-latest {
+              inherit system;
+              config.allowUnfree = true;
+            };
+          in
+          nixpkgs.lib.nixosSystem {
+            specialArgs = { inherit inputs pkgs-latest; };
+            modules = [
+              (
+                { config, ... }:
+                {
+                  isNixOS = true;
+                  home-manager.useGlobalPkgs = true;
+                  home-manager.useUserPackages = true;
+                  home-manager.extraSpecialArgs = {
+                    inherit inputs;
+                    args = { inherit (config) user isLimited isNixOS; };
+                  };
+                  home-manager.users.${config.user} = ./home.nix;
+                }
+              )
+              inputs.disko.nixosModules.disko
+              inputs.agenix.nixosModules.default
+              inputs.web-app.nixosModules.default
+              inputs.nixos-wsl.nixosModules.default
+              inputs.home-manager.nixosModules.home-manager
+              inputs.i915-sriov.nixosModules.default
+              ./common.nix
+              ./features
+              ./substitutes
+              ./hosts/${hostName}/configuration.nix
+            ];
+          }
+        );
 
       mkHome =
         system:
@@ -88,7 +94,9 @@
         };
     in
     {
-      nixosConfigurations = nixpkgs.lib.genAttrs hosts (host: mkNixOS host);
+      nixosConfigurations = nixpkgs.lib.genAttrs (nixpkgs.lib.attrNames hosts) (
+        hostName: mkNixOS hostName
+      );
 
       homeConfigurations = {
         agx = mkHome "aarch64-linux";
