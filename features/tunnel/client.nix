@@ -22,7 +22,7 @@
             detour = "proxy";
           }
           {
-            type = "local";
+            type = "dhcp";
             tag = "local";
           }
           {
@@ -207,6 +207,7 @@
             "com.coolapk.market"
             "com.autonavi.minimap"
           ];
+          # Bypass NAT-PMP/UPnP-IGD/PCP traffic
           route_exclude_address = [
             "192.168.0.0/16"
             "10.0.0.0/8"
@@ -257,6 +258,14 @@
   config.services.sing-box = lib.mkIf config.tunnel.client.enable {
     enable = true;
     settings = config.tunnel.client.settings;
+  };
+  # sing-box tun's NAT-PMP/UPnP-IGD/PCP traffic bypass will render sing-box's DNS
+  # hijacking ineffective if the system DNS is set to in the bypass CIDRs, e.g.
+  # the gateway IP.
+  # Set system DNS to any IP outside the bypass CIDRs to avoid DNS hijacking issues.
+  config.networking = lib.mkIf config.tunnel.client.enable {
+    networkmanager.dns = "none";
+    nameservers = [ "1.1.1.1" ];
   };
   config.age.secrets = {
     reality-public-key.file = config.paths.secrets + "/reality-public-key.age";
