@@ -5,11 +5,11 @@
 }:
 {
   options.services.freellmapi.enable = lib.mkEnableOption "FreeLLM API server";
-  options.services.freellmapi.bindPort = lib.mkOption {
+  options.services.freellmapi.port = lib.mkOption {
     type = lib.types.port;
     default = 3001;
   };
-  options.services.freellmapi.bindIP = lib.mkOption {
+  options.services.freellmapi.host = lib.mkOption {
     default = "127.0.0.1";
   };
 
@@ -19,7 +19,7 @@
     in
     (lib.mkIf cfg.enable {
       virtualisation.oci-containers.containers."freellmapi" = {
-        image = "ghcr.io/tashfeenahmed/freellmapi:latest";
+        image = "ghcr.io/tashfeenahmed/freellmapi:v0.4.1";
         autoStart = true;
         environment = {
           NODE_ENV = "production";
@@ -32,8 +32,9 @@
           "freellmapi-data:/app/server/data:rw"
         ];
         ports = [
-          "${cfg.bindIP}:${toString cfg.bindPort}:3001/tcp"
+          "${cfg.host}:${toString cfg.port}:3001/tcp"
         ];
+        networks = lib.optional config.services."9router".enable config.services."9router".network;
       };
       age.secrets.freellmapi.file = config.paths.secrets + "/freellmapi.age";
     });

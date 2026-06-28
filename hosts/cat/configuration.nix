@@ -14,16 +14,6 @@
     web-app.enable = true;
     tunnel.server.enable = true;
 
-    services.searx.enable = true;
-    services.freellmapi.enable = true;
-    services.caddy.virtualHosts."freellmapi.${config.domain}".extraConfig = ''
-      reverse_proxy 127.0.0.1:${toString config.services.freellmapi.bindPort}
-    '';
-    services.open-webui.enable = true;
-    services.caddy.virtualHosts."chat.${config.domain}".extraConfig = ''
-      reverse_proxy 127.0.0.1:${toString config.services.open-webui.port}
-    '';
-
     services.caddy.enable = true;
     services.beszel.agent.enable = true;
     services.beszel.hub.enable = true;
@@ -34,7 +24,7 @@
 
     networking.hostName = "cat";
     networking.sits.ip6net = {
-      local = "138.128.193.71";
+      local = "74.82.192.214";
       remote = "45.32.66.87";
       ttl = 255;
     };

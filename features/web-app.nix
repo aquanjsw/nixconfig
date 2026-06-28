@@ -18,5 +18,8 @@ lib.mkIf config.web-app.enable (
       urlPath = "sing-box.json";
     };
     web-app.subscription.domain = subscriptionDomain;
+
+    age.secrets.web-app-env.file = config.paths.secrets + "/web-app-env.age";
+    web-app.envFile = config.age.secrets.web-app-env.path;
   }
 )

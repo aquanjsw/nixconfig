@@ -21,6 +21,11 @@
     "http://gecko.${config.domain}"
   ];
 
+  services.comfyui.enable = true;
+  services.freellmapi.enable = true;
+  services."9router".enable = true;
+  services.headroom.enable = true;
+
   services.beszel.agent.enable = true;
   services.jellyfin.enable = true;
   services.qbittorrent.enable = true;
@@ -46,8 +51,11 @@
         delve
         gcc
         realcugan
+        opencode
+        rtk
       ]
       ++ (with pkgs.python3Packages; [
+        ipykernel # for zed lsp
         huggingface-hub
       ]);
   };
@@ -61,7 +69,6 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.initrd.services.lvm.enable = true;
-  boot.initrd.availableKernelModules = [ "bcache" ];
   fileSystems."/data" = {
     device = lib.mkForce "/dev/bcache0";
     fsType = "xfs";

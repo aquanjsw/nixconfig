@@ -29,6 +29,7 @@ in
   "web-app-env.age".publicKeys = users ++ [ cat-system ];
   "vless-encryption.age".publicKeys = users ++ [ cat-system ];
 
+  "huggingface-env.age".publicKeys = users ++ systems;
   "searx.age".publicKeys = users ++ systems;
   "freellmapi.age".publicKeys = users ++ systems;
   "syncthingGuiPassword.age".publicKeys = users ++ systems;

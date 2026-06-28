@@ -4,16 +4,13 @@
   inputs = {
 
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-    nixpkgs-latest.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs?ref=nixos-unstable";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
-
-    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
-    nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
 
     i915-sriov.url = "github:strongtz/i915-sriov-dkms";
     i915-sriov.inputs.nixpkgs.follows = "nixpkgs";
@@ -36,71 +33,58 @@
     inputs@{ nixpkgs, ... }:
     let
 
-      hosts.cat.system = "x86_64-linux";
-      hosts.dog.system = "x86_64-linux";
+      oses = [
+        "cat"
+        "dog"
+      ];
 
-      mkNixOS =
+      hms = [
+        "agx"
+      ];
+
+      mkOs =
         hostName:
-        (
-          let
-            system = hosts.${hostName}.system;
-            pkgs-latest = import inputs.nixpkgs-latest {
-              inherit system;
-              config.allowUnfree = true;
-            };
-          in
-          nixpkgs.lib.nixosSystem {
-            specialArgs = { inherit inputs pkgs-latest; };
-            modules = [
-              (
-                { config, ... }:
-                {
-                  isNixOS = true;
-                  home-manager.useGlobalPkgs = true;
-                  home-manager.useUserPackages = true;
-                  home-manager.extraSpecialArgs = {
-                    inherit inputs;
-                    args = { inherit (config) user isLimited isNixOS; };
-                  };
-                  home-manager.users.${config.user} = ./home.nix;
-                }
-              )
-              inputs.disko.nixosModules.disko
-              inputs.agenix.nixosModules.default
-              inputs.web-app.nixosModules.default
-              inputs.nixos-wsl.nixosModules.default
-              inputs.home-manager.nixosModules.home-manager
-              inputs.i915-sriov.nixosModules.default
-              ./common.nix
-              ./features
-              ./substitutes
-              ./hosts/${hostName}/configuration.nix
-            ];
-          }
-        );
-
-      mkHome =
-        system:
-        inputs.home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.${system};
-          extraSpecialArgs = { inherit inputs; };
+        (nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs; };
           modules = [
-            {
-              isNixOS = false;
-            }
-            ./common.nix
-            ./home.nix
+            (
+              { lib, config, ... }:
+              {
+                options = {
+                  paths = lib.mkOption {
+                    default = {
+                      secrets = ./secrets;
+                    };
+                    readOnly = true;
+                  };
+                };
+                config = {
+                  home-manager.users.${config.user} = ./hm/hosts/${hostName};
+                };
+              }
+            )
+            inputs.disko.nixosModules.disko
+            inputs.agenix.nixosModules.default
+            inputs.web-app.nixosModules.default
+            inputs.home-manager.nixosModules.home-manager
+            inputs.i915-sriov.nixosModules.default
+            ./features
+            ./substitutes
+            ./hosts/${hostName}/configuration.nix
+          ];
+        });
+
+      mkHm =
+        hostName:
+        inputs.home-manager.lib.homeManagerConfiguration {
+          modules = [
+            ./hm/hosts/${hostName}
           ];
         };
     in
     {
-      nixosConfigurations = nixpkgs.lib.genAttrs (nixpkgs.lib.attrNames hosts) (
-        hostName: mkNixOS hostName
-      );
-
-      homeConfigurations = {
-        agx = mkHome "aarch64-linux";
-      };
+      nixosConfigurations = nixpkgs.lib.genAttrs oses (hostName: mkOs hostName);
+      homeConfigurations = nixpkgs.lib.genAttrs hms (hostName: mkHm hostName);
     };
 }
 
