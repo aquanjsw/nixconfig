@@ -188,8 +188,7 @@
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "realcugan": "realcugan",
-        "ssh-keys": "ssh-keys",
-        "web-app": "web-app"
+        "ssh-keys": "ssh-keys"
       }
     },
     "ssh-keys": {
@@ -218,22 +217,6 @@
         "repo": "default",
         "type": "github"
       }
-    },
-    "web-app": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "path": "flakes/web-app",
-        "type": "path"
-      },
-      "original": {
-        "path": "flakes/web-app",
-        "type": "path"
-      },
-      "parent": []
     },
     "weights": {
       "flake": false,

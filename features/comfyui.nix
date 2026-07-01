@@ -10,14 +10,27 @@ let
 in
 {
   options.services.comfyui.enable = lib.mkEnableOption "ComfyUI";
+  options.services.comfyui.host = lib.mkOption {
+    type = lib.types.str;
+    default = "localhost";
+    description = "Host to bind ComfyUI to";
+  };
+  options.services.comfyui.port = lib.mkOption {
+    type = lib.types.int;
+    default = 8188;
+    description = "Port to bind ComfyUI to";
+  };
 
-  config = lib.mkIf config.services.${name}.enable {
+
+  config = let
+    cfg = config.services.comfyui;
+  in lib.mkIf config.services.${name}.enable {
     virtualisation.oci-containers.containers.${name} = {
       image = "yanwk/comfyui-boot:cu130-slim-v2";
       autoStart = false;
       devices = [ "nvidia.com/gpu=all" ];
       podman.user = user;
-      ports = [ "8188:8188" ];
+      ports = [ "${cfg.host}:${toString cfg.port}:8188" ];
       volumes = [
         "${root}/.cache:/root/.cache"
         "${root}/.config:/root/.config"

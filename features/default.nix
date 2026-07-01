@@ -82,6 +82,9 @@
       services.openssh.enable = true;
       services.openssh.settings.PasswordAuthentication = false;
 
+      # Disable tailscale's dns hijacking so that sing-box's tun can take over
+      services.tailscale.extraUpFlags = [ "--accept-dns=false" ];
+
       virtualisation.oci-containers.backend = "podman";
       virtualisation.podman = {
         defaultNetwork.settings = {
@@ -161,11 +164,9 @@
     ./syncthing.nix
     ./syncthing-discovery.nix
     ./dnf.nix
-    ./web-app.nix
     ./freellmapi.nix
     ./searx.nix
     ./utils.nix
-    ./tailscale.nix
     ./comfyui.nix
     ./kohya-ss.nix
     ./9router.nix

@@ -22,7 +22,7 @@
     in
     lib.mkIf cfg.enable {
       virtualisation.oci-containers.containers."9router" = {
-        image = "ghcr.io/decolua/9router:0.5.8";
+        image = "ghcr.io/decolua/9router:0.5.15";
         autoStart = true;
         ports = [ "${cfg.host}:${toString cfg.port}:20128" ];
         networks = [ cfg.network ];

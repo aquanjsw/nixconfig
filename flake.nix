@@ -24,14 +24,12 @@
     ssh-keys.url = "https://github.com/aquanjsw.keys";
     ssh-keys.flake = false;
 
-    web-app.url = ./flakes/web-app;
-    web-app.inputs.nixpkgs.follows = "nixpkgs";
-
   };
 
   outputs =
     inputs@{ nixpkgs, ... }:
     let
+      inherit (nixpkgs) lib;
 
       oses = [
         "cat"
@@ -65,7 +63,6 @@
             )
             inputs.disko.nixosModules.disko
             inputs.agenix.nixosModules.default
-            inputs.web-app.nixosModules.default
             inputs.home-manager.nixosModules.home-manager
             inputs.i915-sriov.nixosModules.default
             ./features
@@ -81,10 +78,48 @@
             ./hm/hosts/${hostName}
           ];
         };
+
+      forAllSystems = lib.genAttrs lib.systems.flakeExposed;
     in
     {
       nixosConfigurations = nixpkgs.lib.genAttrs oses (hostName: mkOs hostName);
       homeConfigurations = nixpkgs.lib.genAttrs hms (hostName: mkHm hostName);
+
+      devShells = forAllSystems (system: {
+        web-app-subscription =
+          let
+            pkgs = import nixpkgs { inherit system; };
+            utils = import "${nixpkgs}/nixos/lib/utils.nix" {
+              inherit pkgs;
+              inherit (pkgs) lib;
+              config = { };
+            };
+            pythonEnv = pkgs.python3.withPackages (ps: [ ps.django ]);
+            dummySecretFile = "/tmp/dummy-secret";
+            settings = import ./features/tunnel/client/settings.nix {
+              config = {
+                domain = "example.com";
+                age.secrets.vless-uuid.path = dummySecretFile;
+                age.secrets.reality-public-key.path = dummySecretFile;
+              };
+            };
+            settingsFile = "/tmp/config.json";
+            script = pkgs.writeShellScript "gen-settings" ''
+              ${utils.genJqSecretsReplacementSnippet settings settingsFile}
+            '';
+          in
+          pkgs.mkShellNoCC {
+            packages = [ pythonEnv ];
+            shellHook = ''
+              mkdir -p .dev
+              echo "dummy secret" > ${dummySecretFile}
+              ln -sf ${lib.getBin pythonEnv}/bin/python .dev/python
+              ${script}
+            '';
+            SETTINGS_FILE = settingsFile;
+            DEBUG = 1;
+          };
+      });
     };
 }
 

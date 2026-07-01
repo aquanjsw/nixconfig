@@ -3,23 +3,21 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SINGBOX_CONFIG_PATH = os.environ["SINGBOX_CONFIG_PATH"]
-SINGBOX_URL_PATH = os.environ["SINGBOX_URL_PATH"]
+SETTINGS_FILE = os.environ["SETTINGS_FILE"]
 
-SUBSCRIPTION_DOMAIN = os.environ["SUBSCRIPTION_DOMAIN"]
-DOMAIN = os.environ["DOMAIN"]
+SECRET_KEY = os.environ.get("SECRET_KEY", "test")
 
-SECRET_KEY = os.environ["SECRET_KEY"]
+DEBUG = os.environ.get("DEBUG", "0") == "1"
 
-DEBUG = False
+ALLOWED_HOSTS = ["localhost"]
 
-ALLOWED_HOSTS = [
-    "localhost",
-    SUBSCRIPTION_DOMAIN + "." + DOMAIN,
-]
+if d := os.environ.get("DOMAIN", ""):
+    ALLOWED_HOSTS.append(d)
+
+
+# Application definition
 
 INSTALLED_APPS = [
-    "django_hosts",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -29,7 +27,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "django_hosts.middleware.HostsRequestMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -37,12 +34,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_hosts.middleware.HostsResponseMiddleware",
 ]
 
-ROOT_HOSTCONF = "web_app.hosts"
-ROOT_URLCONF = "subalter.urls"
-DEFAULT_HOST = "subscription"
+ROOT_URLCONF = "subscription.urls"
 
 TEMPLATES = [
     {
@@ -59,7 +53,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "web_app.wsgi.application"
+WSGI_APPLICATION = "subscription.wsgi.application"
 
 
 # Database

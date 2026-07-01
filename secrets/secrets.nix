@@ -26,7 +26,7 @@ let
 in
 {
   "caddy-env.age".publicKeys = users ++ [ cat-system ];
-  "web-app-env.age".publicKeys = users ++ [ cat-system ];
+  "web-app-subscription-env.age".publicKeys = users ++ [ cat-system ];
   "vless-encryption.age".publicKeys = users ++ [ cat-system ];
 
   "huggingface-env.age".publicKeys = users ++ systems;

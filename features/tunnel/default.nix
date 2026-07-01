@@ -2,7 +2,7 @@
 {
   imports = [
     ./server.nix
-    ./client.nix
+    ./client
   ];
 
   config.age.secrets = {

@@ -11,33 +11,36 @@ def sing_box(request: HttpRequest):
     except ValueError:
         mtu = 0
 
-    auto_redirect = request.GET.get("auto-redirect", "1") == "1"
     strict_route = request.GET.get("strict-route", "1") == "1"
     stack = request.GET.get("stack", "")
-    log_level = request.GET.get("log-level", "")
-    fakeip = request.GET.get("fakeip", "1") == "1"
+    log_level = request.GET.get("log-level", "debug")
     ipv6 = request.GET.get("ipv6", "1") == "1"
+    system = request.GET.get("system", "unknown")
 
-    config = json.load(open(settings.SINGBOX_CONFIG_PATH))
+    config = json.load(open(settings.SETTINGS_FILE))
 
     for inbound in config["inbounds"]:
         if inbound["type"] == "tun":
             if mtu > 0:
                 inbound["mtu"] = mtu
-            inbound["auto_redirect"] = auto_redirect
+            inbound["auto_redirect"] = system != "windows"
             inbound["strict_route"] = strict_route
             if stack:
                 inbound["stack"] = stack
 
-    if not fakeip:
-        for rule in config["dns"]["rules"]:
-            if rule["server"] == "fakeip":
-                config["dns"]["rules"].remove(rule)
-
-    if log_level:
-        config["log"]["level"] = log_level
+    config["log"]["level"] = log_level
 
     config["dns"]["strategy"] = "ipv4_only" if not ipv6 else "prefer_ipv4"
 
+    if system != "linux":
+        for server in config["dns"]["servers"]:
+            if server["type"] == "dhcp":
+                server["type"] = "local"
+                break
+
     content = json.dumps(config, indent=2)
-    return HttpResponse(content, content_type="application/json")
+    return HttpResponse(
+        content,
+        content_type="application/json",
+        headers={"Content-Disposition": "attachment; filename=config.json"},
+    )

@@ -102,6 +102,7 @@
           nil
           nixd
           nixfmt
+          jq
         ]
         ++ lib.optionals (!config.isNixOS) [ home-manager ]
       );

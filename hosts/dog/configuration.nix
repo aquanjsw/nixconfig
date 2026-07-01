@@ -22,8 +22,11 @@
   ];
 
   services.comfyui.enable = true;
+  services.comfyui.host = "0.0.0.0";
   services.freellmapi.enable = true;
+  services.freellmapi.host = "0.0.0.0";
   services."9router".enable = true;
+  services."9router".host = "0.0.0.0";
   services.headroom.enable = true;
 
   services.beszel.agent.enable = true;
@@ -31,7 +34,6 @@
   services.qbittorrent.enable = true;
   services.samba.enable = true;
   services.tailscale.enable = true;
-  services.tailscale.interfaceName = "userspace-networking";
 
   hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
