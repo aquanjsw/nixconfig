@@ -4,6 +4,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SETTINGS_FILE = os.environ["SETTINGS_FILE"]
+EXTRA_SETTINGS_FILE = os.environ["EXTRA_SETTINGS_FILE"]
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "test")
 

@@ -190,6 +190,7 @@
         "com.jingdong.app.mall"
         "com.coolapk.market"
         "com.autonavi.minimap"
+        "com.netease.cloudmusic"
       ];
       route_exclude_address = [
         # Bypass NAT-PMP/UPnP-IGD/PCP traffic

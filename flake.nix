@@ -23,7 +23,6 @@
 
     ssh-keys.url = "https://github.com/aquanjsw.keys";
     ssh-keys.flake = false;
-
   };
 
   outputs =
@@ -104,9 +103,10 @@
               };
             };
             settingsFile = "/tmp/config.json";
-            script = pkgs.writeShellScript "gen-settings" ''
-              ${utils.genJqSecretsReplacementSnippet settings settingsFile}
-            '';
+            extraSettings = {
+              tailscale-auth-key = "test key";
+            };
+            extraSettingsFile = "/tmp/extra-config.json";
           in
           pkgs.mkShellNoCC {
             packages = [ pythonEnv ];
@@ -114,9 +114,11 @@
               mkdir -p .dev
               echo "dummy secret" > ${dummySecretFile}
               ln -sf ${lib.getBin pythonEnv}/bin/python .dev/python
-              ${script}
+              ${utils.genJqSecretsReplacementSnippet settings settingsFile}
+              echo '${builtins.toJSON extraSettings}' > ${extraSettingsFile}
             '';
             SETTINGS_FILE = settingsFile;
+            EXTRA_SETTINGS_FILE = extraSettingsFile;
             DEBUG = 1;
           };
       });

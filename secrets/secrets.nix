@@ -29,6 +29,7 @@ in
   "web-app-subscription-env.age".publicKeys = users ++ [ cat-system ];
   "vless-encryption.age".publicKeys = users ++ [ cat-system ];
 
+  "tailscale-auth-key.age".publicKeys = users ++ systems;
   "huggingface-env.age".publicKeys = users ++ systems;
   "searx.age".publicKeys = users ++ systems;
   "freellmapi.age".publicKeys = users ++ systems;

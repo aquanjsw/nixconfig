@@ -46,6 +46,9 @@
     in
     lib.mkIf cfg.enable {
       jsonDeployment.deployments.sing-box.settings = config.tunnel.client.settings;
+      jsonDeployment.deployments.sing-box-extra.settings = {
+        tailscale-auth-key._secret = config.age.secrets.tailscale-auth-key.path;
+      };
       services.caddy.virtualHosts = {
         "${cfg.domain}.${config.domain}".extraConfig = ''
           basic_auth {
@@ -60,6 +63,7 @@
         after = [ "network.target" ];
         environment = {
           SETTINGS_FILE = config.jsonDeployment.deployments.sing-box.path;
+          EXTRA_SETTINGS_FILE = config.jsonDeployment.deployments.sing-box-extra.path;
           DOMAIN = "${cfg.domain}.${config.domain}";
         };
         script = ''
@@ -70,5 +74,6 @@
         ];
       };
       age.secrets.web-app-subscription-env.file = config.paths.secrets + "/web-app-subscription-env.age";
+      age.secrets.tailscale-auth-key.file = config.paths.secrets + "/tailscale-auth-key.age";
     };
 }
