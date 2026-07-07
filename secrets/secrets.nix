@@ -8,8 +8,8 @@ let
   panda-system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAUOIOgWzKfzoL0HXGJ9et5zKPgr7hYvzIsTpfmQyM6R";
   panda-user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIByOu/Ck/Uyh7xl4B9xxkBtFUDL7Z6LAqVAHXCmGfNyp";
 
-  bun-system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMFapIzVmcEYG6vUcwS+W2QViD/eZaGVwyN6emfI0r9q";
-  bun-user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGSKuWPT0rbPOkxpuaAZwwX9UGCad25Fp+75XTJKprFx";
+  bun-system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDFLEmRonywzWXxU4xid8EHYJoBFZA5yhT1ZDgFRl0xn";
+  bun-user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ9RA8v5OrIn/Vjt1hf0V+YQwrAQmFOHpuwfGaGteeb2";
 
   users = [
     dog-user

@@ -63,7 +63,6 @@
   };
 
   environment.systemPackages = with pkgs; [
-    usbutils
     nvtopPackages.nvidia
   ];
 

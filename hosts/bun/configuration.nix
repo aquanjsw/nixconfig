@@ -10,14 +10,10 @@
     ./gpu
   ];
 
-  gpu.sriov = true;
-
-  dnf.enable = true;
-  dnf.domain = "${config.networking.hostName}.lan";
-
   isBareMetal = true;
 
   tunnel.client.enable = true;
+  services.tailscale.enable = true;
 
   services.beszel.agent.enable = true;
 
@@ -34,18 +30,9 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "bun";
-  networking.bridges.br0.interfaces = [
-    "enp3s0"
-    "tap0"
-  ];
+  swapfileSize = 8 * 1024;
 
-  networking.interfaces.enp3s0.useDHCP = false;
-  networking.interfaces.br0.useDHCP = true;
-  networking.interfaces.tap0 = {
-    useDHCP = false;
-    virtual = true;
-  };
+  networking.hostName = "bun";
 
   system.stateVersion = "26.05";
 }

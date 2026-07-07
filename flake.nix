@@ -33,6 +33,7 @@
       oses = [
         "cat"
         "dog"
+        "bun"
       ];
 
       hms = [
