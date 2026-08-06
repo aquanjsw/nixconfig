@@ -96,7 +96,6 @@
           file
           tree
           yazi
-          tmux
           btop
           dig
           nil

@@ -34,10 +34,7 @@
         "cat"
         "dog"
         "bun"
-      ];
-
-      hms = [
-        "agx"
+        "tur"
       ];
 
       mkOs =
@@ -71,19 +68,10 @@
           ];
         });
 
-      mkHm =
-        hostName:
-        inputs.home-manager.lib.homeManagerConfiguration {
-          modules = [
-            ./hm/hosts/${hostName}
-          ];
-        };
-
       forAllSystems = lib.genAttrs lib.systems.flakeExposed;
     in
     {
       nixosConfigurations = nixpkgs.lib.genAttrs oses (hostName: mkOs hostName);
-      homeConfigurations = nixpkgs.lib.genAttrs hms (hostName: mkHm hostName);
 
       devShells = forAllSystems (system: {
         web-app-subscription =

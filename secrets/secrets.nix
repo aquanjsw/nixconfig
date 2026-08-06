@@ -5,23 +5,23 @@ let
   dog-system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC08h/FP6qqvdfr9tdue9SRjB/auHP0c/15+3cp4xmiZ";
   dog-user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF/Nwn3AJ+MltE7EbwkqqhaQRqrhFB7nnwvsPP/TaF+U";
 
-  panda-system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAUOIOgWzKfzoL0HXGJ9et5zKPgr7hYvzIsTpfmQyM6R";
-  panda-user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIByOu/Ck/Uyh7xl4B9xxkBtFUDL7Z6LAqVAHXCmGfNyp";
-
   bun-system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDFLEmRonywzWXxU4xid8EHYJoBFZA5yhT1ZDgFRl0xn";
   bun-user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ9RA8v5OrIn/Vjt1hf0V+YQwrAQmFOHpuwfGaGteeb2";
 
+  tur-system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPBeG0JFEBS2I6vWEPBXPXPR22wtETzMktHuxzzpPz+F";
+  tur-user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMpgR/uiOXD2y6mn/OojBa/gyKId+x9i3qzQ2cee/eJq";
+
   users = [
     dog-user
-    panda-user
     bun-user
     cat-user
+    tur-user
   ];
   systems = [
     cat-system
     dog-system
-    panda-system
     bun-system
+    tur-system
   ];
 in
 {

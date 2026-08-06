@@ -3,6 +3,7 @@
   ...
 }:
 {
+  "$schema" = "https://sing-box.sagernet.org/schema.json";
   log = {
     disabled = false;
     level = "debug";
@@ -105,6 +106,13 @@
         url = "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs";
         download_detour = "proxy";
       }
+      {
+        tag = "geosite-steam@cn";
+        type = "remote";
+        format = "binary";
+        url = "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-steam@cn.srs";
+        download_detour = "proxy";
+      }
     ];
     rules = [
       {
@@ -148,6 +156,7 @@
           "geosite-cn"
           "geosite-ieee"
           "geoip-cn"
+          "geosite-steam@cn"
         ];
         domain_suffix = [
           config.domain
@@ -191,6 +200,7 @@
         "com.coolapk.market"
         "com.autonavi.minimap"
         "com.netease.cloudmusic"
+        "tv.dankamu.bili"
       ];
       route_exclude_address = [
         # Bypass NAT-PMP/UPnP-IGD/PCP traffic

@@ -11,6 +11,7 @@
     services.beszel.agent.enable = true;
     services.beszel.hub.enable = true;
     services.tailscale.derper.enable = true;
+    services.qemuGuest.enable = true;
     swapfileSize = 512;
 
     networking.hostName = "cat";

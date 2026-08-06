@@ -17,6 +17,7 @@ def sing_box(request: HttpRequest):
     ipv6 = request.GET.get("ipv6", "1") == "1"
     system = request.GET.get("system", "unknown")
     tailscale = request.GET.get("tailscale", "0") == "1"
+    auto_redirect = request.GET.get("auto-redirect", "1") == "1"
 
     config = json.load(open(settings.SETTINGS_FILE))
     extra_settings = json.load(open(settings.EXTRA_SETTINGS_FILE))
@@ -25,7 +26,7 @@ def sing_box(request: HttpRequest):
         if inbound["type"] == "tun":
             if mtu > 0:
                 inbound["mtu"] = mtu
-            inbound["auto_redirect"] = system != "windows"
+            inbound["auto_redirect"] = system != "windows" and auto_redirect
             inbound["strict_route"] = strict_route
             if stack:
                 inbound["stack"] = stack

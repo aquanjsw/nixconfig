@@ -144,11 +144,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1781577229,
-        "narHash": "sha256-lrp67w8AulE9Ks53n27I45ADSzbOCn4H+CNW1Ck8B+8=",
+        "lastModified": 1784497964,
+        "narHash": "sha256-vlHUuqAcbcH2RKmHbPiuQzbv1pnzzavXnI62RD0bqCU=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "567a49d1913ce81ac6e9582e3553dd90a955875f",
+        "rev": "241313f4e8e508cb9b13278c2b0fa25b9ca27163",
         "type": "github"
       },
       "original": {
@@ -194,7 +194,7 @@
     "ssh-keys": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-TnNDqGuMaTIYe5o40o6+P5gTQX91eGfaOrxnSFnWtiw=",
+        "narHash": "sha256-cLr0j75ctuY14xTIm1LkTTtX23pBe3YgJqh/2K6aKDA=",
         "type": "file",
         "url": "https://github.com/aquanjsw.keys"
       },
