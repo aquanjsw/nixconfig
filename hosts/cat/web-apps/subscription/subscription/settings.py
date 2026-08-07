@@ -7,6 +7,7 @@ SETTINGS_FILE = os.environ["SETTINGS_FILE"]
 EXTRA_SETTINGS_FILE = os.environ["EXTRA_SETTINGS_FILE"]
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "test")
+VLESS_UUID_430 = os.environ["VLESS_UUID_430"]
 
 DEBUG = os.environ.get("DEBUG", "0") == "1"
 

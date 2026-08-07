@@ -69,7 +69,7 @@
         script = ''
           ${package}/bin/gunicorn
         '';
-        serviceConfig.environmentFile = [
+        serviceConfig.EnvironmentFile = [
           config.age.secrets.web-app-subscription-env.path
         ];
       };

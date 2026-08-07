@@ -18,9 +18,15 @@ def sing_box(request: HttpRequest):
     system = request.GET.get("system", "unknown")
     tailscale = request.GET.get("tailscale", "0") == "1"
     auto_redirect = request.GET.get("auto-redirect", "1") == "1"
+    user = request.GET.get("user", "")
 
     config = json.load(open(settings.SETTINGS_FILE))
     extra_settings = json.load(open(settings.EXTRA_SETTINGS_FILE))
+
+    if user == "430":
+        for outbound in config["outbounds"]:
+            if outbound["type"] == "vless":
+                outbound["uuid"] = settings.VLESS_UUID_430
 
     for inbound in config["inbounds"]:
         if inbound["type"] == "tun":

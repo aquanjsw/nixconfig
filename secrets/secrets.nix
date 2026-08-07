@@ -28,6 +28,7 @@ in
   "caddy-env.age".publicKeys = users ++ [ cat-system ];
   "web-app-subscription-env.age".publicKeys = users ++ [ cat-system ];
   "vless-encryption.age".publicKeys = users ++ [ cat-system ];
+  "vless-uuid-430.age".publicKeys = users ++ [ cat-system ];
 
   "tailscale-auth-key.age".publicKeys = users ++ systems;
   "huggingface-env.age".publicKeys = users ++ systems;

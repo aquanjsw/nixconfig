@@ -7,37 +7,30 @@
 }:
 {
   options = {
-
     user = lib.mkOption {
       default = "rag";
       readOnly = true;
     };
-
     isLimited = lib.mkOption {
       default = false;
       description = "Whether the system is limited in resources.";
     };
-
     isOutside = lib.mkOption {
       default = false;
       description = "Whether the system is outside.";
     };
-
     isBareMetal = lib.mkOption {
       default = false;
       description = "Whether the system is running on bare metal.";
     };
-
     domain = lib.mkOption {
       default = "zaelggk.com";
       readOnly = true;
     };
-
     swapfileSize = lib.mkOption {
       default = 4 * 1024;
       description = "The size of the swapfile in MiB.";
     };
-
   };
 
   config =
@@ -77,6 +70,7 @@
         );
       environment.variables = {
       };
+      # For PyTorch
       environment.memoryAllocator.provider = "jemalloc";
 
       programs.fish.enable = true;
