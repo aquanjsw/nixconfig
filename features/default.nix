@@ -62,6 +62,7 @@
         with pkgs;
         (
           [
+            binutils
           ]
           ++ lib.optionals (config.isBareMetal) [
             usbutils
@@ -131,16 +132,9 @@
           let
             unstable = import inputs.nixpkgs-unstable {
               system = prev.stdenv.hostPlatform.system;
-              config.allowUnfree = true;
-              config.permittedInsecurePackages = [ "python3.13-vllm-0.16.0" ];
             };
           in
           {
-            open-webui = unstable.open-webui;
-            opencode = unstable.opencode;
-            rtk = unstable.rtk;
-            sing-box = unstable.sing-box;
-            ollama = unstable.ollama;
             # sing-box = unstable.sing-box.overrideAttrs (old: {
             #   version = "1.14.0-alpha.44";
             #   src = pkgs.fetchFromGitHub {
@@ -150,16 +144,6 @@
             #     hash = "sha256-RsiBxPQOE4rE3cFRjl81x1uIG2A4/smSBUg+G0vm7uQ=";
             #   };
             # });
-            python3Packages = prev.python3Packages.override {
-              overrides = self: super: {
-                huggingface-hub = unstable.python3Packages.huggingface-hub;
-              };
-            };
-            python313Packages = prev.python313Packages.override {
-              overrides = self: super: {
-                vllm = unstable.python313Packages.vllm;
-              };
-            };
           }
         )
       ];
