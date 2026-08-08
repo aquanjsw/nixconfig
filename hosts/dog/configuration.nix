@@ -26,6 +26,8 @@
   services."9router".enable = true;
   services."9router".host = "0.0.0.0";
   services.headroom.enable = true;
+  services.freellmapi.enable = true;
+  services.freellmapi.host = "0.0.0.0";
 
   services.beszel.agent.enable = true;
   services.jellyfin.enable = true;

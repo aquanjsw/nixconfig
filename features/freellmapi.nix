@@ -19,7 +19,7 @@
     in
     (lib.mkIf cfg.enable {
       virtualisation.oci-containers.containers."freellmapi" = {
-        image = "ghcr.io/tashfeenahmed/freellmapi:v0.4.1";
+        image = "ghcr.io/tashfeenahmed/freellmapi:v0.6.9";
         autoStart = true;
         environment = {
           NODE_ENV = "production";
