@@ -12,18 +12,8 @@ in
     default = {
       log = {
         disabled = false;
-        level = "info";
+        level = "debug";
         timestamp = false;
-      };
-      experimental = {
-        clash_api = {
-          external_controller = "127.0.0.1:${toString dashboardPort}";
-          external_ui = "dashboard";
-          secret._secret = config.age.secrets.clash-api-secret.path;
-          access_control_allow_origin = [
-            "https://${dashboardDomain}"
-          ];
-        };
       };
       outbounds = [
         {
