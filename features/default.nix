@@ -127,25 +127,13 @@
 
       nixpkgs.overlays = [
         inputs.realcugan.overlays.default
-        (
-          final: prev:
-          let
-            unstable = import inputs.nixpkgs-unstable {
-              system = prev.stdenv.hostPlatform.system;
-            };
-          in
-          {
-            # sing-box = unstable.sing-box.overrideAttrs (old: {
-            #   version = "1.14.0-alpha.44";
-            #   src = pkgs.fetchFromGitHub {
-            #     owner = "SagerNet";
-            #     repo = "sing-box";
-            #     rev = "v${old.version}";
-            #     hash = "sha256-RsiBxPQOE4rE3cFRjl81x1uIG2A4/smSBUg+G0vm7uQ=";
-            #   };
-            # });
-          }
-        )
+        (final: prev: {
+          rust-jemalloc-sys = prev.rust-jemalloc-sys.overrideAttrs (prevAttrs: {
+            setupHook = pkgs.writeText "setup-hook.sh" ''
+              export JEMALLOC_OVERRIDE="@out@/lib/libjemalloc_pic.a"
+            '';
+          });
+        })
       ];
       nixpkgs.config.allowUnfree = true;
 
