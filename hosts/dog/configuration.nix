@@ -1,4 +1,5 @@
 {
+  hostName,
   config,
   pkgs,
   lib,
@@ -77,7 +78,7 @@
 
   nixpkgs.config.cudaSupport = true;
 
-  networking.hostName = "dog";
+  networking.hostName = hostName;
 
   swapfileSize = 8 * 1024;
 

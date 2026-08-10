@@ -1,4 +1,5 @@
 {
+  hostName,
   config,
   pkgs,
   lib,
@@ -40,7 +41,7 @@
 
   nixpkgs.config.cudaSupport = true;
 
-  networking.hostName = "rac";
+  networking.hostName = hostName;
 
   swapfileSize = 8 * 1024;
 

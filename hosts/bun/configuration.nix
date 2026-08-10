@@ -1,4 +1,5 @@
 {
+  hostName,
   config,
   pkgs,
   ...
@@ -43,7 +44,7 @@
 
   swapfileSize = 8 * 1024;
 
-  networking.hostName = "bun";
+  networking.hostName = hostName;
 
   system.stateVersion = "26.05";
 }

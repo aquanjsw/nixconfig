@@ -30,17 +30,10 @@
     let
       inherit (nixpkgs) lib;
 
-      oses = [
-        "cat"
-        "dog"
-        "bun"
-        "tur"
-      ];
-
       mkOs =
         hostName:
         (lib.nixosSystem {
-          specialArgs = { inherit inputs; };
+          specialArgs = { inherit inputs hostName; };
           modules = [
             (
               { lib, config, ... }:
@@ -69,9 +62,11 @@
         });
 
       forAllSystems = lib.genAttrs lib.systems.flakeExposed;
+
+      hosts = builtins.attrNames (builtins.readDir ./hosts);
     in
     {
-      nixosConfigurations = nixpkgs.lib.genAttrs oses (hostName: mkOs hostName);
+      nixosConfigurations = nixpkgs.lib.genAttrs hosts (hostName: mkOs hostName);
 
       devShells = forAllSystems (import ./devShells.nix { inherit inputs; });
     };

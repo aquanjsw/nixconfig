@@ -1,4 +1,5 @@
 {
+  hostName,
   config,
   pkgs,
   ...
@@ -48,7 +49,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "tur";
+  networking.hostName = hostName;
 
   zramSwap.memoryPercent = 100;
   swapfileSize = 8 * 1024;

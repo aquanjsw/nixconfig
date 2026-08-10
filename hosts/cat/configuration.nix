@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  hostName,
+  config,
+  lib,
+  ...
+}:
 {
 
   config = {
@@ -14,7 +19,7 @@
     services.qemuGuest.enable = true;
     swapfileSize = 512;
 
-    networking.hostName = "cat";
+    networking.hostName = hostName;
     networking.sits.ip6net = {
       local = "138.128.193.71";
       remote = "45.32.66.87";
