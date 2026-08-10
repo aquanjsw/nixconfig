@@ -1,6 +1,7 @@
 {
-  config,
-  ...
+  vless-server,
+  vless-uuid,
+  reality-pubkey,
 }:
 {
   "$schema" = "https://sing-box.sagernet.org/schema.json";
@@ -159,7 +160,7 @@
           "geosite-steam@cn"
         ];
         domain_suffix = [
-          config.domain
+          vless-server
         ];
         ip_is_private = true;
         outbound = "direct";
@@ -195,13 +196,6 @@
       auto_route = true;
       auto_redirect = true;
       strict_route = true;
-      exclude_package = [
-        "com.jingdong.app.mall"
-        "com.coolapk.market"
-        "com.autonavi.minimap"
-        "com.netease.cloudmusic"
-        "tv.dankamu.bili"
-      ];
       route_exclude_address = [
         # Bypass NAT-PMP/UPnP-IGD/PCP traffic
         "192.168.0.0/16"
@@ -221,16 +215,16 @@
     {
       type = "vless";
       tag = "proxy";
-      server = config.domain;
+      server = vless-server;
       server_port = 443;
-      uuid._secret = config.age.secrets.vless-uuid.path;
+      uuid = vless-uuid;
       flow = "xtls-rprx-vision";
       tls = {
         enabled = true;
-        server_name = config.domain;
+        server_name = vless-server;
         reality = {
           enabled = true;
-          public_key._secret = config.age.secrets.reality-public-key.path;
+          public_key = reality-pubkey;
           short_id = "";
         };
         utls = {

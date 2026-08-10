@@ -7,7 +7,15 @@
   # For simplicity (other platforms' settings can be justified through web-app),
   # the settings here are optimized for linux
   options.tunnel.client.settings = lib.mkOption {
-    default = import ./settings.nix { inherit config; };
+    default = import ./settings.nix {
+      vless-server = config.domain;
+      vless-uuid = {
+        _secret = config.age.secrets.vless-uuid.path;
+      };
+      reality-pubkey = {
+        _secret = config.age.secrets.reality-public-key.path;
+      };
+    };
     readOnly = true;
   };
   options.tunnel.client.enable = lib.mkEnableOption "tunnel client";
