@@ -1,5 +1,4 @@
 {
-  hostName,
   config,
   pkgs,
   ...
@@ -8,34 +7,24 @@
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
-    ./samba.nix
   ];
 
-  isBareMetal = true;
+  rag = {
+  };
 
-  tunnel.client.enable = true;
-
-  services.beszel.agent.enable = true;
   services.samba.enable = true;
-  services.tailscale.enable = true;
-  services.ollama.enable = false;
-  services.ollama.host = "0.0.0.0";
-  services.ollama.package = pkgs.ollama-cuda;
 
-  hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia.open = false;
   hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
-  nix.settings.substituters = [ "https://cache.nixos-cuda.org" ];
-  nix.settings.trusted-public-keys = [
-    "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
-  ];
 
-  users.users.${config.user} = {
+  users.users.${config.rag.username} = {
     packages =
       with pkgs;
       [
-        litecli
+        # Python LSP for Zed
+        ruff
+        ty
       ]
       ++ (with pkgs.python3Packages; [
         huggingface-hub
@@ -43,16 +32,14 @@
   };
 
   environment.systemPackages = with pkgs; [
-    nvtopPackages.nvidia
+    binutils # nm
+    usbutils # lsusb
+    pciutils # lspci
   ];
 
   boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = hostName;
-
-  zramSwap.memoryPercent = 100;
-  swapfileSize = 8 * 1024;
+  networking.hostName = "tur";
 
   fileSystems = {
     "/data" = {
@@ -66,14 +53,6 @@
       options = [ "nofail" ];
     };
   };
-
-  nixpkgs.config.packageOverrides = pkgs: {
-    ollama-cuda = pkgs.ollama-cuda.override {
-      cudaArches = [ "61" ];
-    };
-  };
-
-  nixpkgs.config.cudaSupport = true;
 
   system.stateVersion = "26.05";
 }

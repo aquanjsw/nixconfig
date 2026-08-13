@@ -1,22 +1,24 @@
-{ inputs }:
-system: {
+{
+  pkgs,
+  utils,
+  lib,
+}:
+{
   web-app-subscription =
     let
-      pkgs = import inputs.nixpkgs { inherit system; };
-      inherit (pkgs) lib;
-      utils = import "${inputs.nixpkgs}/nixos/lib/utils.nix" {
-        inherit pkgs lib;
-        config = { };
-      };
       pythonEnv = pkgs.python3.withPackages (ps: [ ps.django ]);
-      settings = import ./features/tunnel/client/settings.nix {
-        vless-server = "example.com";
-        vless-uuid = "dummy-secret";
-        reality-pubkey = "dummy-secret";
+      settings = import ./modules/nixos/services/sing-box/client/settings.nix {
+        vless-server = "PLACEHOLDER";
+        vless-uuid = "PLACEHOLDER";
+        reality-public-key = "PLACEHOLDER";
       };
       settingsFile = "/tmp/config.json";
       extraSettings = {
-        tailscale-auth-key = "test key";
+        tailscale-auth-key = "PLACEHOLDER";
+        vless-uuids = {
+          default = "PLACEHOLDER0";
+          user = "PLACEHOLDER1";
+        };
       };
       extraSettingsFile = "/tmp/extra-config.json";
     in
@@ -25,7 +27,7 @@ system: {
       shellHook = ''
         mkdir -p .dev
         ln -sf ${lib.getBin pythonEnv}/bin/python .dev/python
-        ${utils.genJqSecretsReplacementSnippet settings settingsFile}
+        echo '${builtins.toJSON settings}' > ${settingsFile}
         echo '${builtins.toJSON extraSettings}' > ${extraSettingsFile}
       '';
       SETTINGS_FILE = settingsFile;

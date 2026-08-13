@@ -5,54 +5,40 @@ from django.http import HttpRequest, HttpResponse
 
 
 def sing_box(request: HttpRequest):
-    mtu_str = request.GET.get("mtu", "0")
-    try:
-        mtu = int(mtu_str)
-    except ValueError:
-        mtu = 0
-
-    strict_route = request.GET.get("strict-route", "1") == "1"
-    stack = request.GET.get("stack", "")
-    log_level = request.GET.get("log-level", "debug")
-    ipv6 = request.GET.get("ipv6", "1") == "1"
-    system = request.GET.get("system", "unknown")
-    tailscale = request.GET.get("tailscale", "0") == "1"
-    auto_redirect = request.GET.get("auto-redirect", "1") == "1"
-    user = request.GET.get("user", "")
+    os = request.GET.get("os", "")
+    if not os or os not in ["linux", "windows", "android"]:
+        return HttpResponse("Invalid OS", status=400)
 
     config = json.load(open(settings.SETTINGS_FILE))
-    extra_settings = json.load(open(settings.EXTRA_SETTINGS_FILE))
+    extra = json.load(open(settings.EXTRA_SETTINGS_FILE))
 
-    if user == "430":
-        for outbound in config["outbounds"]:
-            if outbound["type"] == "vless":
-                outbound["uuid"] = settings.VLESS_UUID_430
+    VLESS_UUID_MAP = extra["vless-uuids"]
+
+    auto_redirect = request.GET.get("auto-redirect", "1") == "1"
+    user = request.GET.get("user", "default")
+
+    for outbound in config["outbounds"]:
+        if outbound["type"] == "vless":
+            outbound["uuid"] = VLESS_UUID_MAP[user]
+            break
 
     for inbound in config["inbounds"]:
         if inbound["type"] == "tun":
-            if mtu > 0:
-                inbound["mtu"] = mtu
-            inbound["auto_redirect"] = system != "windows" and auto_redirect
-            inbound["strict_route"] = strict_route
-            if stack:
-                inbound["stack"] = stack
+            inbound["auto_redirect"] = os != "windows" and auto_redirect
+            break
 
-    config["log"]["level"] = log_level
-
-    config["dns"]["strategy"] = "ipv4_only" if not ipv6 else "prefer_ipv4"
-
-    if system != "linux":
+    if os != "linux":
         for server in config["dns"]["servers"]:
             if server["type"] == "dhcp":
                 server["type"] = "local"
                 break
 
-    if tailscale:
+    if os == "android":
         config["endpoints"] = [
             {
                 "type": "tailscale",
                 "tag": "tailscale-ep",
-                "auth_key": extra_settings["tailscale-auth-key"],
+                "auth_key": extra["tailscale-auth-key"],
                 "ephemeral": True,
             }
         ]
@@ -83,6 +69,7 @@ def sing_box(request: HttpRequest):
             if inbound["type"] == "tun":
                 inbound["route_exclude_address"].remove("100.64.0.0/10")
                 inbound["route_exclude_address"].remove("fd7a:115c:a1e0::/48")
+                break
 
     content = json.dumps(config, indent=2)
     return HttpResponse(

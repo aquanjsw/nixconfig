@@ -1,5 +1,5 @@
 {
-  hostName,
+  inputs,
   config,
   pkgs,
   lib,
@@ -9,53 +9,33 @@
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
-    ./samba.nix
   ];
 
-  dnf.enable = true;
-  dnf.domain = "gecko.${config.domain}";
+  rag = {
+    services.dnf.enable = true;
+    services.dnf.domain = "gecko.${config.rag.domain}";
+  };
 
-  isBareMetal = true;
-
-  tunnel.client.enable = true;
-  services.sing-box.settings.experimental.clash_api.access_control_allow_origin = [
-    "http://gecko.${config.domain}"
-  ];
-
-  services.comfyui.enable = true;
-  services.comfyui.host = "0.0.0.0";
-  services."9router".enable = true;
-  services."9router".host = "0.0.0.0";
-  services.headroom.enable = true;
-  services.freellmapi.enable = true;
-  services.freellmapi.host = "0.0.0.0";
-
-  services.beszel.agent.enable = true;
   services.jellyfin.enable = true;
   services.qbittorrent.enable = true;
   services.samba.enable = true;
-  services.tailscale.enable = true;
-  services.ollama.enable = false;
-  services.ollama.host = "0.0.0.0";
-  services.ollama.package = pkgs.ollama-cuda;
-
-  hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.nvidia.open = true;
-  nix.settings.substituters = [ "https://cache.nixos-cuda.org" ];
-  nix.settings.trusted-public-keys = [
-    "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
-  ];
 
-  users.users.${config.user} = {
+  users.users.${config.rag.username} = {
     packages =
       with pkgs;
       [
-        nix-index
         realcugan
-        opencode
-        rtk
-        litecli
+        litecli # SQLite CLI Querier
+        inputs.agenix.packages.${stdenv.hostPlatform.system}.default
+
+        # Python LSP for Zed
+        ruff
+        ty
+
+        # Nix LSP for Zed
+        nil
+        nixd
       ]
       ++ (with pkgs.python3Packages; [
         huggingface-hub
@@ -63,11 +43,12 @@
   };
 
   environment.systemPackages = with pkgs; [
-    nvtopPackages.nvidia
+    binutils # nm
+    usbutils # lsusb
+    pciutils # lspci
   ];
 
   boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
 
   boot.initrd.services.lvm.enable = true;
   fileSystems."/data" = {
@@ -76,11 +57,7 @@
     options = [ "nofail" ];
   };
 
-  nixpkgs.config.cudaSupport = true;
-
-  networking.hostName = hostName;
-
-  swapfileSize = 8 * 1024;
+  networking.hostName = "dog";
 
   system.stateVersion = "25.11";
 }

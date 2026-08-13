@@ -5,18 +5,20 @@
   ...
 }:
 {
-  options.services.web-app.subscription.enable = lib.mkEnableOption "web-app-subscription";
-  options.services.web-app.subscription.port = lib.mkOption {
-    type = lib.types.port;
-    default = 8080;
-  };
-  options.services.web-app.subscription.domain = lib.mkOption {
-    type = lib.types.str;
-    default = "subscription";
+  options.rag.cat.services.web-apps.subscription = {
+    enable = lib.mkEnableOption "web-app-subscription";
+    port = lib.mkOption {
+      type = lib.types.port;
+      default = 8080;
+    };
+    subdomain = lib.mkOption {
+      type = lib.types.str;
+      default = "subscription";
+    };
   };
   config =
     let
-      cfg = config.services.web-app.subscription;
+      cfg = config.rag.cat.services.web-apps.subscription;
       pythonEnv = pkgs.python3.withPackages (ps: [
         ps.django
         ps.gunicorn
@@ -45,35 +47,53 @@
       };
     in
     lib.mkIf cfg.enable {
-      jsonDeployment.deployments.sing-box.settings = config.tunnel.client.settings;
-      jsonDeployment.deployments.sing-box-extra.settings = {
-        tailscale-auth-key._secret = config.age.secrets.tailscale-auth-key.path;
+      rag.utils.json-deployments = {
+        sing-box.settings = import config.rag.services.sing-box.client.settings {
+          vless-server = config.rag.services.sing-box.server.name;
+          vless-uuid = "PLACEHOLDER";
+          reality-public-key = {
+            _secret = config.age.secrets."by-host/${config.networking.hostName}/reality-public-key".path;
+          };
+        };
+        sing-box-extra.settings = {
+          tailscale-auth-key = {
+            _secret = config.age.secrets."by-host/${config.networking.hostName}/tailscale-auth-key".path;
+          };
+          vless-uuids = builtins.listToAttrs (
+            map (uuidName: {
+              name = uuidName;
+              value = {
+                _secret = config.age.secrets."by-group/vless-uuids/${uuidName}".path;
+              };
+            }) (builtins.attrNames config.rag.secret-registry.by-group.vless-uuids)
+          );
+        };
       };
+
       services.caddy.virtualHosts = {
-        "${cfg.domain}.${config.domain}".extraConfig = ''
+        "${cfg.subdomain}.${config.rag.domain}".extraConfig = ''
           basic_auth {
             rag {$HASHED_PASSWORD}
           }
           reverse_proxy 127.0.0.1:${toString cfg.port}
         '';
       };
+
       systemd.services.web-app-subscription = {
         description = "web-app-subscription";
         wantedBy = [ "multi-user.target" ];
         after = [ "network.target" ];
         environment = {
-          SETTINGS_FILE = config.jsonDeployment.deployments.sing-box.path;
-          EXTRA_SETTINGS_FILE = config.jsonDeployment.deployments.sing-box-extra.path;
-          DOMAIN = "${cfg.domain}.${config.domain}";
+          SETTINGS_FILE = config.rag.utils.json-deployments.sing-box.path;
+          EXTRA_SETTINGS_FILE = config.rag.utils.json-deployments.sing-box-extra.path;
+          DOMAIN = "${cfg.subdomain}.${config.rag.domain}";
         };
         script = ''
           ${package}/bin/gunicorn
         '';
         serviceConfig.EnvironmentFile = [
-          config.age.secrets.web-app-subscription-env.path
+          config.age.secrets."by-host/${config.networking.hostName}/web-app-subscription-env".path
         ];
       };
-      age.secrets.web-app-subscription-env.file = config.paths.secrets + "/web-app-subscription-env.age";
-      age.secrets.tailscale-auth-key.file = config.paths.secrets + "/tailscale-auth-key.age";
     };
 }

@@ -3,18 +3,20 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# From systemd env
 SETTINGS_FILE = os.environ["SETTINGS_FILE"]
 EXTRA_SETTINGS_FILE = os.environ["EXTRA_SETTINGS_FILE"]
+_DOMAIN = os.environ.get("DOMAIN", "")
 
-SECRET_KEY = os.environ.get("SECRET_KEY", "test")
-VLESS_UUID_430 = os.environ["VLESS_UUID_430"]
+# From systemd envfile
+SECRET_KEY = os.environ.get("SECRET_KEY", "dev")
 
 DEBUG = os.environ.get("DEBUG", "0") == "1"
 
 ALLOWED_HOSTS = ["localhost"]
 
-if d := os.environ.get("DOMAIN", ""):
-    ALLOWED_HOSTS.append(d)
+if _DOMAIN:
+    ALLOWED_HOSTS.append(_DOMAIN)
 
 
 # Application definition

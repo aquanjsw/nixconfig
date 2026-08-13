@@ -1,8 +1,7 @@
 {
-  description = "Rag's Nix Config";
+  description = "Shin Rag's nixconfig";
 
   inputs = {
-
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
     nixpkgs-unstable.url = "github:nixos/nixpkgs?ref=nixos-unstable";
 
@@ -11,9 +10,6 @@
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
-
-    i915-sriov.url = "github:strongtz/i915-sriov-dkms";
-    i915-sriov.inputs.nixpkgs.follows = "nixpkgs";
 
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
@@ -30,45 +26,38 @@
     let
       inherit (nixpkgs) lib;
 
-      mkOs =
-        hostName:
+      mkNixOS =
+        hostname:
         (lib.nixosSystem {
-          specialArgs = { inherit inputs hostName; };
+          specialArgs = { inherit inputs; };
           modules = [
-            (
-              { lib, config, ... }:
-              {
-                options = {
-                  paths = lib.mkOption {
-                    default = {
-                      secrets = ./secrets;
-                    };
-                    readOnly = true;
-                  };
-                };
-                config = {
-                  home-manager.users.${config.user} = ./hm/hosts/${hostName};
-                };
-              }
-            )
-            inputs.disko.nixosModules.disko
-            inputs.agenix.nixosModules.default
-            inputs.home-manager.nixosModules.home-manager
-            inputs.i915-sriov.nixosModules.default
-            ./features
-            ./substitutes
-            ./hosts/${hostName}/configuration.nix
+            ./modules/home
+            ./modules/nixos
+            ./hosts/${hostname}/configuration.nix
           ];
         });
 
       forAllSystems = lib.genAttrs lib.systems.flakeExposed;
 
-      hosts = builtins.attrNames (builtins.readDir ./hosts);
+      hostnames = [
+        "dog"
+        "cat"
+        "tur"
+      ];
     in
     {
-      nixosConfigurations = nixpkgs.lib.genAttrs hosts (hostName: mkOs hostName);
+      nixosConfigurations = nixpkgs.lib.genAttrs hostnames (hostname: mkNixOS hostname);
 
-      devShells = forAllSystems (import ./devShells.nix { inherit inputs; });
+      devShells = forAllSystems (
+        system:
+        let
+          pkgs = import inputs.nixpkgs { inherit system; };
+          utils = import "${inputs.nixpkgs}/nixos/lib/utils.nix" {
+            inherit pkgs lib;
+          };
+        in
+        (import ./devShells.nix { inherit pkgs utils lib; })
+      );
     };
 }
 

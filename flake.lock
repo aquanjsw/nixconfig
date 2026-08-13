@@ -106,26 +106,6 @@
         "type": "github"
       }
     },
-    "i915-sriov": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1778038228,
-        "narHash": "sha256-hnZSTWgGRYRXoYWB/r4ViQ4OMJlNEj2SDH8jxxn1vso=",
-        "owner": "strongtz",
-        "repo": "i915-sriov-dkms",
-        "rev": "2421d3ff8c27a967ffc2c6a1d19e0f3790ace5a0",
-        "type": "github"
-      },
-      "original": {
-        "owner": "strongtz",
-        "repo": "i915-sriov-dkms",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1777578337,
@@ -184,7 +164,6 @@
         "agenix": "agenix",
         "disko": "disko",
         "home-manager": "home-manager_2",
-        "i915-sriov": "i915-sriov",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "realcugan": "realcugan",
@@ -194,7 +173,7 @@
     "ssh-keys": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-cLr0j75ctuY14xTIm1LkTTtX23pBe3YgJqh/2K6aKDA=",
+        "narHash": "sha256-ColjyIW9IwH348UGXkxqCZLOsdTkNVdvz4ZvTEbc4Hc=",
         "type": "file",
         "url": "https://github.com/aquanjsw.keys"
       },

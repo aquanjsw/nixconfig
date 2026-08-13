@@ -1,25 +1,25 @@
 {
-  hostName,
   config,
-  lib,
   ...
 }:
 {
+  imports = [
+    ./hardware-configuration.nix
+    ./caddy
+    ./web-apps
+  ];
 
   config = {
+    rag = {
+      services.sing-box.role = "server";
+      ${config.networking.hostName}.services.web-apps.subscription.enable = true;
+      system.swap.fileSize = 1024;
+    };
 
-    isLimited = true;
-    isOutside = true;
-    tunnel.server.enable = true;
-    services.web-app.subscription.enable = true;
     services.caddy.enable = true;
-    services.beszel.agent.enable = true;
-    services.beszel.hub.enable = true;
-    services.tailscale.derper.enable = true;
     services.qemuGuest.enable = true;
-    swapfileSize = 512;
 
-    networking.hostName = hostName;
+    networking.hostName = "cat";
     networking.sits.ip6net = {
       local = "138.128.193.71";
       remote = "45.32.66.87";
@@ -40,18 +40,12 @@
       ];
     };
 
+    boot.loader.systemd-boot.enable = false;
     boot.loader.grub.device = "/dev/sda";
     boot.loader.grub.enable = true;
 
     system.stateVersion = "25.11";
   };
-
-  imports = [
-    ./hardware-configuration.nix
-    ./syncthing.nix
-    ./web-server
-    ./web-apps
-  ];
 }
 
 # vim: sts=2 sw=2 et ai
