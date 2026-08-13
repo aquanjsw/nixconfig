@@ -1,7 +1,7 @@
 {
   pkgs,
-  utils,
   lib,
+  ...
 }:
 {
   web-app-subscription =

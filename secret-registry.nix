@@ -3,6 +3,7 @@
   ...
 }:
 let
+  # Declare host permissions for each group here
   by-group-registry = {
     vless-uuids = {
       "430" = [ "cat" ];
