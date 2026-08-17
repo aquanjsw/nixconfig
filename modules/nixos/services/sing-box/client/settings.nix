@@ -27,7 +27,7 @@
       }
       {
         type = "tailscale";
-        tag = "tailscale-dns";
+        tag = "ts-dns";
         endpoint = "ts-ep";
       }
     ];
@@ -49,42 +49,45 @@
         ];
       }
       {
-        server = "tailscale-dns";
-        ip_accept_any = true;
+        preferred_by = "ts-dns";
+        server = "ts-dns";
       }
     ];
   };
+  http_clients = [
+    {
+      detour = "proxy";
+      tag = "default";
+    }
+  ];
   route = {
     default_domain_resolver = "local";
     auto_detect_interface = true;
+    default_http_client = "";
     rule_set = [
       {
         tag = "geosite-private";
         type = "remote";
         format = "binary";
         url = "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-private.srs";
-        download_detour = "proxy";
       }
       {
         tag = "geosite-category-ads-all";
         type = "remote";
         format = "binary";
         url = "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs";
-        download_detour = "proxy";
       }
       {
         tag = "geosite-cn";
         type = "remote";
         format = "binary";
         url = "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs";
-        download_detour = "proxy";
       }
       {
         tag = "geoip-cn";
         type = "remote";
         format = "binary";
         url = "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs";
-        download_detour = "proxy";
       }
       {
         tag = "geosite-groq";
