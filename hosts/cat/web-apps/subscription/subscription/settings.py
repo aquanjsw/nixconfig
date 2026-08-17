@@ -6,6 +6,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # From systemd env
 SETTINGS_FILE = os.environ["SETTINGS_FILE"]
 EXTRA_SETTINGS_FILE = os.environ["EXTRA_SETTINGS_FILE"]
+SERVER_SETTINGS_FILE = os.environ["SERVER_SETTINGS_FILE"]
+STOLEN_SERVER = os.environ["STOLEN_SERVER"]
+
 _DOMAIN = os.environ.get("DOMAIN", "")
 
 # From systemd envfile

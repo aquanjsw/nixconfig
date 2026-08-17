@@ -45,6 +45,7 @@
           runHook postInstall
         '';
       };
+      stolen-server = "www.speedtest.net";
     in
     lib.mkIf cfg.enable {
       rag.utils.json-deployments = {
@@ -54,11 +55,12 @@
           reality-public-key = {
             _secret = config.age.secrets."by-host/${config.networking.hostName}/reality-public-key".path;
           };
-        };
-        sing-box-extra.settings = {
           tailscale-auth-key = {
             _secret = config.age.secrets."by-host/${config.networking.hostName}/tailscale-auth-key".path;
           };
+          api-port = config.rag.services.sing-box.client.api-port;
+        };
+        sing-box-extra.settings = {
           vless-uuids = builtins.listToAttrs (
             map (uuidName: {
               name = uuidName;
@@ -67,6 +69,16 @@
               };
             }) (builtins.attrNames config.rag.secret-registry.by-group.vless-uuids)
           );
+        };
+        sing-box-server.settings = import config.rag.services.sing-box.server.settings {
+          vless-uuids = config.rag.services.sing-box.server.vless-uuids;
+          server-name = stolen-server;
+          handshake-server = stolen-server;
+          handshake-port = 443;
+          reality-private-key = config.rag.services.sing-box.server.reality-private-key;
+          res-password = config.rag.services.sing-box.server.res-password;
+          api-port = config.rag.services.sing-box.server.api-port;
+          api-secret = config.rag.services.sing-box.server.api-secret;
         };
       };
 
@@ -86,6 +98,8 @@
         environment = {
           SETTINGS_FILE = config.rag.utils.json-deployments.sing-box.path;
           EXTRA_SETTINGS_FILE = config.rag.utils.json-deployments.sing-box-extra.path;
+          SERVER_SETTINGS_FILE = config.rag.utils.json-deployments.sing-box-server.path;
+          STOLEN_SERVER = stolen-server;
           DOMAIN = "${cfg.subdomain}.${config.rag.domain}";
         };
         script = ''

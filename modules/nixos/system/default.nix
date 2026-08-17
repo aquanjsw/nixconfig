@@ -17,10 +17,13 @@
     };
 
     programs.nix-ld.enable = true;
+    programs.neovim = {
+      enable = true;
+      defaultEditor = true;
+    };
 
     services.sing-box.enable = true;
     services.openssh.enable = true;
-    services.tailscale.enable = true;
 
     users.users.root = {
       hashedPassword = "$y$j9T$Y5Iio4JlEd0wIKlZHt1gG0$.FpHtOJBjHdk6yPSwEs7hVDrNRyOJ9r8CnV71rbLiS5";
@@ -36,7 +39,9 @@
         dig
         jq
       ];
-      variables = { };
+      sessionVariables = {
+        EDITOR = "nvim";
+      };
       memoryAllocator.provider = "jemalloc"; # to prevent memleak when using pytorch
     };
 
@@ -63,5 +68,13 @@
     boot.loader.efi.canTouchEfiVariables = true;
 
     nixpkgs.config.allowUnfree = true;
+
+    security.acme = {
+      defaults = {
+        email = config.rag.email;
+        dnsProvider = "cloudflare";
+      };
+      acceptTerms = true;
+    };
   };
 }

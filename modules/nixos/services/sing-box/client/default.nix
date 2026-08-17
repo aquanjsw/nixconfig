@@ -3,9 +3,15 @@ let
   cfg = config.rag.services.sing-box;
 in
 {
-  options.rag.services.sing-box.client.settings = lib.mkOption {
-    default = ./settings.nix;
-    readOnly = true;
+  options.rag.services.sing-box.client = {
+    settings = lib.mkOption {
+      default = ./settings.nix;
+      readOnly = true;
+    };
+    api-port = lib.mkOption {
+      default = 2436;
+      readOnly = true;
+    };
   };
 
   config = lib.mkIf (config.services.sing-box.enable && cfg.role == "client") {
@@ -17,18 +23,14 @@ in
       reality-public-key = {
         _secret = config.age.secrets."by-host/${config.networking.hostName}/reality-public-key".path;
       };
+      tailscale-auth-key = {
+        _secret = config.age.secrets."by-host/${config.networking.hostName}/tailscale-auth-key".path;
+      };
+      api-port = cfg.client.api-port;
     };
 
-    # sing-box tun's NAT-PMP/UPnP-IGD/PCP traffic bypass will render sing-box's DNS
-    # hijacking ineffective if the system DNS is set to in the bypass CIDRs, e.g.
-    # the gateway IP.
-    # Set system DNS to any IP outside the bypass CIDRs to avoid DNS hijacking issues.
-    networking = {
-      networkmanager.dns = "none";
-      nameservers = [ "1.1.1.1" ];
+    environment.variables = {
+      BOX_API_URL = "http://127.0.0.1:${toString cfg.client.api-port}";
     };
-
-    # Disable tailscale's dns hijacking so that sing-box's tun can take over
-    services.tailscale.extraUpFlags = [ "--accept-dns=false" ];
   };
 }

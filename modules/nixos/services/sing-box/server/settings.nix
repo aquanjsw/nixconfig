@@ -1,8 +1,12 @@
 {
   vless-uuids,
   server-name,
-  server-port,
+  handshake-server,
+  handshake-port,
   reality-private-key,
+  res-password,
+  api-port,
+  api-secret,
 }:
 {
   "$schema" = "https://sing-box.sagernet.org/schema.json";
@@ -14,6 +18,21 @@
   outbounds = [
     {
       type = "direct";
+      tag = "direct";
+    }
+    {
+      tag = "warp";
+      type = "socks";
+      server = "127.0.0.1";
+      server_port = 40000;
+    }
+    {
+      tag = "res";
+      type = "http";
+      server = "gw.dataimpulse.com";
+      server_port = 823;
+      username = "967395487d806a6940d5__cr.us";
+      password = res-password;
     }
   ];
   inbounds = [
@@ -33,13 +52,50 @@
           private_key = reality-private-key;
           short_id = [ "" ];
           handshake = {
-            server = server-name;
-            server_port = server-port;
+            server = handshake-server;
+            server_port = handshake-port;
           };
         };
       };
       transport = {
         type = "httpupgrade";
+      };
+    }
+  ];
+  route = {
+    final = "direct";
+    rules = [
+      {
+        action = "sniff";
+      }
+      {
+        action = "route";
+        rule_set = [
+          "geosite-groq"
+        ];
+        domain_suffix = [
+          ".stripe.com"
+        ];
+        outbound = "res";
+      }
+    ];
+    rule_set = [
+      {
+        tag = "geosite-groq";
+        type = "remote";
+        format = "binary";
+        url = "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-groq.srs";
+      }
+    ];
+  };
+  services = [
+    {
+      type = "api";
+      secret = api-secret;
+      listen = "127.0.0.1";
+      listen_port = api-port;
+      dashboard = {
+        enabled = true;
       };
     }
   ];

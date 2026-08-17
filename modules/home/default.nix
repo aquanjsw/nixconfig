@@ -8,6 +8,8 @@
   config.home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    users.${config.rag.username}.home.stateVersion = config.system.stateVersion;
+    users.${config.rag.username} = {
+      home.stateVersion = config.system.stateVersion;
+    };
   };
 }

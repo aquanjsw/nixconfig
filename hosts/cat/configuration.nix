@@ -1,4 +1,5 @@
 {
+  pkgs,
   config,
   ...
 }:
@@ -18,6 +19,10 @@
 
     services.caddy.enable = true;
     services.qemuGuest.enable = true;
+    services.cloudflare-warp.enable = true;
+
+    environment.systemPackages = with pkgs; [
+    ];
 
     networking.hostName = "cat";
     networking.sits.ip6net = {

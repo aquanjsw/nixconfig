@@ -17,6 +17,10 @@
   ];
 
   options.rag = {
+    email = lib.mkOption {
+      default = "zhdlcc@gmail.com";
+      readOnly = true;
+    };
     domain = lib.mkOption {
       default = "zaelggk.com";
       readOnly = true;

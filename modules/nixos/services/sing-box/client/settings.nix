@@ -2,6 +2,8 @@
   vless-server,
   vless-uuid,
   reality-public-key,
+  tailscale-auth-key,
+  api-port,
 }:
 {
   "$schema" = "https://sing-box.sagernet.org/schema.json";
@@ -11,7 +13,6 @@
     timestamp = false;
   };
   dns = {
-    independent_cache = true;
     strategy = "prefer_ipv4";
     servers = [
       {
@@ -21,28 +22,18 @@
         detour = "proxy";
       }
       {
-        # Only linux needs dhcp, other platforms just use local
-        type = "dhcp";
+        type = "local";
         tag = "local";
       }
-      # This server, plus the corresponding rule following, only takes effect
-      # on linux in reality (in the situation where tailscale's default tun mode
-      # and sing-box's tun are both enabled):
-      # - Windows: tailscaled hijack tailscale dns requests in another earlier
-      #   stage, sing-box's tun will never see them, and thus never hijack them
-      # - Android: typically tailscale and sing-box can not run simultaneously
-      # So, we can safely express these configs without worrying about conflicts
       {
-        type = "udp";
+        type = "tailscale";
         tag = "tailscale-dns";
-        server = "100.100.100.100";
-        bind_interface = "tailscale0";
+        endpoint = "ts-ep";
       }
     ];
     rules = [
       {
         action = "predefined";
-        rcode = "NOERROR";
         rule_set = [
           "geosite-category-ads-all"
         ];
@@ -52,23 +43,18 @@
         server = "local";
         rule_set = [
           "geosite-cn"
-          "geosite-ieee"
         ];
         domain_suffix = [
           ".lan"
         ];
       }
       {
-        action = "route";
         server = "tailscale-dns";
-        domain_suffix = [
-          ".ts.net"
-        ];
+        ip_accept_any = true;
       }
     ];
   };
   route = {
-    final = "direct";
     default_domain_resolver = "local";
     auto_detect_interface = true;
     rule_set = [
@@ -94,13 +80,6 @@
         download_detour = "proxy";
       }
       {
-        tag = "geosite-ieee";
-        type = "remote";
-        format = "binary";
-        url = "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-ieee.srs";
-        download_detour = "proxy";
-      }
-      {
         tag = "geoip-cn";
         type = "remote";
         format = "binary";
@@ -108,11 +87,10 @@
         download_detour = "proxy";
       }
       {
-        tag = "geosite-steam@cn";
+        tag = "geosite-groq";
         type = "remote";
         format = "binary";
-        url = "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-steam@cn.srs";
-        download_detour = "proxy";
+        url = "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-groq.srs";
       }
     ];
     rules = [
@@ -122,6 +100,17 @@
       {
         protocol = "dns";
         action = "hijack-dns";
+      }
+      {
+        action = "route";
+        port = [
+          api-port
+        ];
+        outbound = "direct";
+      }
+      {
+        preferred_by = [ "ts-ep" ];
+        outbound = "ts-ep";
       }
       {
         action = "route";
@@ -141,12 +130,16 @@
       {
         action = "route";
         domain_suffix = [
-          "zi0.cc"
-          "googleapis.com"
-          "googleapis.cn"
-          "google.cn"
-          "gvt2.com"
-          "gstatic.com"
+          ".zi0.cc"
+          ".googleapis.com"
+          ".googleapis.cn"
+          ".google.cn"
+          ".gvt2.com"
+          ".gstatic.com"
+          ".stripe.com"
+        ];
+        rule_set = [
+          "geosite-groq"
         ];
         outbound = "proxy";
       }
@@ -155,9 +148,7 @@
         rule_set = [
           "geosite-private"
           "geosite-cn"
-          "geosite-ieee"
           "geoip-cn"
-          "geosite-steam@cn"
         ];
         domain_suffix = [
           vless-server
@@ -175,11 +166,7 @@
         ];
       }
     ];
-  };
-  experimental = {
-    cache_file = {
-      enabled = true;
-    };
+    final = "direct";
   };
   inbounds = [
     {
@@ -196,15 +183,6 @@
       auto_route = true;
       auto_redirect = true;
       strict_route = true;
-      route_exclude_address = [
-        # Bypass NAT-PMP/UPnP-IGD/PCP traffic
-        "192.168.0.0/16"
-        "10.0.0.0/8"
-        "224.0.0.0/4"
-        # Bypass tailnet traffic
-        "100.64.0.0/10"
-        "fd7a:115c:a1e0::/48"
-      ];
     }
   ];
   outbounds = [
@@ -233,6 +211,25 @@
       };
       transport = {
         type = "httpupgrade";
+      };
+    }
+  ];
+  endpoints = [
+    {
+      type = "tailscale";
+      tag = "ts-ep";
+      auth_key = tailscale-auth-key;
+      ephemeral = false;
+    }
+  ];
+  services = [
+    {
+      type = "api";
+      listen = "::0";
+      listen_port = api-port;
+      access_control_allow_private_network = true;
+      dashboard = {
+        enabled = true;
       };
     }
   ];

@@ -11,10 +11,11 @@
         vless-server = "PLACEHOLDER";
         vless-uuid = "PLACEHOLDER";
         reality-public-key = "PLACEHOLDER";
+        tailscale-auth-key = "PLACEHOLDER";
+        api-port = 2353;
       };
       settingsFile = "/tmp/config.json";
       extraSettings = {
-        tailscale-auth-key = "PLACEHOLDER";
         vless-uuids = {
           default = "PLACEHOLDER0";
           user = "PLACEHOLDER1";
@@ -32,6 +33,8 @@
       '';
       SETTINGS_FILE = settingsFile;
       EXTRA_SETTINGS_FILE = extraSettingsFile;
+      SERVER_SETTINGS_FILE = "";
+      STOLEN_SERVER = "";
       DEBUG = 1;
     };
 }
