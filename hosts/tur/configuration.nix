@@ -22,7 +22,6 @@
     packages =
       with pkgs;
       [
-        # Python LSP for Zed
         ruff
         ty
       ]

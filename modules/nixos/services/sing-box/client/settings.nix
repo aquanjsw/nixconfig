@@ -89,12 +89,6 @@
         format = "binary";
         url = "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs";
       }
-      {
-        tag = "geosite-groq";
-        type = "remote";
-        format = "binary";
-        url = "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-groq.srs";
-      }
     ];
     rules = [
       {
@@ -110,10 +104,6 @@
           api-port
         ];
         outbound = "direct";
-      }
-      {
-        preferred_by = [ "ts-ep" ];
-        outbound = "ts-ep";
       }
       {
         action = "route";
@@ -139,10 +129,6 @@
           ".google.cn"
           ".gvt2.com"
           ".gstatic.com"
-          ".stripe.com"
-        ];
-        rule_set = [
-          "geosite-groq"
         ];
         outbound = "proxy";
       }
@@ -160,16 +146,11 @@
         outbound = "direct";
       }
       {
-        action = "route";
-        outbound = "proxy";
-        network = [
-          # vless doesn't support other protocols
-          "tcp"
-          "udp"
-        ];
+        preferred_by = [ "ts-ep" ];
+        outbound = "ts-ep";
       }
     ];
-    final = "direct";
+    final = "proxy";
   };
   inbounds = [
     {

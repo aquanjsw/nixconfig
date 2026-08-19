@@ -28,14 +28,8 @@
         realcugan
         litecli # SQLite CLI Querier
         inputs.agenix.packages.${stdenv.hostPlatform.system}.default
-
-        # Python LSP for Zed
         ruff
         ty
-
-        # Nix LSP for Zed
-        nil
-        nixd
       ]
       ++ (with pkgs.python3Packages; [
         huggingface-hub

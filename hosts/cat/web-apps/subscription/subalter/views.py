@@ -49,42 +49,4 @@ def sing_box(request: HttpRequest):
             inbound["auto_redirect"] = os != "windows" and auto_redirect
             break
 
-    # legacy standalone tailscale
-    if os == "windows":
-        for server in config["dns"]["servers"]:
-            if server.get("type", "") == "tailscale":
-                config["dns"]["servers"].remove(server)
-                break
-        config["dns"]["servers"].append(
-            {
-                "type": "udp",
-                "tag": "tailscale-dns",
-                "bind_interface": "tailscale0",
-                "server": "100.100.100.100",
-            }
-        )
-
-        for rule in config["dns"]["rules"]:
-            if rule.get("server", "") == "tailscale-dns":
-                rule["domain_suffix"] = [".ts.net"]
-                break
-
-        for rule in config["route"]["rules"]:
-            if rule.get("outbound", "") == "ts-ep":
-                config["route"]["rules"].remove(rule)
-                break
-
-        for inbound in config["inbounds"]:
-            if inbound.get("type", "") == "tun":
-                inbound["route_exclude_address"] = [
-                    "192.168.0.0/16",
-                    "10.0.0.0/8",
-                    "224.0.0.0/4",
-                    "100.64.0.0/10",
-                    "fd7a:115c:a1e0::/48",
-                ]
-                break
-
-        config.pop("endpoints")
-
     return response(config)

@@ -15,7 +15,11 @@
       ++ lib.optional (config.virtualisation.libvirtd.enable) "libvirtd";
       shell = pkgs.fish;
       openssh.authorizedKeys.keys = config.rag.ssh-keys;
-      packages = with pkgs; [ ];
+      packages = with pkgs; [
+        podman-compose
+        nil
+        nixd
+      ];
     };
     programs.fish.enable = true;
   };

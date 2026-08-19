@@ -27,11 +27,19 @@
       server_port = 40000;
     }
     {
-      tag = "res";
-      type = "http";
+      tag = "res-us";
+      type = "socks";
       server = "gw.dataimpulse.com";
-      server_port = 823;
+      server_port = 824;
       username = "967395487d806a6940d5__cr.us";
+      password = res-password;
+    }
+    {
+      tag = "res-hk";
+      type = "socks";
+      server = "gw.dataimpulse.com";
+      server_port = 824;
+      username = "967395487d806a6940d5__cr.hk";
       password = res-password;
     }
   ];
@@ -68,23 +76,20 @@
       {
         action = "sniff";
       }
-      {
-        action = "route";
-        rule_set = [
-          "geosite-groq"
-        ];
-        domain_suffix = [
-          ".stripe.com"
-        ];
-        outbound = "res";
-      }
+      # {
+      #   action = "route";
+      #   rule_set = [
+      #     "geosite-google"
+      #   ];
+      #   outbound = "res-hk";
+      # }
     ];
     rule_set = [
       {
-        tag = "geosite-groq";
+        tag = "geosite-google";
         type = "remote";
         format = "binary";
-        url = "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-groq.srs";
+        url = "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-google.srs";
       }
     ];
   };
