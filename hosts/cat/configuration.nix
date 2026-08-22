@@ -48,6 +48,10 @@
     boot.loader.systemd-boot.enable = false;
     boot.loader.grub.device = "/dev/sda";
     boot.loader.grub.enable = true;
+    boot.kernel.sysctl = {
+      "net.ipv4.tcp_congestion_control" = "bbr";
+      "net.core.default_qdisc" = "fq";
+    };
 
     system.stateVersion = "25.11";
   };
