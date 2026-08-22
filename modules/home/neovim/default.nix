@@ -1,4 +1,9 @@
-{ config, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   config.home-manager.users.${config.rag.username} = {
     programs.neovim = {
@@ -7,16 +12,11 @@
       withPython3 = false;
       defaultEditor = true;
       vimAlias = true;
-      extraConfig = ''
-        syntax on
-        set number
-        set relativenumber
-        set hlsearch
-        set softtabstop=2
-        set shiftwidth=2
-        set autoindent
-        set expandtab
-      '';
+      extraConfig = lib.fileContents ./init.vim;
+      initLua = lib.fileContents ./init.lua;
+      plugins = with pkgs.vimPlugins; [
+        nvim-lspconfig
+      ];
     };
   };
 }
