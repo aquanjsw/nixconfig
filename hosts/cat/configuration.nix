@@ -8,13 +8,17 @@
     ./hardware-configuration.nix
     ./caddy
     ./web-apps
+    ./jellyfin
   ];
 
   config = {
     rag = {
       services.sing-box.role = "server";
-      ${config.networking.hostName}.services.web-apps.subscription.enable = true;
+      ${config.networking.hostName} = {
+        services.web-apps.subscription.enable = true;
+      };
       system.swap.fileSize = 1024;
+      programs.rclone.enable = true;
     };
 
     services.caddy.enable = true;
@@ -52,6 +56,9 @@
       "net.ipv4.tcp_congestion_control" = "bbr";
       "net.core.default_qdisc" = "fq";
     };
+
+    # it's safe to gc all, as bwh has external backup
+    nix.gc.options = "-d";
 
     system.stateVersion = "25.11";
   };

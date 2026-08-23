@@ -99,10 +99,8 @@
         action = "hijack-dns";
       }
       {
+        protocol = "bittorrent";
         action = "route";
-        port = [
-          api-port
-        ];
         outbound = "direct";
       }
       {
@@ -110,7 +108,6 @@
         process_name = [
           "leigod.exe"
           "leishenSdk.exe"
-          "qbittorrent-nox"
         ];
         outbound = "direct";
       }
@@ -132,6 +129,16 @@
         ];
         outbound = "proxy";
       }
+      # for tailscale
+      {
+        action = "route";
+        ip_cidr = [ "127.0.0.1/32" ];
+        outbound = "direct";
+      }
+      {
+        preferred_by = [ "ts-ep" ];
+        outbound = "ts-ep";
+      }
       {
         action = "route";
         rule_set = [
@@ -139,15 +146,14 @@
           "geosite-cn"
           "geoip-cn"
         ];
-        domain_suffix = [
+        domain = [
           vless-server
+        ];
+        domain_suffix = [
+          ".${vless-server}"
         ];
         ip_is_private = true;
         outbound = "direct";
-      }
-      {
-        preferred_by = [ "ts-ep" ];
-        outbound = "ts-ep";
       }
     ];
     final = "proxy";
@@ -209,7 +215,7 @@
   services = [
     {
       type = "api";
-      listen = "::0";
+      listen = "0.0.0.0";
       listen_port = api-port;
       access_control_allow_private_network = true;
       dashboard = {

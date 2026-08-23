@@ -14,6 +14,7 @@
   rag = {
     services.dnf.enable = true;
     services.dnf.domain = "gecko.${config.rag.domain}";
+    programs.rclone.enable = true;
   };
 
   services.jellyfin.enable = true;

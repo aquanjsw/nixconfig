@@ -5,6 +5,7 @@
     ./sing-box
     ./sshd
     ./samba
+    ./openlist
     # ./comfyui
   ];
 }

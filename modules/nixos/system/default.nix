@@ -76,5 +76,16 @@
       };
       acceptTerms = true;
     };
+
+    nix.gc = {
+      automatic = true;
+      options = lib.mkDefault "--delete-older-than 30d";
+      dates = "weekly";
+    };
+
+    nix.optimise = {
+      automatic = true;
+      dates = "weekly";
+    };
   };
 }
