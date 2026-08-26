@@ -14,8 +14,10 @@
   config = {
     rag = {
       services.sing-box.role = lib.mkDefault "client";
+      programs.apprise.enable = true;
     };
 
+    programs.fish.enable = true;
     programs.nix-ld.enable = true;
     programs.neovim = {
       enable = true;
@@ -38,19 +40,12 @@
         btop
         dig
         jq
+        dua
       ];
       sessionVariables = {
         EDITOR = "nvim";
       };
       memoryAllocator.provider = "jemalloc"; # to prevent memleak when using pytorch
-    };
-
-    virtualisation.oci-containers.backend = "podman";
-    virtualisation.podman = {
-      defaultNetwork.settings = {
-        dns_enabled = true;
-      };
-      autoPrune.enable = true;
     };
 
     networking.networkmanager.enable = true;

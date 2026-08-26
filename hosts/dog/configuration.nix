@@ -17,6 +17,7 @@
     programs.rclone.enable = true;
   };
 
+  services.code-server.enable = true;
   services.jellyfin.enable = true;
   services.qbittorrent.enable = true;
   services.samba.enable = true;

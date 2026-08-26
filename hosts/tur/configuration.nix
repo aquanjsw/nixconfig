@@ -14,27 +14,24 @@
 
   services.samba.enable = true;
 
+  virtualisation.podman.enable = true;
+
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia.open = false;
   hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
 
-  users.users.${config.rag.username} = {
-    packages =
-      with pkgs;
-      [
-        ruff
-        ty
-      ]
-      ++ (with pkgs.python3Packages; [
-        huggingface-hub
-      ]);
-  };
-
-  environment.systemPackages = with pkgs; [
-    binutils # nm
-    usbutils # lsusb
-    pciutils # lspci
-  ];
+  environment.systemPackages =
+    with pkgs;
+    [
+      binutils # nm
+      usbutils # lsusb
+      pciutils # lspci
+      ruff
+      ty
+    ]
+    ++ (with pkgs.python3Packages; [
+      huggingface-hub
+    ]);
 
   boot.loader.systemd-boot.enable = true;
 

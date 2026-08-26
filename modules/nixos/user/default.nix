@@ -21,6 +21,5 @@
         nixd
       ];
     };
-    programs.fish.enable = true;
   };
 }

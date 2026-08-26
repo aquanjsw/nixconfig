@@ -2,6 +2,7 @@
   config ? {
     networking.hostName = "cat";
     rag.secret-registry = import ../../../secret-registry.nix { };
+    rag.username = "rag";
   },
   ...
 }:
@@ -104,6 +105,7 @@ let
             name = "${secret-type}/${group-name}/${secret-name}";
             value = {
               file = secret-value.file;
+              owner = config.rag.username;
             };
           }
         ) (builtins.attrNames group-value))
