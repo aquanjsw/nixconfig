@@ -3,11 +3,27 @@
   ...
 }:
 let
-  # Declare host permissions for each group here
+  # Declare attrs for each group here
+  # Besides the `hostnames` attr, agenix attrs are valid too except for the `path`
+  # by-group-registry = {
+  #   group1 = {
+  #     secret1 = {
+  #       hostnames = [ "host1"];
+  #       owner = "some";
+  #     };
+  #   };
+  # };
   by-group-registry = {
     vless-uuids = {
-      "430" = [ "cat" ];
-      default = registered-hostnames;
+      "430".hostnames = [ "cat" ];
+      default.hostnames = registered-hostnames;
+    };
+  };
+
+  # Simliar to by-group-registry except for non-existing `hostnames` attr
+  by-host-registry = {
+    any.apprise = {
+      owner = "rag";
     };
   };
 
@@ -20,10 +36,13 @@ let
 
   by-group = mapAttrs (
     groupname: groupvalue:
-    (mapAttrs (secretname: secretvalue: {
-      hostnames = secretvalue;
-      path = ./secrets/by-group/${groupname}/${secretname}.age;
-    }) groupvalue)
+    (mapAttrs (
+      secretname: secretAttrs:
+      {
+        path = ./secrets/by-group/${groupname}/${secretname}.age;
+      }
+      // secretAttrs
+    ) groupvalue)
   ) by-group-registry;
 
   pubkey-registry = import ./pubkey-registry.nix;
@@ -40,12 +59,20 @@ let
               hostnames = if (hostname == "any") then registered-hostnames else [ hostname ];
               stem = lib.removeSuffix ".age" filename;
               path = ./secrets/by-host/${hostname}/${filename};
+              extraAttrs =
+                if
+                  (builtins.hasAttr hostname by-host-registry && builtins.hasAttr stem by-host-registry.${hostname})
+                then
+                  by-host-registry.${hostname}.${stem}
+                else
+                  { };
             in
             {
               name = stem;
               value = {
                 inherit hostnames path;
-              };
+              }
+              // extraAttrs;
             }
           ) (attrNames (readDir ./secrets/by-host/${hostname}))
         )
