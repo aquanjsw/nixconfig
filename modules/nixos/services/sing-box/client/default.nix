@@ -9,8 +9,8 @@ in
       readOnly = true;
     };
     api-port = lib.mkOption {
+      type = lib.types.port;
       default = 2436;
-      readOnly = true;
     };
   };
 

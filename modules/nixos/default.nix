@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   lib,
   ...
@@ -15,15 +16,23 @@
     inputs.agenix.nixosModules.default
     inputs.disko.nixosModules.disko
     inputs.home-manager.nixosModules.home-manager
+    inputs.demos.nixosModules.default
   ];
 
   options.rag = {
+    magicDNS = lib.mkOption {
+      default = "${config.networking.hostName}.tail2fa86.ts.net";
+    };
     email = lib.mkOption {
       default = "zhdlcc@gmail.com";
       readOnly = true;
     };
-    domain = lib.mkOption {
+    rootDomain = lib.mkOption {
       default = "zaelggk.com";
+      readOnly = true;
+    };
+    domain = lib.mkOption {
+      default = "${config.networking.hostName}.${config.rag.rootDomain}";
       readOnly = true;
     };
     username = lib.mkOption {

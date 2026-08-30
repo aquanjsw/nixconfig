@@ -45,6 +45,26 @@
         "type": "github"
       }
     },
+    "demos": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1787810594,
+        "narHash": "sha256-hdHacloWnVB/spTzw++cjKVpJy15L52iRZbK278UEJ0=",
+        "owner": "aquanjsw",
+        "repo": "demos",
+        "rev": "b443442a0f19d8a087046b4a3c433c496248fe42",
+        "type": "github"
+      },
+      "original": {
+        "owner": "aquanjsw",
+        "repo": "demos",
+        "type": "github"
+      }
+    },
     "disko": {
       "inputs": {
         "nixpkgs": [
@@ -124,11 +144,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1784497964,
-        "narHash": "sha256-vlHUuqAcbcH2RKmHbPiuQzbv1pnzzavXnI62RD0bqCU=",
+        "lastModified": 1787498568,
+        "narHash": "sha256-9i/VTdusq/+NM/tz+J1Re+ojkMB8MBf0QshnYfzHz30=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "241313f4e8e508cb9b13278c2b0fa25b9ca27163",
+        "rev": "56c02bc00adcf003215cc4bd996d6efaf4cff188",
         "type": "github"
       },
       "original": {
@@ -162,6 +182,7 @@
     "root": {
       "inputs": {
         "agenix": "agenix",
+        "demos": "demos",
         "disko": "disko",
         "home-manager": "home-manager_2",
         "nixpkgs": "nixpkgs",

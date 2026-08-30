@@ -24,15 +24,10 @@ lib.mkIf config.services.caddy.enable (
     services.caddy = {
       httpsPort = 1443;
       environmentFile = config.age.secrets."by-host/${config.networking.hostName}/caddy-env".path;
-      package = pkgs.caddy.withPlugins {
-        plugins = [ "github.com/caddy-dns/cloudflare@v0.2.4" ];
-        hash = "sha256-J0HWjCPoOoARAxDpG2bS9c0x5Wv4Q23qWZbTjd8nW84=";
-      };
       globalConfig = ''
         acme_dns cloudflare {$CF_API_TOKEN}
       '';
       virtualHosts = {
-        # root domain
         "${config.rag.domain}".extraConfig = ''
           root * ${site}
           file_server

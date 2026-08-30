@@ -12,11 +12,9 @@
   ];
 
   rag = {
-    services.dnf.enable = true;
-    services.dnf.domain = "gecko.${config.rag.domain}";
-    programs.rclone.enable = true;
   };
 
+  services.caddy.enable = true;
   services.code-server.enable = true;
   services.jellyfin.enable = true;
   services.qbittorrent.enable = true;

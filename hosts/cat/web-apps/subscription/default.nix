@@ -11,9 +11,9 @@
       type = lib.types.port;
       default = 8080;
     };
-    subdomain = lib.mkOption {
+    domain = lib.mkOption {
       type = lib.types.str;
-      default = "subscription";
+      default = "subscription.${config.rag.domain}";
     };
   };
   config =
@@ -83,7 +83,7 @@
       };
 
       services.caddy.virtualHosts = {
-        "${cfg.subdomain}.${config.rag.domain}".extraConfig = ''
+        "${cfg.domain}".extraConfig = ''
           basic_auth {
             rag {$HASHED_PASSWORD}
           }
@@ -100,7 +100,7 @@
           EXTRA_SETTINGS_FILE = config.rag.utils.json-deployments.sing-box-extra.path;
           SERVER_SETTINGS_FILE = config.rag.utils.json-deployments.sing-box-server.path;
           STOLEN_SERVER = stolen-server;
-          DOMAIN = "${cfg.subdomain}.${config.rag.domain}";
+          DOMAIN = cfg.domain;
         };
         script = ''
           ${package}/bin/gunicorn

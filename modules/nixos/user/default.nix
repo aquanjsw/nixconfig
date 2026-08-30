@@ -11,6 +11,9 @@
       isNormalUser = true;
       extraGroups = [
         "wheel"
+        "input"
+        "video"
+        "render"
       ]
       ++ lib.optional (config.virtualisation.libvirtd.enable) "libvirtd";
       shell = pkgs.fish;

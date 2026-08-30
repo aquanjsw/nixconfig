@@ -17,19 +17,22 @@
     realcugan.url = "github:aquanjsw/realcugan";
     realcugan.inputs.nixpkgs.follows = "nixpkgs";
 
+    demos.url = "github:aquanjsw/demos";
+    demos.inputs.nixpkgs.follows = "nixpkgs";
+
     ssh-keys.url = "https://github.com/aquanjsw.keys";
     ssh-keys.flake = false;
   };
 
   outputs =
-    inputs@{ nixpkgs, ... }:
+    inputs@{ nixpkgs, self, ... }:
     let
       inherit (nixpkgs) lib;
 
       mkNixOS =
         hostname:
         (lib.nixosSystem {
-          specialArgs = { inherit inputs; };
+          specialArgs = { inherit inputs self; };
           modules = [
             ./modules/home
             ./modules/nixos
@@ -51,12 +54,15 @@
       devShells = forAllSystems (
         system:
         let
-          pkgs = import inputs.nixpkgs { inherit system; };
-          utils = import "${inputs.nixpkgs}/nixos/lib/utils.nix" {
-            inherit pkgs lib;
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = import ./overlays.nix { inherit inputs; };
           };
+          utils = pkgs.callPackage "${nixpkgs}/nixos/lib/utils.nix" { };
         in
-        (import ./devShells.nix { inherit pkgs utils lib; })
+        pkgs.callPackage ./devshells {
+          inherit self utils;
+        }
       );
     };
 }

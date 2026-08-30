@@ -33,13 +33,17 @@
     ];
     rules = [
       {
+        query_type = "TXT";
+        server = "remote";
+        disable_cache = true;
+      }
+      {
         action = "predefined";
         rule_set = [
           "geosite-category-ads-all"
         ];
       }
       {
-        action = "route";
         server = "local";
         rule_set = [
           "geosite-cn"

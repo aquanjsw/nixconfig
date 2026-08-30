@@ -12,6 +12,7 @@
   rag = {
   };
 
+  services.caddy.enable = true;
   services.samba.enable = true;
 
   virtualisation.podman.enable = true;

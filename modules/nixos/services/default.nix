@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    ./caddy
     ./code-server
     ./dnf
     ./sing-box

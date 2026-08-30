@@ -5,15 +5,16 @@
 }:
 let
   cfg = config.rag.services.sing-box;
+  domain = config.rag.rootDomain;
 in
 {
   options.rag.services.sing-box.server = {
     name = lib.mkOption {
-      default = config.rag.domain;
+      default = domain;
       readOnly = true;
     };
     domain = lib.mkOption {
-      default = "sing-box.${config.rag.domain}";
+      default = "sing-box.${domain}";
       readOnly = true;
     };
     settings = lib.mkOption {
