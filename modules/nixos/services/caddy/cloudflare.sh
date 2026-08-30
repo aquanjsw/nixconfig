@@ -1,27 +1,35 @@
 set -euo pipefail
 
-is_valid_ip() {
-  if [[ $1 != 100* ]]; then
+is_tailnetip() {
+  if [[ $1 != 100.* ]]; then
     return 1
   fi
   return 0
 }
 
-# Wait for a valid tailnet IP
-for _ in {1..30}; do
-  ts_ip=$($SING_BOX api tailscale peer show $HOSTNAME 2>/dev/null | grep IPs | $AWK '{print $2}' | $TR -d ',')
-  if is_valid_ip "$ts_ip"; then
+echo "Querying tailnet IP through sing-box api..."
+
+for _ in {1..10}; do
+  ts_ip=$($SING_BOX api tailscale peer show $HOSTNAME 2>/dev/null | grep IPs \
+    | $AWK '{print $2}' | $TR -d ',')
+  if is_tailnetip "$ts_ip"; then
     break
   fi
   sleep 1
 done
 
-result_records=$($CURL -s https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records \
-  -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN")
+if [[ -z "$ts_ip" ]]; then
+  echo "Failed to query tailnet IP through sing-box api" >&2
+  exit 1
+fi
 
-# Check if the result is a success
+echo "$HOSTNAME -> $ts_ip"
+
+result_records=$($CURL -sH "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+  https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records)
+
+# Check if a result is successful
 # Usage: is_success "$result"
-# Returns 0 if the result is a success, 1 otherwise
 is_success() {
   if [[ -z $(echo "$1" | $JQ 'select(.success == true)') ]]; then
     return 1
@@ -29,13 +37,30 @@ is_success() {
   return 0
 }
 
+# Clean up leftover ACME TXT records
+acme_record_ids=$(echo "$result_records" | $JQ -r '.result[]?
+  | select(.type == "TXT" and (.name | startswith("_acme-challenge."))) | .id')
+
+for record_id in $acme_record_ids; do
+  if [[ -n "$record_id" ]]; then
+    result=$($CURL -sX DELETE -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+      https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$record_id)
+    if is_success "$result"; then
+      echo "Cleaned up leftover ACME TXT record: $record_id"
+    else
+      echo "Warning: Failed to delete ACME TXT record $record_id: $result" >&2
+    fi
+  fi
+done
+
 for domain in $DOMAIN *.$DOMAIN; do
-  record=$(echo "$result_records" | $JQ --arg domain $domain '.result[]? | select(.name == $domain and .type == "A")')
+  record=$(echo "$result_records" | $JQ --arg domain $domain '
+    .result[]? | select(.name == $domain and .type == "A")')
 
   # No record found, create a new one
   if [[ -z "$record" ]]; then
-    result=$($CURL -s https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records \
-      -H 'Content-Type: application/json' \
+    result=$($CURL -sH 'Content-Type: application/json' \
+      https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records \
       -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
       -d "{
             \"name\": \"$domain\",
@@ -49,17 +74,17 @@ for domain in $DOMAIN *.$DOMAIN; do
     echo "Created DNS record: $domain -> $ts_ip"
 
   # Record found but content doesn't match, update it
-  elif [[ -z $(echo "$record" | $JQ --arg ts_ip "$ts_ip" 'select(.content == $ts_ip)') ]]; then
+  elif [[ -z $(echo "$record" | $JQ --arg ts_ip "$ts_ip" '
+    select(.content == $ts_ip)') ]]; then
     record_id=$(echo "$record" | $JQ -r '.id')
-    result=$($CURL -s https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$record_id \
-        -X PATCH \
-        -H 'Content-Type: application/json' \
-        -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-        -d "{
-              \"name\": \"$domain\",
-              \"type\": \"A\",
-              \"content\": \"$ts_ip\"
-            }")
+    result=$($CURL -sX PATCH -H 'Content-Type: application/json' \
+      https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$record_id \
+      -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+      -d "{
+            \"name\": \"$domain\",
+            \"type\": \"A\",
+            \"content\": \"$ts_ip\"
+          }")
     if ! is_success "$result"; then
       echo "Failed to update DNS record: $result" >&2
       exit 1
