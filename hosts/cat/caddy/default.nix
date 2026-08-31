@@ -28,7 +28,7 @@ lib.mkIf config.services.caddy.enable (
         acme_dns cloudflare {$CF_API_TOKEN}
       '';
       virtualHosts = {
-        "${config.rag.domain}".extraConfig = ''
+        "${config.rag.rootDomain}".extraConfig = ''
           root * ${site}
           file_server
         '';

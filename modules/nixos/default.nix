@@ -2,6 +2,8 @@
   config,
   inputs,
   lib,
+  pkgs,
+  self,
   ...
 }:
 {
@@ -33,14 +35,13 @@
     };
     domain = lib.mkOption {
       default = "${config.networking.hostName}.${config.rag.rootDomain}";
-      readOnly = true;
     };
     username = lib.mkOption {
       default = "rag";
       readOnly = true;
     };
     secret-registry = lib.mkOption {
-      default = import ../../secret-registry.nix { inherit lib; };
+      default = pkgs.callPackage "${self}/secret-registry.nix" { };
       readOnly = true;
     };
     ssh-keys = lib.mkOption {

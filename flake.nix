@@ -5,6 +5,9 @@
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
     nixpkgs-unstable.url = "github:nixos/nixpkgs?ref=nixos-unstable";
 
+    deploy-rs.url = "github:serokell/deploy-rs";
+    deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
+
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -25,10 +28,14 @@
   };
 
   outputs =
-    inputs@{ nixpkgs, self, ... }:
+    inputs@{
+      nixpkgs,
+      self,
+      deploy-rs,
+      ...
+    }:
     let
       inherit (nixpkgs) lib;
-
       mkNixOS =
         hostname:
         (lib.nixosSystem {
@@ -39,18 +46,23 @@
             ./hosts/${hostname}/configuration.nix
           ];
         });
-
       forAllSystems = lib.genAttrs lib.systems.flakeExposed;
-
-      hostnames = [
-        "dog"
-        "cat"
-        "tur"
-      ];
+      hosts = {
+        dog = "x86_64-linux";
+        cat = "x86_64-linux";
+        tur = "x86_64-linux";
+      };
     in
     {
-      nixosConfigurations = nixpkgs.lib.genAttrs hostnames (hostname: mkNixOS hostname);
-
+      nixosConfigurations = nixpkgs.lib.genAttrs (builtins.attrNames hosts) (hostname: mkNixOS hostname);
+      deploy.nodes = builtins.mapAttrs (hostname: arch: {
+        inherit hostname;
+        profiles.system = {
+          sshUser = "root";
+          path = deploy-rs.lib.${arch}.activate.nixos self.nixosConfigurations.${hostname};
+        };
+      }) hosts;
+      checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
       devShells = forAllSystems (
         system:
         let
@@ -58,10 +70,16 @@
             inherit system;
             overlays = import ./overlays.nix { inherit inputs; };
           };
+          inherit (pkgs) lib;
           utils = pkgs.callPackage "${nixpkgs}/nixos/lib/utils.nix" { };
         in
-        pkgs.callPackage ./devshells {
-          inherit self utils;
+        import ./devshells {
+          inherit
+            self
+            utils
+            pkgs
+            lib
+            ;
         }
       );
     };

@@ -8,15 +8,10 @@ in
       default = ./settings.nix;
       readOnly = true;
     };
-    api-port = lib.mkOption {
-      type = lib.types.port;
-      default = 2436;
-    };
   };
-
   config = lib.mkIf (config.services.sing-box.enable && cfg.role == "client") {
     services.sing-box.settings = import cfg.client.settings {
-      vless-server = cfg.server.name;
+      vless-server = cfg.server.domain;
       vless-uuid = {
         _secret = config.age.secrets."by-group/vless-uuids/default".path;
       };
@@ -26,11 +21,7 @@ in
       tailscale-auth-key = {
         _secret = config.age.secrets."by-host/${config.networking.hostName}/tailscale-auth-key".path;
       };
-      api-port = cfg.client.api-port;
-    };
-
-    environment.variables = {
-      BOX_API_URL = "http://127.0.0.1:${toString cfg.client.api-port}";
+      api-port = cfg.api-port;
     };
   };
 }

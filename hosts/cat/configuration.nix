@@ -13,17 +13,16 @@
 
   config = {
     rag = {
+      domain = config.rag.rootDomain;
       services.sing-box.role = "server";
       ${config.networking.hostName} = {
         services.web-apps.subscription.enable = true;
       };
       system.swap.fileSize = 1024;
-      programs.rclone.enable = true;
     };
 
     services.caddy.enable = true;
     services.qemuGuest.enable = true;
-    services.cloudflare-warp.enable = true;
 
     environment.systemPackages = with pkgs; [
     ];

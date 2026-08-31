@@ -26,7 +26,7 @@ in
         EnvironmentFile = cloudflareSecretPath;
       };
       environment = {
-        BOX_API_URL = "http://127.0.0.1:${toString config.rag.services.sing-box.client.api-port}";
+        BOX_API_URL = "http://127.0.0.1:${toString config.rag.services.sing-box.api-port}";
         HOSTNAME = config.networking.hostName;
         DOMAIN = domain;
         ZONE_ID = "93b98e5d2505428a7bda13476f8b179d";

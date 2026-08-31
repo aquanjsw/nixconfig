@@ -30,6 +30,7 @@
         inputs.agenix.packages.${stdenv.hostPlatform.system}.default
         ruff
         ty
+        deploy-rs
       ]
       ++ (with pkgs.python3Packages; [
         huggingface-hub
