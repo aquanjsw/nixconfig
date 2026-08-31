@@ -17,6 +17,7 @@
       programs.apprise.enable = true;
     };
 
+    programs.direnv.enable = true;
     programs.fish.enable = true;
     programs.nix-ld.enable = true;
     programs.neovim = {
