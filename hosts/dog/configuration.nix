@@ -12,6 +12,13 @@
   ];
 
   rag = {
+    services.demos = {
+      enable = true;
+      caddyReverseProxy = {
+        enable = true;
+        domain = "demos.${config.rag.domain}";
+      };
+    };
   };
 
   services.caddy.enable = true;
