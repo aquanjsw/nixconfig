@@ -103,12 +103,14 @@
         action = "hijack-dns";
       }
       {
-        protocol = "bittorrent";
-        action = "route";
+        network = "icmp";
         outbound = "direct";
       }
       {
-        action = "route";
+        protocol = "bittorrent";
+        outbound = "direct";
+      }
+      {
         process_name = [
           "leigod.exe"
           "leishenSdk.exe"
@@ -122,7 +124,6 @@
         ];
       }
       {
-        action = "route";
         domain_suffix = [
           ".zi0.cc"
           ".googleapis.com"
@@ -133,31 +134,22 @@
         ];
         outbound = "proxy";
       }
-      # for tailscale
       {
-        action = "route";
-        ip_cidr = [ "127.0.0.1/32" ];
-        outbound = "direct";
-      }
-      {
-        preferred_by = [ "ts-ep" ];
-        outbound = "ts-ep";
-      }
-      {
-        action = "route";
         rule_set = [
           "geosite-private"
           "geosite-cn"
           "geoip-cn"
         ];
-        domain = [
-          vless-server
-        ];
-        domain_suffix = [
-          ".${vless-server}"
-        ];
         ip_is_private = true;
         outbound = "direct";
+      }
+      {
+        ip_cidr = "100.64.0.0/10";
+        outbound = "ts-ep";
+      }
+      {
+        preferred_by = [ "ts-ep" ];
+        outbound = "ts-ep";
       }
     ];
     final = "proxy";
