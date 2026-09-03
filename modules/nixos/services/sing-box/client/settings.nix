@@ -103,10 +103,6 @@
         action = "hijack-dns";
       }
       {
-        network = "icmp";
-        outbound = "direct";
-      }
-      {
         protocol = "bittorrent";
         outbound = "direct";
       }
@@ -135,6 +131,10 @@
         outbound = "proxy";
       }
       {
+        ip_cidr = "100.64.0.0/10";
+        outbound = "ts-ep";
+      }
+      {
         rule_set = [
           "geosite-private"
           "geosite-cn"
@@ -144,12 +144,12 @@
         outbound = "direct";
       }
       {
-        ip_cidr = "100.64.0.0/10";
+        preferred_by = [ "ts-ep" ];
         outbound = "ts-ep";
       }
       {
-        preferred_by = [ "ts-ep" ];
-        outbound = "ts-ep";
+        network = "icmp";
+        outbound = "direct";
       }
     ];
     final = "proxy";
