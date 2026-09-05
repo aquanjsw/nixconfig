@@ -1,3 +1,6 @@
+# Required envs:
+# CLOUDFLARE_API_TOKEN ZONE_ID JQ CURL
+
 set -euo pipefail
 
 is_tailnetip() {
@@ -26,7 +29,7 @@ fi
 echo "$HOSTNAME -> $ts_ip"
 
 result_records=$($CURL -sH "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-  https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records)
+  https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records 2>/dev/null)
 
 # Check if a result is successful
 # Usage: is_success "$result"
@@ -37,6 +40,11 @@ is_success() {
   return 0
 }
 
+if ! is_success "$result_records"; then
+  echo "Failed to fetch DNS records: $result_records" >&2
+  exit 1
+fi
+
 # Clean up leftover ACME TXT records
 acme_record_ids=$(echo "$result_records" | $JQ -r '.result[]?
   | select(.type == "TXT" and (.name | startswith("_acme-challenge."))) | .id')
@@ -44,7 +52,8 @@ acme_record_ids=$(echo "$result_records" | $JQ -r '.result[]?
 for record_id in $acme_record_ids; do
   if [[ -n "$record_id" ]]; then
     result=$($CURL -sX DELETE -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-      https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$record_id)
+      https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$record_id \
+      2>/dev/null)
     if is_success "$result"; then
       echo "Cleaned up leftover ACME TXT record: $record_id"
     else
@@ -66,7 +75,7 @@ for domain in $DOMAIN *.$DOMAIN; do
             \"name\": \"$domain\",
             \"type\": \"A\",
             \"content\": \"$ts_ip\"
-          }")
+          }" 2>/dev/null)
     if ! is_success "$result"; then
       echo "Failed to create DNS record: $result" >&2
       exit 1
