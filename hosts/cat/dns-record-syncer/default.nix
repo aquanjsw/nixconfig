@@ -22,6 +22,7 @@ in
       description = "Syncs local IP to DNS record";
       serviceConfig = {
         Type = "oneshot";
+        Restart = "on-failure";
         EnvironmentFile =
           config.age.secrets."by-host/${config.networking.hostName}/cloudflare-api-token-env".path;
       };

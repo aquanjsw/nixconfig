@@ -20,6 +20,7 @@ in
       after = [ "network-online.target" ];
       serviceConfig = {
         Type = "oneshot";
+        Restart = "on-failure";
       };
       script = builtins.readFile ./setup-ipv6.sh;
       environment = {
