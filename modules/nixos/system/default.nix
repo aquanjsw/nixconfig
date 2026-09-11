@@ -83,9 +83,5 @@
       automatic = true;
       dates = "weekly";
     };
-
-    nix.settings.substituters = lib.mkIf (config.rag.services.sing-box.role == "client") [
-      "https://mirrors.cernet.edu.cn/nix-channels/store"
-    ];
   };
 }

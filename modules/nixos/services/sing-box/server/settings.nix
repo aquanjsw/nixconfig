@@ -12,7 +12,7 @@
   "$schema" = "https://sing-box.sagernet.org/schema.json";
   log = {
     disabled = false;
-    level = "debug";
+    level = "info";
     timestamp = false;
   };
   outbounds = [
@@ -46,7 +46,7 @@
   inbounds = [
     {
       type = "vless";
-      listen = "::0";
+      listen = "0.0.0.0";
       listen_port = 443;
       users = map (uuid: {
         inherit uuid;

@@ -206,6 +206,7 @@
       tag = "ts-ep";
       auth_key = tailscale-auth-key;
       ephemeral = false;
+      advertise_tags = "tag:client";
     }
   ];
   services = [

@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    ./tailscale
     ./caddy
     ./code-server
     ./dnf

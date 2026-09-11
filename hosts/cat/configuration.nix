@@ -28,6 +28,12 @@
     services.caddy.enable = true;
     services.qemuGuest.enable = true;
 
+    services.tailscale = {
+      enable = true;
+      extraSetFlags = [ "--relay-server-port=40000" ];
+      extraUpFlags = [ "--advertise-tags tag:server" ];
+    };
+
     environment.systemPackages = with pkgs; [
     ];
 
