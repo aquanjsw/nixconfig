@@ -56,6 +56,16 @@
         preferred_by = "ts-dns";
         server = "ts-dns";
       }
+      {
+        action = "evaluate";
+        server = "local";
+      }
+      {
+        match_response = true;
+        rule_set = "geoip-cn";
+        action = "respond";
+        race = true;
+      }
     ];
   };
   http_clients = [
