@@ -11,4 +11,8 @@
     user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMpgR/uiOXD2y6mn/OojBa/gyKId+x9i3qzQ2cee/eJq";
     system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPBeG0JFEBS2I6vWEPBXPXPR22wtETzMktHuxzzpPz+F";
   };
+  bun = {
+    user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDTo2ziWT/vQMnHYow4xIUqtJ58AjyDst250uls5ckV3";
+    system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHAAouf1ZgGF1oatBjl2aK+ALMLRxsSH0rGZ3I1ZNi8u";
+  };
 }

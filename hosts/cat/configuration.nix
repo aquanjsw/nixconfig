@@ -37,7 +37,6 @@
     environment.systemPackages = with pkgs; [
     ];
 
-    networking.hostName = "cat";
     boot.loader.systemd-boot.enable = false;
     boot.loader.grub.device = "/dev/sda";
     boot.loader.grub.enable = true;

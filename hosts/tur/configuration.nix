@@ -36,8 +36,6 @@
 
   boot.loader.systemd-boot.enable = true;
 
-  networking.hostName = "tur";
-
   fileSystems = {
     "/data" = {
       device = "/dev/disk/by-id/ata-WDC_WD4002FYYZ-01B7CB0_N8G9ZA7Y";

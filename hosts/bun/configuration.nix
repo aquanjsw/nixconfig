@@ -1,5 +1,4 @@
 {
-  hostName,
   config,
   pkgs,
   ...
@@ -8,15 +7,21 @@
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
-    ./gpu
   ];
 
-  isBareMetal = true;
+  rag = {
+  };
 
-  tunnel.client.enable = true;
-  services.tailscale.enable = true;
-
-  services.beszel.agent.enable = true;
+  networking = {
+    interfaces.tap0 = {
+      virtual = true;
+      virtualType = "tap";
+    };
+    bridges.br0.interfaces = [
+      "enp3s0"
+      "tap0"
+    ];
+  };
 
   services.xserver.videoDrivers = [ "modesetting" ];
   hardware.graphics = {
@@ -31,20 +36,15 @@
     LIBVA_DRIVER_NAME = "iHD";
   };
 
-  users.users.${config.user} = {
-    packages = with pkgs; [
-    ];
-  };
-
   environment.systemPackages = with pkgs; [
+    pciutils
+    deploy-rs
+    qemu_kvm
+    OVMF
   ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-
-  swapfileSize = 8 * 1024;
-
-  networking.hostName = hostName;
 
   system.stateVersion = "26.05";
 }

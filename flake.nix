@@ -44,6 +44,9 @@
             ./modules/home
             ./modules/nixos
             ./hosts/${hostname}/configuration.nix
+            {
+              networking.hostName = hostname;
+            }
           ];
         });
       forAllSystems = lib.genAttrs lib.systems.flakeExposed;
@@ -51,6 +54,7 @@
         dog = "x86_64-linux";
         cat = "x86_64-linux";
         tur = "x86_64-linux";
+        bun = "x86_64-linux";
       };
     in
     {

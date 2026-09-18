@@ -22,7 +22,6 @@
   };
 
   services.caddy.enable = true;
-  services.code-server.enable = true;
   services.jellyfin.enable = true;
   services.qbittorrent.enable = true;
   services.samba.enable = true;
@@ -58,8 +57,6 @@
     fsType = "xfs";
     options = [ "nofail" ];
   };
-
-  networking.hostName = "dog";
 
   system.stateVersion = "25.11";
 }
