@@ -15,16 +15,15 @@
     level = "info";
     timestamp = false;
   };
+  http_clients = [
+    {
+      tag = "default";
+    }
+  ];
   outbounds = [
     {
       type = "direct";
       tag = "direct";
-    }
-    {
-      tag = "warp";
-      type = "socks";
-      server = "127.0.0.1";
-      server_port = 40000;
     }
     {
       tag = "res-us";
@@ -70,29 +69,6 @@
       };
     }
   ];
-  route = {
-    final = "direct";
-    rules = [
-      {
-        action = "sniff";
-      }
-      # {
-      #   action = "route";
-      #   rule_set = [
-      #     "geosite-google"
-      #   ];
-      #   outbound = "res-hk";
-      # }
-    ];
-    rule_set = [
-      {
-        tag = "geosite-google";
-        type = "remote";
-        format = "binary";
-        url = "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-google.srs";
-      }
-    ];
-  };
   services = [
     {
       type = "api";

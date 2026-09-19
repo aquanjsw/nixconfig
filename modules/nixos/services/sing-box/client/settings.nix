@@ -70,7 +70,6 @@
   };
   http_clients = [
     {
-      detour = "proxy";
       tag = "default";
     }
   ];
@@ -83,25 +82,25 @@
         tag = "geosite-private";
         type = "remote";
         format = "binary";
-        url = "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-private.srs";
+        url = "https://cdn.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-private.srs";
       }
       {
         tag = "geosite-category-ads-all";
         type = "remote";
         format = "binary";
-        url = "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs";
+        url = "https://cdn.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs";
       }
       {
         tag = "geosite-cn";
         type = "remote";
         format = "binary";
-        url = "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs";
+        url = "https://cdn.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs";
       }
       {
         tag = "geoip-cn";
         type = "remote";
         format = "binary";
-        url = "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs";
+        url = "https://cdn.jsdelivr.net/gh/SagerNet/sing-geoip@rule-set/geoip-cn.srs";
       }
     ];
     rules = [
@@ -151,6 +150,9 @@
           "geoip-cn"
         ];
         ip_is_private = true;
+        domain = [
+          "zaelggk.com"
+        ];
         outbound = "direct";
       }
       {
