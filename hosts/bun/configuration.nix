@@ -7,20 +7,43 @@
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
+    ./openwrt
   ];
 
   rag = {
+    services.openwrt.enable = true;
   };
 
   networking = {
-    interfaces.tap0 = {
-      virtual = true;
-      virtualType = "tap";
+    interfaces = {
+      tap0 = {
+        virtual = true;
+        virtualType = "tap";
+      };
+      tap1 = {
+        virtual = true;
+        virtualType = "tap";
+      };
+      br0 = {
+        ipv4.addresses = [
+          {
+            address = "192.168.1.1";
+            prefixLength = 24;
+          }
+        ];
+        useDHCP = true;
+      };
     };
-    bridges.br0.interfaces = [
-      "enp3s0"
-      "tap0"
-    ];
+    bridges = {
+      br0.interfaces = [
+        "enp3s0"
+        "tap0"
+      ];
+      br1.interfaces = [
+        "enp1s0"
+        "tap1"
+      ];
+    };
   };
 
   services.xserver.videoDrivers = [ "modesetting" ];
@@ -39,8 +62,7 @@
   environment.systemPackages = with pkgs; [
     pciutils
     deploy-rs
-    qemu_kvm
-    OVMF
+    socat
   ];
 
   boot.loader.systemd-boot.enable = true;
