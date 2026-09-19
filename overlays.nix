@@ -8,7 +8,7 @@
       '';
     });
     sing-box = prev.sing-box.overrideAttrs (prevAttrs: rec {
-      version = "1.14.0";
+      version = "1.15.0-alpha.6";
       src = prev.fetchFromGitHub {
         owner = "SagerNet";
         repo = "sing-box";
