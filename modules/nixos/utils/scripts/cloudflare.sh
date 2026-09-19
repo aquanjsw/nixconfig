@@ -102,3 +102,19 @@ update_record() {
   fi
   echo "Updated DNS record: $domain -> $content"
 }
+
+# Update and create if necessary
+# 1: domain
+# 2: type
+# 3: content
+sync_record() {
+  local domain=$1
+  local type=$2
+  local content=$3
+  local rc=0
+
+  update_record $domain $type $content || rc=$?
+  if [[ $rc -eq 2 ]]; then
+    new_record $domain $type $content || true
+  fi
+}

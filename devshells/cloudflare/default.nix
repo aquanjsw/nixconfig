@@ -6,6 +6,7 @@
   jq,
   curl,
   ipcalc,
+  self,
   ...
 }:
 mkShellNoCC rec {
@@ -17,4 +18,7 @@ mkShellNoCC rec {
   JQ = "${jq}/bin/jq";
   CURL = "${curl}/bin/curl";
   IPCALC = "${ipcalc}/bin/ipcalc";
+  shellHook = ''
+    . "${self}/modules/nixos/utils/scripts/cloudflare.sh"
+  '';
 }

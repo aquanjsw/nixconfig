@@ -9,9 +9,5 @@ if ! $IPCALC -cs $ip; then
 fi
 
 for domain in $DOMAIN *.$DOMAIN; do
-  rc=0
-  update_record $domain A $ip || rc=$?
-  if [[ $rc -eq 2 ]]; then
-    new_record $domain A $ip || true
-  fi
+  sync_record $domain A $ip
 done

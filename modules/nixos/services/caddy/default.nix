@@ -35,6 +35,7 @@ in
         TR = "${pkgs.coreutils}/bin/tr";
         JQ = "${pkgs.jq}/bin/jq";
         CURL = "${pkgs.curl}/bin/curl";
+        CLOUDFLARE = config.rag.utils.scripts.cloudflare;
       };
       script = builtins.readFile ./cloudflare.sh;
     };

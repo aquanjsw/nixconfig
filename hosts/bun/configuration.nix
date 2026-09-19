@@ -14,6 +14,8 @@
     services.openwrt.enable = true;
   };
 
+  services.caddy.enable = true;
+
   networking = {
     interfaces = {
       tap0 = {
