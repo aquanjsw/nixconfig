@@ -55,6 +55,7 @@
         cat = "x86_64-linux";
         tur = "x86_64-linux";
         bun = "x86_64-linux";
+        rac = "x86_64-linux";
       };
     in
     {

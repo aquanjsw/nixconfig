@@ -15,4 +15,8 @@
     user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDTo2ziWT/vQMnHYow4xIUqtJ58AjyDst250uls5ckV3";
     system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHAAouf1ZgGF1oatBjl2aK+ALMLRxsSH0rGZ3I1ZNi8u";
   };
+  rac = {
+    user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFQSZ7wkOZLwmttz48PXzCqSy0tOA2E6uAELjc+S4OgR";
+    system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPtVrawYfzop6ieUk8QZzZWbT4hood5bakEujesPp5S3";
+  };
 }
