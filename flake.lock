@@ -233,7 +233,7 @@
     "ssh-keys": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-ColjyIW9IwH348UGXkxqCZLOsdTkNVdvz4ZvTEbc4Hc=",
+        "narHash": "sha256-cLr0j75ctuY14xTIm1LkTTtX23pBe3YgJqh/2K6aKDA=",
         "type": "file",
         "url": "https://github.com/aquanjsw.keys"
       },

@@ -21,6 +21,11 @@
     ruff
     ty
     deploy-rs
+    firefox
+    niri
+    fuzzel
+    ghostty
+    xdg-utils
   ];
 
   boot.loader.systemd-boot.enable = true;
