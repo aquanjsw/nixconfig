@@ -15,7 +15,7 @@
         nixd
         nixfmt
       ];
-      home.stateVersion = config.system.stateVersion;
+      home.stateVersion = "26.11";
     };
   };
 }
