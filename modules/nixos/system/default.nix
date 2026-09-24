@@ -46,7 +46,6 @@
       sessionVariables = {
         EDITOR = "nvim";
       };
-      memoryAllocator.provider = "jemalloc"; # to prevent memleak when using pytorch
     };
 
     networking.networkmanager.enable = true;

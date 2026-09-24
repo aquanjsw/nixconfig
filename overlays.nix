@@ -2,11 +2,6 @@
 [
   inputs.realcugan.overlays.default
   (final: prev: {
-    rust-jemalloc-sys = prev.rust-jemalloc-sys.overrideAttrs (prevAttrs: {
-      setupHook = prev.writeText "setup-hook.sh" ''
-        export JEMALLOC_OVERRIDE="@out@/lib/libjemalloc_pic${prev.stdenv.hostPlatform.extensions.staticLibrary}"
-      '';
-    });
     sing-box = prev.sing-box.overrideAttrs (prevAttrs: rec {
       version = "1.15.0-alpha.6";
       src = prev.fetchFromGitHub {

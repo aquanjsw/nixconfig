@@ -15,7 +15,8 @@
         nixd
         nixfmt
       ];
-      home.stateVersion = "26.11";
+      home.stateVersion = config.system.stateVersion;
+      home.enableNixpkgsReleaseCheck = false;
     };
   };
 }
