@@ -17,8 +17,20 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    systemd.services = {
+      "tap0-netdev".stopIfChanged = false;
+      "tap0-netdev".restartIfChanged = false;
+      "tap1-netdev".stopIfChanged = false;
+      "tap1-netdev".restartIfChanged = false;
+      "br0-netdev".stopIfChanged = false;
+      "br0-netdev".restartIfChanged = false;
+      "br1-netdev".stopIfChanged = false;
+      "br1-netdev".restartIfChanged = false;
+    };
     systemd.services.openwrt = {
       description = "OpenWRT VM Router";
+      stopIfChanged = false;
+      restartIfChanged = false;
       after = [
         "network.target"
         "sys-subsystem-net-devices-tap0.device"

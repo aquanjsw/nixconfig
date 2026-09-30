@@ -1,6 +1,7 @@
 {
   inputs,
   pkgs,
+  pkgs-unstable,
   ...
 }:
 {
@@ -13,7 +14,12 @@
 
   services.xserver.videoDrivers = [ "nvidia" ];
 
-  environment.systemPackages = with pkgs; [
+  fonts.packages = with pkgs; [
+    noto-fonts-cjk-sans
+    noto-fonts-color-emoji
+  ];
+
+  environment.systemPackages = (with pkgs; [
     binutils # nm
     usbutils # lsusb
     pciutils # lspci
@@ -21,12 +27,18 @@
     ruff
     ty
     deploy-rs
+  ])
+  ++ (with pkgs-unstable; [
     firefox
     niri
     fuzzel
     ghostty
     xdg-utils
-  ];
+    wl-clipboard
+    google-chrome
+    zed-editor
+    xdg-utils
+  ]);
 
   boot.loader.systemd-boot.enable = true;
 

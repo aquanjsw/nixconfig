@@ -2,7 +2,8 @@
   description = "Shin Rag's nixconfig";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-26.05";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs?ref=nixos-unstable";
 
     deploy-rs.url = "github:serokell/deploy-rs";
     deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
@@ -17,10 +18,8 @@
     agenix.inputs.nixpkgs.follows = "nixpkgs";
 
     realcugan.url = "github:aquanjsw/realcugan";
-    realcugan.inputs.nixpkgs.follows = "nixpkgs";
 
     demos.url = "github:aquanjsw/demos";
-    demos.inputs.nixpkgs.follows = "nixpkgs";
 
     ssh-keys.url = "https://github.com/aquanjsw.keys";
     ssh-keys.flake = false;
@@ -37,8 +36,15 @@
       inherit (nixpkgs) lib;
       mkNixOS =
         hostname:
+        system:
+        let
+          pkgs-unstable = import inputs.nixpkgs-unstable {
+            inherit system;
+            config.allowUnfree = true;
+          };
+        in
         (lib.nixosSystem {
-          specialArgs = { inherit inputs self; };
+          specialArgs = { inherit inputs self pkgs-unstable; };
           modules = [
             ./modules/home
             ./modules/nixos
@@ -58,7 +64,7 @@
       };
     in
     {
-      nixosConfigurations = nixpkgs.lib.genAttrs (builtins.attrNames hosts) (hostname: mkNixOS hostname);
+      nixosConfigurations = builtins.mapAttrs mkNixOS hosts;
       deploy.nodes = builtins.mapAttrs (hostname: arch: {
         inherit hostname;
         profiles.system = {
