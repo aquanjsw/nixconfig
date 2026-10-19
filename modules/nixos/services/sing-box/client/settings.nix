@@ -1,9 +1,9 @@
 {
-  vless-server,
-  vless-uuid,
-  reality-public-key,
-  tailscale-auth-key,
-  api-port,
+  server ? "PLACEHOLDER",
+  uuid ? "PLACEHOLDER",
+  reality-public-key ? "PLACEHOLDER",
+  ts-auth-key ? "PLACEHOLDER",
+  api-port ? 2353,
 }:
 {
   "$schema" = "https://sing-box.sagernet.org/schema.json";
@@ -189,15 +189,14 @@
       tag = "direct";
     }
     {
+      inherit server uuid;
       type = "vless";
       tag = "proxy";
-      server = vless-server;
       server_port = 443;
-      uuid = vless-uuid;
       flow = "xtls-rprx-vision";
       tls = {
         enabled = true;
-        server_name = vless-server;
+        server_name = server;
         reality = {
           enabled = true;
           public_key = reality-public-key;
@@ -216,7 +215,7 @@
     {
       type = "tailscale";
       tag = "ts-ep";
-      auth_key = tailscale-auth-key;
+      auth_key = ts-auth-key;
       ephemeral = false;
       advertise_tags = "tag:client";
     }

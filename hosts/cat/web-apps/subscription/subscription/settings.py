@@ -10,7 +10,7 @@ EXTRA_SETTINGS_FILE = os.environ["EXTRA_SETTINGS_FILE"]
 _DOMAIN = os.environ.get("DOMAIN", "")
 
 # From systemd envfile
-SECRET_KEY = os.environ.get("SECRET_KEY", "dev")
+SECRET_KEY = os.environ.get("DJANGO_KEY", "dev")
 
 DEBUG = os.environ.get("DEBUG", "0") == "1"
 

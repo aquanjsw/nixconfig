@@ -35,7 +35,7 @@ acme_record_ids=$(echo "$result_records" | $JQ -r '.result[]?
 
 for record_id in $acme_record_ids; do
   if [[ -n "$record_id" ]]; then
-    result=$($CURL -sX DELETE -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+    result=$($CURL -sX DELETE -H "Authorization: Bearer $CF_API_TOKEN" \
       https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$record_id \
       2>/dev/null)
     if is_success "$result"; then

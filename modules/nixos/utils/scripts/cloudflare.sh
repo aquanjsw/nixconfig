@@ -11,7 +11,7 @@ is_success() {
 # 1: Output variable name
 get_records() {
   local -n out=$1
-  out=$($CURL -sH "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+  out=$($CURL -sH "Authorization: Bearer $CF_API_TOKEN" \
     https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records 2>/dev/null)
   if ! is_success "$out"; then
     echo "Failed to fetch DNS records: $out" >&2
@@ -41,7 +41,7 @@ new_record() {
   if [[ -z "$record" ]]; then
     result=$($CURL -sH 'Content-Type: application/json' \
       https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records \
-      -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+      -H "Authorization: Bearer $CF_API_TOKEN" \
       -d "{
             \"name\": \"$domain\",
             \"type\": \"$type\",
@@ -90,7 +90,7 @@ update_record() {
   local id=$(echo "$record" | $JQ -r '.id')
   result=$($CURL -sH 'Content-Type: application/json' -X PATCH \
     https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$id \
-    -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+    -H "Authorization: Bearer $CF_API_TOKEN" \
     -d "{
           \"name\": \"$domain\",
           \"type\": \"$type\",

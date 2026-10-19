@@ -14,8 +14,8 @@
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
-    agenix.url = "github:ryantm/agenix";
-    agenix.inputs.nixpkgs.follows = "nixpkgs";
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     realcugan.url = "github:aquanjsw/realcugan";
 
@@ -30,16 +30,20 @@
       nixpkgs,
       self,
       deploy-rs,
+      sops-nix,
+      disko,
+      home-manager,
+      demos,
       ...
     }:
     let
       inherit (nixpkgs) lib;
+      inherit (builtins) mapAttrs;
       mkNixOS =
-        hostname:
-        system:
+        hostName: hostAttrs:
         let
           pkgs-unstable = import inputs.nixpkgs-unstable {
-            inherit system;
+            system = hostAttrs.system;
             config.allowUnfree = true;
           };
         in
@@ -48,31 +52,42 @@
           modules = [
             ./modules/home
             ./modules/nixos
-            ./hosts/${hostname}/configuration.nix
+            ./hosts/${hostName}/configuration.nix
+            sops-nix.nixosModules.sops
+            disko.nixosModules.disko
+            home-manager.nixosModules.home-manager
+            demos.nixosModules.default
             {
-              networking.hostName = hostname;
+              networking.hostName = hostName;
             }
           ];
         });
       forAllSystems = lib.genAttrs lib.systems.flakeExposed;
-      hosts = {
-        dog = "x86_64-linux";
-        cat = "x86_64-linux";
-        tur = "x86_64-linux";
-        bun = "x86_64-linux";
-        rac = "x86_64-linux";
+      hostRegistry = {
+        dog = { };
+        cat = { };
+        tur = { };
+        bun = { };
+        rac = { };
       };
+      hosts = mapAttrs (
+        hostName: hostAttrs:
+        {
+          system = "x86_64-linux";
+        }
+        // hostRegistry.${hostName}
+      ) hostRegistry;
     in
     {
-      nixosConfigurations = builtins.mapAttrs mkNixOS hosts;
-      deploy.nodes = builtins.mapAttrs (hostname: arch: {
-        inherit hostname;
+      nixosConfigurations = mapAttrs mkNixOS hosts;
+      deploy.nodes = mapAttrs (hostName: hostAttrs: {
+        hostname = hostName;
         profiles.system = {
           sshUser = "root";
-          path = deploy-rs.lib.${arch}.activate.nixos self.nixosConfigurations.${hostname};
+          path = deploy-rs.lib.${hostAttrs.system}.activate.nixos self.nixosConfigurations.${hostName};
         };
       }) hosts;
-      checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
+      checks = mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
       devShells = forAllSystems (
         system:
         let

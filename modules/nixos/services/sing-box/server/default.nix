@@ -5,9 +5,6 @@
 }:
 let
   cfg = config.rag.services.sing-box;
-  vless-uuids = map (vless-uuid: {
-    _secret = config.age.secrets."by-group/vless-uuids/${vless-uuid}".path;
-  }) (builtins.attrNames config.rag.secret-registry.by-group.vless-uuids);
 in
 {
   options.rag.services.sing-box.server = {
@@ -15,23 +12,36 @@ in
       default = config.rag.rootDomain;
       readOnly = true;
     };
-  };
-  config = lib.mkIf (config.services.sing-box.enable && cfg.role == "server") {
-    services.sing-box.settings = import ./settings.nix {
-      inherit vless-uuids;
-      api-port = cfg.api-port;
-      server-name = cfg.server.domain;
-      handshake-server = cfg.server.domain;
-      handshake-port = config.services.caddy.httpsPort;
-      reality-private-key = {
-        _secret = config.age.secrets."by-host/${config.networking.hostName}/reality-private-key".path;
-      };
-      res-password = {
-        _secret = config.age.secrets."by-host/${config.networking.hostName}/res-password".path;
-      };
-      api-secret = {
-        _secret = config.age.secrets."by-host/${config.networking.hostName}/sing-box-api-secret".path;
-      };
+    uuidNames = lib.mkOption {
+      default = [
+        "default"
+        "430"
+      ];
     };
   };
+  config = lib.mkIf (config.services.sing-box.enable && cfg.role == "server") (
+    let
+      uuids = map (uuidName: {
+        _secret = config.sops.secrets."sing-box/uuids/${uuidName}".path;
+      }) cfg.server.uuidNames;
+    in
+    {
+      services.sing-box.settings = import ./settings.nix {
+        inherit uuids;
+        api-port = cfg.api-port;
+        server = cfg.server.domain;
+        handshake-server = cfg.server.domain;
+        handshake-port = config.services.caddy.httpsPort;
+        reality-private-key = {
+          _secret = config.sops.secrets."sing-box/reality/private-key".path;
+        };
+        api-secret = {
+          _secret = config.sops.secrets."sing-box/api-secret".path;
+        };
+        dataimpulse-passwd = {
+          _secret = config.sops.secrets."dataimpulse-passwd".path;
+        };
+      };
+    }
+  );
 }
