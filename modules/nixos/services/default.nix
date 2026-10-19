@@ -1,7 +1,6 @@
 { ... }:
 {
   imports = [
-    ./tailscale
     ./caddy
     ./code-server
     ./dnf
@@ -9,6 +8,5 @@
     ./sshd
     ./samba
     ./openlist
-    # ./comfyui
   ];
 }

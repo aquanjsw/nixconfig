@@ -5,6 +5,20 @@
   ...
 }:
 let
-  dirs = lib.filterAttrs (name: type: type == "directory") (builtins.readDir ./.);
+  inherit (builtins)
+    readDir
+    mapAttrs
+    ;
+  inherit (pkgs)
+    mkShellNoCC
+    ;
+  dirs = lib.filterAttrs (name: type: type == "directory") (readDir ./.);
 in
-builtins.mapAttrs (dir: _: pkgs.callPackage ./${dir} { inherit self; }) dirs
+(mapAttrs (dir: _: pkgs.callPackage ./${dir} { inherit self; }) dirs)
+// {
+  default = mkShellNoCC {
+    packages = with pkgs; [
+      sops
+    ];
+  };
+}

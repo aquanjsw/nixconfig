@@ -7,16 +7,10 @@
 }:
 let
   pythonEnv = python3.withPackages (ps: [ ps.django ]);
-  settings = import "${self}/modules/nixos/services/sing-box/client/settings.nix" {
-    vless-server = "PLACEHOLDER";
-    vless-uuid = "PLACEHOLDER";
-    reality-public-key = "PLACEHOLDER";
-    tailscale-auth-key = "PLACEHOLDER";
-    api-port = 2353;
-  };
+  settings = import "${self}/modules/nixos/services/sing-box/client/settings.nix" { };
   settingsFile = "/tmp/config.json";
   extraSettings = {
-    vless-uuids = {
+    uuids = {
       default = "PLACEHOLDER0";
       user = "PLACEHOLDER1";
     };

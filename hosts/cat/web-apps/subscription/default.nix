@@ -48,36 +48,35 @@ in
   config = lib.mkIf cfg.enable {
     rag.utils.json-deployments = {
       sing-box.settings = import config.rag.services.sing-box.client.settings {
-        vless-server = config.rag.services.sing-box.server.domain;
-        vless-uuid = "PLACEHOLDER";
+        server = config.rag.services.sing-box.server.domain;
+        uuid = "PLACEHOLDER";
         reality-public-key = {
-          _secret = config.age.secrets."by-host/${config.networking.hostName}/reality-public-key".path;
+          _secret = config.sops.secrets."sing-box/reality/public-key".path;
         };
-        tailscale-auth-key = {
-          _secret = config.age.secrets."by-host/${config.networking.hostName}/tailscale-auth-key".path;
+        ts-auth-key = {
+          _secret = config.sops.secrets."ts-auth-key".path;
         };
         api-port = config.rag.services.sing-box.api-port;
       };
       sing-box-extra.settings = {
-        vless-uuids = builtins.listToAttrs (
-          map (uuidName: {
-            name = uuidName;
-            value = {
-              _secret = config.age.secrets."by-group/vless-uuids/${uuidName}".path;
-            };
-          }) (builtins.attrNames config.rag.secret-registry.by-group.vless-uuids)
-        );
+        uuids = map (uuidName: {
+          _secret = config.sops.secrets."sing-box/uuids/${uuidName}".path;
+        }) config.rag.services.sing-box.server.uuidNames;
       };
     };
 
     services.caddy.virtualHosts = {
       "${cfg.domain}".extraConfig = ''
         basic_auth {
-          rag {$HASHED_PASSWORD}
+          rag {$HASHED_PASSWD}
         }
         reverse_proxy 127.0.0.1:${toString cfg.port}
       '';
     };
+
+    sops.templates."web-app-subscription.env".content = ''
+      DJANGO_KEY=${config.sops.placeholder.django-key}
+    '';
 
     systemd.services.web-app-subscription = {
       description = "web-app-subscription";
@@ -92,7 +91,7 @@ in
         ${package}/bin/gunicorn
       '';
       serviceConfig.EnvironmentFile = [
-        config.age.secrets."by-host/${config.networking.hostName}/web-app-subscription-env".path
+        config.sops.templates."web-app-subscription.env".path
       ];
     };
   };

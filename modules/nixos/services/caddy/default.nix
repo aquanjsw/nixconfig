@@ -6,8 +6,6 @@
 }:
 let
   domain = config.rag.domain;
-  cloudflareSecretPath =
-    config.age.secrets."by-host/${config.networking.hostName}/cloudflare-api-token-env".path;
 in
 {
   config = lib.mkIf (config.services.caddy.enable && config.rag.services.sing-box.role == "client") {
@@ -23,7 +21,7 @@ in
       ];
       serviceConfig = {
         Type = "oneshot";
-        EnvironmentFile = cloudflareSecretPath;
+        EnvironmentFile = config.sops.templates."cf.env".path;
       };
       environment = {
         BOX_API_URL = "http://127.0.0.1:${toString config.rag.services.sing-box.api-port}";
@@ -41,9 +39,9 @@ in
     };
 
     services.caddy = {
-      environmentFile = cloudflareSecretPath;
+      environmentFile = config.sops.templates."cf.env".path;
       globalConfig = ''
-        acme_dns cloudflare {$CLOUDFLARE_API_TOKEN}
+        acme_dns cloudflare {$CF_API_TOKEN}
       '';
       virtualHosts."${domain}".extraConfig = ''
         respond "Hello, World!"

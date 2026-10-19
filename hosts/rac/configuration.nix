@@ -19,26 +19,26 @@
     noto-fonts-color-emoji
   ];
 
-  environment.systemPackages = (with pkgs; [
-    binutils # nm
-    usbutils # lsusb
-    pciutils # lspci
-    inputs.agenix.packages.${stdenv.hostPlatform.system}.default
-    ruff
-    ty
-    deploy-rs
-  ])
-  ++ (with pkgs-unstable; [
-    firefox
-    niri
-    fuzzel
-    ghostty
-    xdg-utils
-    wl-clipboard
-    google-chrome
-    zed-editor
-    xdg-utils
-  ]);
+  environment.systemPackages =
+    (with pkgs; [
+      binutils # nm
+      usbutils # lsusb
+      pciutils # lspci
+      ruff
+      ty
+      deploy-rs
+    ])
+    ++ (with pkgs-unstable; [
+      firefox
+      niri
+      fuzzel
+      ghostty
+      xdg-utils
+      wl-clipboard
+      google-chrome
+      zed-editor
+      xdg-utils
+    ]);
 
   boot.loader.systemd-boot.enable = true;
 

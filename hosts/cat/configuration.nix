@@ -11,6 +11,7 @@
     ./jellyfin
     ./dns-record-syncer
     ./ipv6
+    ./secrets
   ];
 
   config = {

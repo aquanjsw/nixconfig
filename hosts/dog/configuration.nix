@@ -21,6 +21,8 @@
     };
   };
 
+  services.ollama.enable = true;
+  services.ollama.host = "0.0.0.0";
   services.caddy.enable = true;
   services.jellyfin.enable = true;
   services.qbittorrent.enable = true;
@@ -33,7 +35,6 @@
       [
         realcugan
         litecli # SQLite CLI Querier
-        inputs.agenix.packages.${stdenv.hostPlatform.system}.default
         ruff
         ty
         deploy-rs

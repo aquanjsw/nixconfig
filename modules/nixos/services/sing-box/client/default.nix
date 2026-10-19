@@ -3,6 +3,8 @@ let
   cfg = config.rag.services.sing-box;
 in
 {
+  imports = [ ./tailscale-cert-dumper.nix ];
+
   options.rag.services.sing-box.client = {
     settings = lib.mkOption {
       default = ./settings.nix;
@@ -11,15 +13,15 @@ in
   };
   config = lib.mkIf (config.services.sing-box.enable && cfg.role == "client") {
     services.sing-box.settings = import cfg.client.settings {
-      vless-server = cfg.server.domain;
-      vless-uuid = {
-        _secret = config.age.secrets."by-group/vless-uuids/default".path;
+      server = cfg.server.domain;
+      uuid = {
+        _secret = config.sops.secrets."sing-box/uuids/default".path;
       };
       reality-public-key = {
-        _secret = config.age.secrets."by-host/${config.networking.hostName}/reality-public-key".path;
+        _secret = config.sops.secrets."sing-box/reality/public-key".path;
       };
-      tailscale-auth-key = {
-        _secret = config.age.secrets."by-host/${config.networking.hostName}/tailscale-auth-key".path;
+      ts-auth-key = {
+        _secret = config.sops.secrets.ts-auth-key.path;
       };
       api-port = cfg.api-port;
     };

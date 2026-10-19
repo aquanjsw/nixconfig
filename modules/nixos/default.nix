@@ -3,22 +3,17 @@
   inputs,
   lib,
   pkgs,
-  self,
   ...
 }:
 {
   imports = [
     ./utils
-    ./data
+    ./secrets
     ./services
     ./system
     ./user
     ./overlays
     ./programs
-    inputs.agenix.nixosModules.default
-    inputs.disko.nixosModules.disko
-    inputs.home-manager.nixosModules.home-manager
-    inputs.demos.nixosModules.default
   ];
 
   options.rag = {
@@ -40,13 +35,83 @@
       default = "rag";
       readOnly = true;
     };
-    secret-registry = lib.mkOption {
-      default = pkgs.callPackage "${self}/secret-registry.nix" { };
-      readOnly = true;
-    };
     ssh-keys = lib.mkOption {
       default = lib.strings.splitString "\n" (lib.strings.trim (builtins.readFile inputs.ssh-keys));
       readOnly = true;
+    };
+  };
+
+  config = {
+    rag = {
+      services.sing-box.role = lib.mkDefault "client";
+      services.sing-box.client.tailscaleCertDumper.enable = true;
+    };
+
+    programs.direnv.enable = true;
+    programs.fish.enable = true;
+    programs.nix-ld.enable = true;
+    programs.neovim = {
+      enable = true;
+      defaultEditor = true;
+    };
+
+    services.sing-box.enable = true;
+    services.openssh.enable = true;
+
+    users.users.root = {
+      hashedPassword = "$y$j9T$Y5Iio4JlEd0wIKlZHt1gG0$.FpHtOJBjHdk6yPSwEs7hVDrNRyOJ9r8CnV71rbLiS5";
+      openssh.authorizedKeys.keys = config.rag.ssh-keys;
+    };
+
+    environment = {
+      systemPackages = with pkgs; [
+        file
+        tree
+        yazi
+        btop
+        dig
+        jq
+        dua
+      ];
+      sessionVariables = {
+        EDITOR = "nvim";
+        TS_DOMAIN = config.rag.magicDNS;
+      };
+    };
+
+    networking.networkmanager.enable = true;
+    networking.firewall.enable = false;
+    networking.nftables.enable = true;
+
+    time.timeZone = "Asia/Shanghai";
+    i18n.defaultLocale = "en_US.UTF-8";
+
+    nix.settings.experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+
+    boot.loader.efi.canTouchEfiVariables = true;
+
+    nixpkgs.config.allowUnfree = true;
+
+    security.acme = {
+      defaults = {
+        email = config.rag.email;
+        dnsProvider = "cloudflare";
+      };
+      acceptTerms = true;
+    };
+
+    nix.gc = {
+      automatic = true;
+      options = lib.mkDefault "--delete-older-than 30d";
+      dates = "weekly";
+    };
+
+    nix.optimise = {
+      automatic = true;
+      dates = "weekly";
     };
   };
 }

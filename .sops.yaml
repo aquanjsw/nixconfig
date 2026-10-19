@@ -1,0 +1,20 @@
+keys:
+  - &rag age108jmufq05pqmak8763tmquhstwgvftrtp9whhzxlx4zvqsfrzuzqxfccst
+  - &dog age1anyaljufc3stl8xr09gqc7ue95zgzpw5ckskyzcd09e74l5h438syggjgw
+  - &tur age1zlvvwfpxpd34urswc5ew2yvhgscqp3wcj9dued0wrnqzzm4yru5qmttgw0
+  - &cat age1e2c5uazjj9m3lygsucdhrfqr5qjyymq949r6ut5dl4spdaym03fs6kqjky
+  - &bun age16j9rtusqxnnge9ttwkt8d9pwcvm4kmtu9e0lzje4r7my2trjqg9qgghw3d
+creation_rules:
+  - path_regex: secrets/default\.yaml$
+    key_groups:
+      - age:
+          - *rag
+          - *dog
+          - *tur
+          - *cat
+          - *bun
+  - path_regex: secrets/cat\.yaml$
+    key_groups:
+      - age:
+          - *rag
+          - *cat

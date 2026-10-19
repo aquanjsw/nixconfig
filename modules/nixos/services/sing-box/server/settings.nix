@@ -1,10 +1,10 @@
 {
-  vless-uuids,
-  server-name,
+  uuids,
+  server,
   handshake-server,
   handshake-port,
   reality-private-key,
-  res-password,
+  dataimpulse-passwd,
   api-port,
   api-secret,
 }:
@@ -31,7 +31,7 @@
       server = "gw.dataimpulse.com";
       server_port = 824;
       username = "967395487d806a6940d5__cr.us";
-      password = res-password;
+      password = dataimpulse-passwd;
     }
     {
       tag = "res-hk";
@@ -39,7 +39,7 @@
       server = "gw.dataimpulse.com";
       server_port = 824;
       username = "967395487d806a6940d5__cr.hk";
-      password = res-password;
+      password = dataimpulse-passwd;
     }
   ];
   inbounds = [
@@ -50,10 +50,10 @@
       users = map (uuid: {
         inherit uuid;
         flow = "xtls-rprx-vision";
-      }) vless-uuids;
+      }) uuids;
       tls = {
         enabled = true;
-        server_name = server-name;
+        server_name = server;
         reality = {
           enabled = true;
           private_key = reality-private-key;

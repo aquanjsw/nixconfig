@@ -4,3 +4,5 @@ result
 __pycache__/
 *.sqlite3
 /.deploy-gc/
+/.envrc
+/.direnv/

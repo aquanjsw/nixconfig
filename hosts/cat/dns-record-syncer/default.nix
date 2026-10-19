@@ -23,8 +23,9 @@ in
       serviceConfig = {
         Type = "oneshot";
         Restart = "on-failure";
-        EnvironmentFile =
-          config.age.secrets."by-host/${config.networking.hostName}/cloudflare-api-token-env".path;
+        EnvironmentFile = [
+          config.sops.templates."cf.env".path
+        ];
       };
       script = builtins.readFile ./sync.sh;
       environment = {
