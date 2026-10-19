@@ -1,5 +1,4 @@
 {
-  inputs,
   pkgs,
   pkgs-unstable,
   ...
@@ -7,6 +6,8 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./disk-config.nix
+    ./i18n
   ];
 
   rag = {
@@ -14,26 +15,18 @@
 
   services.xserver.videoDrivers = [ "nvidia" ];
 
-  fonts.packages = with pkgs; [
-    noto-fonts-cjk-sans
-    noto-fonts-color-emoji
-  ];
-
   environment.systemPackages =
     (with pkgs; [
-      binutils # nm
       usbutils # lsusb
       pciutils # lspci
       ruff
       ty
-      deploy-rs
     ])
     ++ (with pkgs-unstable; [
       firefox
       niri
       fuzzel
       ghostty
-      xdg-utils
       wl-clipboard
       google-chrome
       zed-editor

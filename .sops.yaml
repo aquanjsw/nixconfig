@@ -4,6 +4,7 @@ keys:
   - &tur age1zlvvwfpxpd34urswc5ew2yvhgscqp3wcj9dued0wrnqzzm4yru5qmttgw0
   - &cat age1e2c5uazjj9m3lygsucdhrfqr5qjyymq949r6ut5dl4spdaym03fs6kqjky
   - &bun age16j9rtusqxnnge9ttwkt8d9pwcvm4kmtu9e0lzje4r7my2trjqg9qgghw3d
+  - &rac age1jtw2epth2aeq9qa0e7wrkpmml60whwhsafcsvp5l9975y3f5ddrs3gda2q
 creation_rules:
   - path_regex: secrets/default\.yaml$
     key_groups:
@@ -13,6 +14,7 @@ creation_rules:
           - *tur
           - *cat
           - *bun
+          - *rac
   - path_regex: secrets/cat\.yaml$
     key_groups:
       - age:
