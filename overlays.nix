@@ -3,7 +3,7 @@
   inputs.realcugan.overlays.default
   (final: prev: {
     sing-box = prev.sing-box.overrideAttrs (prevAttrs: rec {
-      version = "1.15.0-alpha.6";
+      version = "1.15.0-alpha.12";
       src = prev.fetchFromGitHub {
         owner = "SagerNet";
         repo = "sing-box";

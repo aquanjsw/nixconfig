@@ -23,7 +23,6 @@
       ty
     ])
     ++ (with pkgs-unstable; [
-      firefox
       niri
       fuzzel
       ghostty
@@ -31,6 +30,7 @@
       google-chrome
       zed-editor
       xdg-utils
+      qq
     ]);
 
   boot.loader.systemd-boot.enable = true;

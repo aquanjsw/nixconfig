@@ -47,6 +47,7 @@
       services.sing-box.client.tailscaleCertDumper.enable = true;
     };
 
+    programs.chromium.enable = true;
     programs.direnv.enable = true;
     programs.fish.enable = true;
     programs.nix-ld.enable = true;
@@ -55,8 +56,10 @@
       defaultEditor = true;
     };
 
+    services.kanata.enable = true;
     services.sing-box.enable = true;
     services.openssh.enable = true;
+    services.xserver.desktopManager.runXdgAutostartIfNone = true;
 
     users.users.root = {
       hashedPassword = "$y$j9T$Y5Iio4JlEd0wIKlZHt1gG0$.FpHtOJBjHdk6yPSwEs7hVDrNRyOJ9r8CnV71rbLiS5";
@@ -76,6 +79,8 @@
       sessionVariables = {
         EDITOR = "nvim";
         TS_DOMAIN = config.rag.magicDNS;
+        NIXOS_OZONE_WL = "1";
+        XDG_SESSION_TYPE = "wayland";
       };
     };
 
@@ -113,5 +118,7 @@
       automatic = true;
       dates = "weekly";
     };
+
+    nix.settings.substituters = [ "https://mirrors.cernet.edu.cn/nix-channels/store?priority=10" ];
   };
 }
