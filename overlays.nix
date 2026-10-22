@@ -3,6 +3,15 @@
   inputs.realcugan.overlays.default
   inputs.ragixpkgs.overlays.default
   (final: prev: {
+    zed = (
+      prev.symlinkJoin {
+        name = "zed";
+        paths = [ prev.zed-editor ];
+        postBuild = ''
+          ln -s $out/bin/zeditor $out/bin/zed
+        '';
+      }
+    );
     sing-box = prev.sing-box.overrideAttrs (prevAttrs: rec {
       version = "1.15.0-alpha.12";
       src = prev.fetchFromGitHub {
