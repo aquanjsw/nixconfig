@@ -1,6 +1,7 @@
 { inputs, ... }:
 [
   inputs.realcugan.overlays.default
+  inputs.ragixpkgs.overlays.default
   (final: prev: {
     sing-box = prev.sing-box.overrideAttrs (prevAttrs: rec {
       version = "1.15.0-alpha.12";

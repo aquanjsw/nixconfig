@@ -5,6 +5,9 @@
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-26.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs?ref=nixos-unstable";
 
+    ragixpkgs.url = "github:aquanjsw/ragixpkgs";
+    ragixpkgs.inputs.nixpkgs.follows = "nixpkgs";
+
     deploy-rs.url = "github:serokell/deploy-rs";
     deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -48,7 +51,13 @@
           };
         in
         (lib.nixosSystem {
-          specialArgs = { inherit inputs self pkgs-unstable; };
+          specialArgs = {
+            inherit
+              inputs
+              self
+              pkgs-unstable
+              ;
+          };
           modules = [
             ./modules/home
             ./modules/nixos
