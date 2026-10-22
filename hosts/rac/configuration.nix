@@ -32,6 +32,8 @@
       pciutils # lspci
       ruff
       ty
+      xwayland-satellite
+      propertree
     ])
     ++ (with pkgs-unstable; [
       glib
