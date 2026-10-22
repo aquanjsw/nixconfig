@@ -73,7 +73,6 @@
         btop
         dig
         jq
-        dua
       ];
       sessionVariables = {
         EDITOR = "nvim";
