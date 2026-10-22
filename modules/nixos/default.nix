@@ -1,4 +1,5 @@
 {
+  self,
   config,
   inputs,
   lib,
@@ -12,7 +13,6 @@
     ./services
     ./system
     ./user
-    ./overlays
     ./programs
   ];
 
@@ -117,5 +117,6 @@
     };
 
     nix.settings.substituters = [ "https://mirrors.cernet.edu.cn/nix-channels/store?priority=10" ];
+    nixpkgs.overlays = import "${self}/overlays.nix" { inherit inputs; };
   };
 }

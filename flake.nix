@@ -48,6 +48,7 @@
           pkgs-unstable = import inputs.nixpkgs-unstable {
             system = hostAttrs.system;
             config.allowUnfree = true;
+            overlays = import ./overlays.nix { inherit inputs; };
           };
         in
         (lib.nixosSystem {
