@@ -5,15 +5,26 @@
 }:
 {
   imports = [
+    ./dynamic-theme
     ./hardware-configuration.nix
     ./disk-config.nix
     ./i18n
+    ./awww
   ];
+
+  home-manager.users.rag = {
+    services.awww.enable = true;
+  };
 
   rag = {
   };
 
+  programs.niri = {
+    enable = true;
+    useNautilus = true;
+  };
   services.xserver.videoDrivers = [ "nvidia" ];
+  services.geoclue2.enable = true;
 
   environment.systemPackages =
     (with pkgs; [
@@ -23,14 +34,22 @@
       ty
     ])
     ++ (with pkgs-unstable; [
-      niri
+      glib
+      gsettings-desktop-schemas
       fuzzel
       ghostty
       wl-clipboard
       google-chrome
-      zed-editor
+      (symlinkJoin {
+        name = "zed";
+        paths = [ zed-editor ];
+        postBuild = ''
+          ln -s $out/bin/zeditor $out/bin/zed
+        '';
+      })
       xdg-utils
       qq
+      mako
     ]);
 
   boot.loader.systemd-boot.enable = true;

@@ -20,5 +20,8 @@ in
     packages = with pkgs; [
       sops
     ];
+    CURL = "${pkgs.curl}/bin/curl";
+    JQ = "${pkgs.jq}/bin/jq";
+    GSETTINGS = "${pkgs.glib}/bin/gsettings";
   };
 }

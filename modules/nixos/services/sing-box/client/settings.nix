@@ -152,6 +152,8 @@
         ip_is_private = true;
         domain = [
           "zaelggk.com"
+          "ipinfo.io"
+          "ipapi.co"
         ];
         outbound = "direct";
       }
