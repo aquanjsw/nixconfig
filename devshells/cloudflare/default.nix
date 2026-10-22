@@ -16,7 +16,6 @@ mkShellNoCC rec {
   AWK = "${gawk}/bin/awk";
   TR = "${coreutils}/bin/tr";
   JQ = "${jq}/bin/jq";
-  CURL = "${curl}/bin/curl";
   IPCALC = "${ipcalc}/bin/ipcalc";
   shellHook = ''
     . "${self}/modules/nixos/utils/scripts/cloudflare.sh"
