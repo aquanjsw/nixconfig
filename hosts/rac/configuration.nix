@@ -13,12 +13,16 @@
     ./waybar
   ];
 
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
   virtualisation.podman.enable = true;
+  programs.nm-applet.enable = true;
 
   home-manager.users.rag = {
     services.awww.enable = true;
     programs.distrobox.enable = true;
     programs.waybar.enable = true;
+    services.cliphist.enable = true;
   };
 
   rag = {
@@ -32,23 +36,25 @@
 
   environment.systemPackages =
     (with pkgs; [
+      libnotify
       usbutils # lsusb
       pciutils # lspci
       ruff
       ty
-      xwayland-satellite
+      hyprpicker
       python3
       propertree
-    ])
-    ++ (with pkgs-unstable; [
+      xwayland-satellite
       fuzzel
       ghostty
       wl-clipboard
+      xdg-utils # xdg-open
+      mako
+    ])
+    ++ (with pkgs-unstable; [
       google-chrome
       zed
-      xdg-utils # xdg-open
       qq
-      mako
     ]);
 
   boot.loader.systemd-boot.enable = true;
