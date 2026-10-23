@@ -73,6 +73,7 @@
         btop
         dig
         jq
+        bintools # nm
       ];
       sessionVariables = {
         EDITOR = "nvim";
