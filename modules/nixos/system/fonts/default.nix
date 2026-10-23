@@ -5,9 +5,15 @@
   ...
 }:
 {
-  config = lib.mkIf config.services.jellyfin.enable {
-    fonts.packages = with pkgs; [
-      noto-fonts-cjk-sans
-    ];
+  config = lib.mkIf config.programs.niri.enable {
+    fonts = {
+      packages = with pkgs; [
+        source-han-sans
+        nerd-fonts.symbols-only
+      ];
+      fontconfig.defaultFonts = {
+        sansSerif = [ "Source Han Sans SC" ]; # Make SC higher priority than JP, etc.
+      };
+    };
   };
 }

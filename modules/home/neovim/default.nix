@@ -1,22 +1,22 @@
 {
-  config,
   lib,
   pkgs,
   ...
 }:
+let
+  inherit (builtins) readFile;
+in
 {
-  config.home-manager.users.${config.rag.username} = {
-    programs.neovim = {
-      enable = true;
-      withRuby = false;
-      withPython3 = false;
-      defaultEditor = true;
-      vimAlias = true;
-      extraConfig = lib.fileContents ./init.vim;
-      initLua = lib.fileContents ./init.lua;
-      plugins = with pkgs.vimPlugins; [
-        nvim-lspconfig
-      ];
-    };
+  programs.neovim = {
+    enable = lib.mkDefault true;
+    withRuby = false;
+    withPython3 = false;
+    defaultEditor = true;
+    vimAlias = true;
+    extraConfig = readFile ./init.vim;
+    initLua = readFile ./init.lua;
+    plugins = with pkgs.vimPlugins; [
+      nvim-lspconfig
+    ];
   };
 }

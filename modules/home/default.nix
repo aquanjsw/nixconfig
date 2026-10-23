@@ -1,17 +1,27 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 {
-  imports = [
-    ./git
-    ./neovim
-    ./gh
-  ];
   config.home-manager = {
     backupFileExtension = ".nix.bak";
     useGlobalPkgs = true;
     useUserPackages = true;
-    users.${config.rag.username} = {
-      home.stateVersion = config.system.stateVersion;
-      home.enableNixpkgsReleaseCheck = false;
+    users.rag = {
+      imports = [
+        ./mako
+        ./distrobox
+        ./cliplist
+        ./waybar
+        ./git
+        ./neovim
+        ./gh
+        ./awww
+        ./fcitx5
+        ./awww
+      ];
+      config.home = {
+        stateVersion = config.system.stateVersion;
+        homeDirectory = "/home/rag";
+        username = "rag";
+      };
     };
   };
 }

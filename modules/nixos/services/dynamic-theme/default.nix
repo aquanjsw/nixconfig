@@ -5,28 +5,24 @@
   ...
 }:
 let
-  inherit (lib)
-    mkIf
-    ;
-  inherit (builtins) readFile;
-  inherit (pkgs) writeShellApplication;
-
-  script = writeShellApplication {
-    name = "dynamic-theme";
-    runtimeInputs = with pkgs; [
-      jq
-      curl
-      glib
-      gsettings-desktop-schemas
-    ];
-    runtimeEnv = {
-      XDG_DATA_DIRS = "${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}";
+  script =
+    with pkgs;
+    writeShellApplication {
+      name = "dynamic-theme";
+      runtimeInputs = [
+        jq
+        curl
+        glib
+        gsettings-desktop-schemas
+      ];
+      runtimeEnv = {
+        XDG_DATA_DIRS = "${gsettings-desktop-schemas}/share/gsettings-schemas/${gsettings-desktop-schemas.name}";
+      };
+      text = builtins.readFile ./dynamic-theme.sh;
     };
-    text = readFile ./dynamic-theme.sh;
-  };
 in
 {
-  config = mkIf config.programs.niri.enable {
+  config = lib.mkIf config.programs.niri.enable {
     systemd.user.services.dynamic-theme = {
       description = "Light or Dark based on time of day";
       after = [ "graphical-session.target" ];

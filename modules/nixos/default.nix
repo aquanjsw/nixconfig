@@ -4,6 +4,7 @@
   inputs,
   lib,
   pkgs,
+  pkgs-unstable,
   ...
 }:
 {
@@ -66,15 +67,38 @@
     };
 
     environment = {
-      systemPackages = with pkgs; [
-        file
-        tree
-        yazi
-        btop
-        dig
-        jq
-        bintools # nm
-      ];
+      systemPackages =
+        (
+          with pkgs;
+          [
+            file
+            tree
+            yazi
+            btop
+            dig
+            jq
+            bintools # nm
+            python3
+          ]
+          ++ lib.optionals config.programs.niri.enable [
+            libnotify
+            hyprpicker
+            xwayland-satellite
+            wl-clipboard
+            xdg-utils # xdg-open
+            ghostty
+            fuzzel
+          ]
+        )
+        ++ (
+          with pkgs-unstable;
+          [ ]
+          ++ lib.optionals config.programs.niri.enable [
+            google-chrome
+            zed
+            qq
+          ]
+        );
       sessionVariables = {
         EDITOR = "nvim";
         TS_DOMAIN = config.rag.magicDNS;

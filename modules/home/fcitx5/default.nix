@@ -1,16 +1,12 @@
-{ pkgs, ... }: {
-  fonts = {
-    packages = with pkgs; [
-      source-han-sans
-      nerd-fonts.symbols-only
-    ];
-    fontconfig.defaultFonts = {
-      sansSerif = [ "Source Han Sans SC" ];
-    };
-  };
-
-  home-manager.users.rag.i18n.inputMethod = {
-    enable = true;
+{
+  osConfig,
+  pkgs,
+  lib,
+  ...
+}:
+{
+  i18n.inputMethod = lib.mkIf osConfig.programs.niri.enable {
+    enable = lib.mkDefault true;
     type = "fcitx5";
     # Using `fcitx5-remote -r` to reload the following settings
     fcitx5 = {
