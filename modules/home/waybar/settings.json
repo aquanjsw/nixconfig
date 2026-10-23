@@ -6,7 +6,8 @@
     "modules-center": ["niri/window"],
     "modules-right": ["network", "battery", "tray", "clock"],
     "clock": {
-      "format": "{:%B-%d %A %H:%M}"
+      "format": "{:%B-%d %A %H:%M}",
+      "tooltip": false
     },
     "niri/window": {
       "separate-outputs": true
@@ -16,7 +17,8 @@
     },
     "network": {
       "format": "{bandwidthTotalBytes}",
-      "interval": 2
+      "interval": 2,
+      "tooltip": false
     },
     "battery": {
       "interval": 60,

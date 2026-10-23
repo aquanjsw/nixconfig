@@ -1,6 +1,8 @@
 { ... }:
 {
   imports = [
+    ./niri
+    ./nm-applet
     ./apprise
     ./podman
     ./aria2

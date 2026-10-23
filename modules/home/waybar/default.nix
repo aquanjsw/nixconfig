@@ -1,12 +1,15 @@
 {
+  lib,
+  osConfig,
   ...
 }:
 let
   inherit (builtins) readFile fromJSON;
 in
 {
-  home-manager.users.rag = {
+  config = lib.mkIf osConfig.programs.niri.enable {
     programs.waybar = {
+      enable = lib.mkDefault true;
       settings = fromJSON (readFile ./settings.json);
       style = null;
     };

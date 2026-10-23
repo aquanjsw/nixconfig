@@ -1,9 +1,7 @@
-{ config, ... }:
+{ lib, ... }:
 {
-  config.home-manager.users.${config.rag.username} = {
-    programs.gh = {
-      enable = true;
-      gitCredentialHelper.enable = true;
-    };
+  programs.gh = {
+    enable = lib.mkDefault true;
+    gitCredentialHelper.enable = true;
   };
 }
