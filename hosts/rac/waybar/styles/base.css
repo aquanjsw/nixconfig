@@ -1,0 +1,12 @@
+* {
+  border: none;
+  min-height: 0;
+  min-width: 0;
+  padding: 0.1rem 0.3rem;
+  border-radius: 1rem;
+}
+
+window#waybar {
+  background: @bg;
+  color: @fg;
+}

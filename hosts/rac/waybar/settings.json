@@ -1,0 +1,41 @@
+[
+  {
+    "layer": "top",
+    "position": "top",
+    "modules-left": [],
+    "modules-center": ["niri/window"],
+    "modules-right": ["network", "battery", "tray", "clock"],
+    "clock": {
+      "format": "{:%B-%d %A %H:%M}"
+    },
+    "niri/window": {
+      "separate-outputs": true
+    },
+    "tray": {
+      "spacing": 3
+    },
+    "network": {
+      "format": "{bandwidthTotalBytes}",
+      "interval": 2
+    },
+    "battery": {
+      "interval": 60,
+      "states": {
+        "warning": 30,
+        "critical": 15
+      },
+      "events": {
+        "on-discharging-warning": "notify-send -u normal 'Low Battery'",
+        "on-discharging-critical": "notify-send -u critical 'Very Low Battery'",
+        "on-charging-100": "notify-send -u normal 'Battery Full!'",
+        "on-discharging": "notify-send -u normal 'Power Switch' Discharging",
+        "on-charging": "notify-send -u normal 'Power Switch' Charging'"
+      },
+      "format": "{icon}",
+      "format-icons": {
+        "default": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+        "charging": ["󰢟", "󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"]
+      }
+    }
+  }
+]

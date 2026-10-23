@@ -86,7 +86,10 @@
     networking.nftables.enable = true;
 
     time.timeZone = "Asia/Shanghai";
-    i18n.defaultLocale = "en_US.UTF-8";
+    i18n = {
+      defaultLocale = "en_US.UTF-8";
+      extraLocales = [ "zh_CN.UTF-8/UTF-8" ];
+    };
 
     nix.settings.experimental-features = [
       "nix-command"

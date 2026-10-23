@@ -1,28 +1,21 @@
 {
-  config,
-  lib,
   ...
 }:
 let
-  inherit (lib) mkIf;
+  inherit (builtins) readFile fromJSON;
 in
 {
-  home-manager.users.rag.programs.waybar = mkIf config.home-manager.users.rag.programs.waybar.enable {
-    settings = {
-      mainBar = {
-        layer = "top";
-        position = "top";
-        height = 20;
-        modules-right = [
-          "tray"
-          "clock"
-        ];
-        clock = {
-          tooltip = true;
-          format = "{:%H:%M}";
-          tooltip-format = "{:%Y-%m-%d %a}";
-        };
-      };
+  home-manager.users.rag = {
+    programs.waybar = {
+      settings = fromJSON (readFile ./settings.json);
+      style = null;
+    };
+    xdg.configFile = {
+      "waybar/base.css".source = ./styles/base.css;
+      "waybar/colors-dark.css".source = ./styles/colors-dark.css;
+      "waybar/colors-light.css".source = ./styles/colors-light.css;
+      "waybar/style-dark.css".source = ./styles/style-dark.css;
+      "waybar/style-light.css".source = ./styles/style-light.css;
     };
   };
 }
