@@ -10,12 +10,15 @@
     ./disk-config.nix
     ./i18n
     ./awww
+    ./waybar
   ];
 
   virtualisation.podman.enable = true;
+
   home-manager.users.rag = {
     services.awww.enable = true;
     programs.distrobox.enable = true;
+    programs.waybar.enable = true;
   };
 
   rag = {
