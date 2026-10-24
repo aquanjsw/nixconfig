@@ -3,8 +3,17 @@
     "layer": "top",
     "position": "top",
     "modules-left": [],
-    "modules-center": ["niri/window"],
-    "modules-right": ["network", "battery", "tray", "clock"],
+    "modules-center": [],
+    "modules-right": ["network", "battery", "pulseaudio", "tray", "clock"],
+    "pulseaudio": {
+      "tooltip-format": "{desc}",
+      "format": "{icon} {volume}%",
+      "format-icons": {
+        "default": [""],
+        "headset": ["󰋋"]
+      },
+      "scroll-step": 2
+    },
     "clock": {
       "format": "{:%B-%d %A %H:%M}",
       "tooltip": false
