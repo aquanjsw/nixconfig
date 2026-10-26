@@ -23,8 +23,6 @@
     ++ (with pkgs-unstable; [
     ]);
 
-  boot.loader.systemd-boot.enable = true;
-
   system.stateVersion = "26.05";
 }
 

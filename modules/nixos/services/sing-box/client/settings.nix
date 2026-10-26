@@ -9,8 +9,8 @@
   "$schema" = "https://sing-box.sagernet.org/schema.json";
   log = {
     disabled = false;
-    level = "debug";
-    timestamp = false;
+    level = "error";
+    timestamp = true;
   };
   dns = {
     strategy = "prefer_ipv4";

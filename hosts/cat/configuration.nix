@@ -38,9 +38,13 @@
     environment.systemPackages = with pkgs; [
     ];
 
-    boot.loader.systemd-boot.enable = false;
-    boot.loader.grub.device = "/dev/sda";
-    boot.loader.grub.enable = true;
+    boot.loader = {
+      efi.canTouchEfiVariables = false;
+      grub = {
+        efiSupport = false;
+        device = "/dev/sda";
+      };
+    };
     boot.kernel.sysctl = {
       "net.ipv4.tcp_congestion_control" = "bbr";
       "net.core.default_qdisc" = "fq";

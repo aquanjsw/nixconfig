@@ -15,7 +15,7 @@ def response(config):
 
 def sing_box(request: HttpRequest):
     os = request.GET.get("os", "")
-    if os not in ["linux", "windows", "android"]:
+    if os not in ["linux", "windows", "android", "macos"]:
         return HttpResponse(f"Invalid OS: '{os}'", status=400)
 
     config = json.load(open(settings.SETTINGS_FILE))

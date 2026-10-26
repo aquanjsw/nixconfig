@@ -59,9 +59,9 @@ in
         api-port = config.rag.services.sing-box.api-port;
       };
       sing-box-extra.settings = {
-        uuids = map (uuidName: {
+        uuids = lib.genAttrs config.rag.services.sing-box.server.uuidNames (uuidName: {
           _secret = config.sops.secrets."sing-box/uuids/${uuidName}".path;
-        }) config.rag.services.sing-box.server.uuidNames;
+        });
       };
     };
 

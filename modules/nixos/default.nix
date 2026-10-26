@@ -103,6 +103,7 @@
         EDITOR = "nvim";
         TS_DOMAIN = config.rag.magicDNS;
       };
+      enableAllTerminfo = true;
     };
 
     networking.networkmanager.enable = true;
@@ -119,8 +120,6 @@
       "nix-command"
       "flakes"
     ];
-
-    boot.loader.efi.canTouchEfiVariables = true;
 
     nixpkgs.config.allowUnfree = true;
 
@@ -143,7 +142,20 @@
       dates = "weekly";
     };
 
+    boot.loader = {
+      grub = {
+        enable = true;
+        device = lib.mkDefault "nodev";
+        efiSupport = lib.mkDefault true;
+      };
+      efi.canTouchEfiVariables = lib.mkDefault true;
+    };
+
     nix.settings.substituters = [ "https://mirrors.cernet.edu.cn/nix-channels/store?priority=10" ];
     nixpkgs.overlays = import "${self}/overlays.nix" { inherit inputs; };
+
+    systemd.settings.Manager = {
+      DefaultTimeoutStopSec = "10s";
+    };
   };
 }

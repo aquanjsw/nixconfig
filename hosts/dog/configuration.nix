@@ -50,8 +50,6 @@
     pciutils # lspci
   ];
 
-  boot.loader.systemd-boot.enable = true;
-
   boot.initrd.services.lvm.enable = true;
   fileSystems."/data" = {
     device = lib.mkForce "/dev/bcache0";

@@ -19,6 +19,7 @@ in
   default = mkShellNoCC {
     packages = with pkgs; [
       sops
+      deploy-rs
     ];
     CURL = "${pkgs.curl}/bin/curl";
     JQ = "${pkgs.jq}/bin/jq";
