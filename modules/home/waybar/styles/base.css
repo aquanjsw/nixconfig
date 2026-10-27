@@ -11,3 +11,12 @@ window#waybar {
   background: @bg;
   color: @fg;
 }
+
+window#waybar * {
+  opacity: 1;
+  transition: opacity 0.3s steps(4);
+}
+
+window#waybar.dimmed * {
+  opacity: 0.8;
+}

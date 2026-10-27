@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    ./obs-studio
     ./niri
     ./nm-applet
     ./apprise

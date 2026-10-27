@@ -8,6 +8,7 @@
   i18n.inputMethod = lib.mkIf osConfig.programs.niri.enable {
     enable = lib.mkDefault true;
     type = "fcitx5";
+
     # Using `fcitx5-remote -r` to reload the following settings
     fcitx5 = {
       ignoreUserConfig = true;
@@ -34,6 +35,13 @@
           "Hotkey/TriggerKeys" = { }; # Disable Ctrl+Space
         };
         addons = {
+
+          # https://github.com/fcitx/fcitx5/blob/master/src/ui/classic/classicui.h#L127
+          classicui.globalSection = {
+            Font = "\"Sans 12\"";
+            UseDarkTheme = "True";
+          };
+
           rime.globalSection = {
             InputState = "Program";
             SwitchInputMethodBehavior = "\"Commit raw input\"";

@@ -48,7 +48,6 @@
       services.sing-box.client.tailscaleCertDumper.enable = true;
     };
 
-    programs.chromium.enable = true;
     programs.direnv.enable = true;
     programs.fish.enable = true;
     programs.nix-ld.enable = true;
@@ -57,7 +56,6 @@
       defaultEditor = true;
     };
 
-    services.kanata.enable = true;
     services.sing-box.enable = true;
     services.openssh.enable = true;
 
@@ -67,43 +65,23 @@
     };
 
     environment = {
-      systemPackages =
-        (
-          with pkgs;
-          [
-            file
-            tree
-            yazi
-            btop
-            dig
-            jq
-            bintools # nm
-            python3
-          ]
-          ++ lib.optionals config.programs.niri.enable [
-            libnotify
-            hyprpicker
-            xwayland-satellite
-            wl-clipboard
-            xdg-utils # xdg-open
-            ghostty
-            fuzzel
-          ]
-        )
-        ++ (
-          with pkgs-unstable;
-          [ ]
-          ++ lib.optionals config.programs.niri.enable [
-            google-chrome
-            zed
-            qq
-          ]
-        );
+      systemPackages = (
+        with pkgs;
+        [
+          file
+          tree
+          yazi
+          btop
+          dig
+          jq
+          bintools # nm
+          python3
+        ]
+      );
       sessionVariables = {
         EDITOR = "nvim";
         TS_DOMAIN = config.rag.magicDNS;
       };
-      enableAllTerminfo = true;
     };
 
     networking.networkmanager.enable = true;
